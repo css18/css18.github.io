@@ -1,0 +1,25 @@
+---
+title: "MACS 33001 - Mathematics and Statistics for Computational Social Science"
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE, echo = FALSE, message = FALSE)
+set.seed(1234)
+```
+
+* Instructor: [Benjamin Soltoff](http://www.bensoltoff.com), Lecturer in [Computational Social Science](http://macss.uchicago.edu)
+* Meeting day/time: TTh 2-3:20pm (Social Sciences Research Building 107)
+* Office hours: M 10-12pm (McGiffert House 209)
+* Prerequisites: MACS 33000 (Computational Mathematics and Statistics Camp)
+* Requirements: Bring your own laptop
+
+## Course Description
+
+This course aims to provide students with a core understanding of mathematics and statistics for computational social science. Students who complete this course should be prepared to take more advanced computational methods courses. Completion of the Computational Math Camp in September is recommended, but not required.
+
+## Course Objectives
+
+* Identify core topics in linear algebra, calculus, probability, and statistical inference where additional preparation is necessary
+* Reinforce training in the above areas through additional coverage of theory and application
+* Utilize computational approaches and simulations in R to apply mathematical and statistical techniques, as well as verify theoretical assertions
+* Implement a reproducible workflow via Git version control and typesetting through Markdown/LaTeX

@@ -1,0 +1,18 @@
+name: "MS-CSS"
+navbar:
+  title: "MS-CSS"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "FAQ"
+      href: faq.html
+    - text: "Syllabus"
+      href: syllabus.html
+output:
+  html_document:
+    theme: readable
+    highlight: pygments
+    include:
+      in_header: _google-analytics.html
+      after_body: _footer.html
+output_dir: "."

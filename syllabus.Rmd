@@ -1,0 +1,47 @@
+---
+title: "Syllabus"
+---
+
+```{r include = FALSE}
+library(readxl)
+library(dplyr)
+library(lubridate)
+library(stringr)
+```
+
+```{r include = FALSE}
+# import excel table with topics
+rawdat <- read_excel(file.path("course_admin", "schedule.xlsx"))
+
+# clean up table and extract date info
+cdat <- rawdat %>%
+  mutate(wday = wday(date, label = TRUE),
+         month = month(date, label = TRUE),
+         day = day(date),
+         date = paste(wday, month, day),
+         date = ifelse(is.na(wday), NA, date),
+         link_it = as.logical(link_it),
+         notes = sprintf("%s: %s", cm, topic))
+
+# identify links to course modules
+cmdat <- data_frame(html = list.files(pattern = '^(cm|setup|git).*html$'))
+cmdat <- cmdat %>% mutate(cm = str_extract(html, "(cm|setup|git)[0-9]+"))
+cdat <- cdat %>% left_join(cmdat)
+
+# add links to notes column
+cdat$notes[cdat$link_it] <-
+  str_replace(cdat$notes[cdat$link_it],
+              "((cm[0-9]{3})|((setup|git)[0-9]{2}))", '<a href="LINK">\\1</a>')
+cdat$notes[cdat$link_it] <-
+  str_replace(cdat$notes[cdat$link_it], "LINK", cdat$html[cdat$link_it])
+```
+
+```{r results = 'asis', echo = FALSE}
+cdat %>%
+  select(date, notes) %>%
+  knitr::kable(col.names = c("Date", "Topic"))
+```
+
+## Homework
+
+
