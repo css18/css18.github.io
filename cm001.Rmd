@@ -1,0 +1,25 @@
+---
+title: "Introduction to the course"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm001 - October 1, 2018
+
+## Overview
+
+* Introduce myself
+* Identify major course objectives
+* Identify course logistics
+* Introduce software tools for the course
+
+## Slides and class materials
+
+
+
+## What you need to do
+
+* [Install and setup software](https://cfss.uchicago.edu/setup00.html)
