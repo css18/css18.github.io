@@ -15,11 +15,21 @@ set.seed(1234)
 
 ## Course Description
 
-This course aims to provide students with a core understanding of mathematics and statistics for computational social science. Students who complete this course should be prepared to take more advanced computational methods courses. Completion of the Computational Math Camp in September is recommended, but not required.
+This course aims to provide students with a core understanding of mathematics and statistics for computational social science. Students who complete this course should be prepared to take more advanced computational methods courses.
 
 ## Course Objectives
 
-* Identify core topics in linear algebra, calculus, probability, and statistical inference where additional preparation is necessary
-* Reinforce training in the above areas through additional coverage of theory and application
-* Utilize computational approaches and simulations in R to apply mathematical and statistical techniques, as well as verify theoretical assertions
-* Implement a reproducible workflow via Git version control and typesetting through Markdown/LaTeX
+By the end of the course, students will:
+
+* Construct and execute basic programs in R using elementary programming techniques and [`tidyverse`](http://tidyverse.org/) packages (e.g. loops, conditional statements, user-defined functions)
+* Visualize information and data using appropriate graphical techniques
+* Generate reproducible documents with [R Markdown](http://rmarkdown.rstudio.com/)
+* Utilize professional document typesetting with mathematical notation via Markdown and $\LaTeX$
+* Define key concepts related to theory of probability
+* Identify and simulate random variables
+* Calculate expected value and variance of random variables
+* Write likelihood functions and optimize using a range of algorithms
+* Conduct hypothesis tests
+* Implement Bayesian methods of inference
+* Evaluate via simulations the major properties and assumptions of ordinary least squares (OLS) regression
+* Conduct inference and hypothesis testing for single and multivariable regression models
