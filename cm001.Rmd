@@ -18,7 +18,7 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## Slides and class materials
 
-
+* [Introduction to the course](intro.html)
 
 ## What you need to do
 

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Introduction to the course</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to the course</h1>
+
+</div>
+
+
+<div id="introduction-to-the-course" class="section level1">
+<h1>Introduction to the course</h1>
+<div id="me-dr.benjamin-soltoff" class="section level2">
+<h2>Me (Dr. Benjamin Soltoff)</h2>
+<p>I am a lecturer in the <a href="http://macss.uchicago.edu">Masters in Computational Social Science</a> program. I earned my PhD in political science from <a href="http://polisci.la.psu.edu/">Penn State University</a> in 2015. <a href="https://www.bensoltoff.com">My research interests</a> focus on judicial politics, state courts, and agenda-setting. Methodologically I am interested in statistical learning and text analysis. I was first drawn to programming in grad school, starting out in <a href="http://www.stata.com/">Stata</a> and eventually making the transition to <a href="https://www.r-project.org/">R</a> and <a href="https://www.python.org/">Python</a>. I learned these programming languages out of necessity - I needed to process, analyze, and code tens of thousands of judicial opinions and extract key information into a tabular format. I am not a computer scientist. I am a social scientist who uses programming and computational tools to answer my research questions.</p>
+</div>
+<div id="course-website" class="section level2">
+<h2>Course website</h2>
+<p>Go to <a href="https://css18.github.io" class="uri">https://css18.github.io</a> for the course site. This contains the course objectives, required readings, schedules, slides, etc.</p>
+</div>
+<div id="course-objectives" class="section level2">
+<h2>Course objectives</h2>
+<ul>
+<li>Construct and execute basic programs in R using elementary programming techniques and <a href="http://tidyverse.org/"><code>tidyverse</code></a> packages (e.g. loops, conditional statements, user-defined functions)</li>
+<li>Visualize information and data using appropriate graphical techniques</li>
+<li>Generate reproducible documents with <a href="http://rmarkdown.rstudio.com/">R Markdown</a></li>
+<li>Utilize professional document typesetting with mathematical notation via Markdown and <span class="math inline">\(\LaTeX\)</span></li>
+<li>Define key concepts related to theory of probability</li>
+<li>Identify and simulate random variables</li>
+<li>Calculate expected value and variance of random variables</li>
+<li>Write likelihood functions and optimize using a range of algorithms</li>
+<li>Conduct hypothesis tests</li>
+<li>Implement Bayesian methods of inference</li>
+<li>Evaluate via simulations the major properties and assumptions of ordinary least squares (OLS) regression</li>
+<li>Conduct inference and hypothesis testing for single and multivariable regression models</li>
+</ul>
+<p>This is an extension of the <a href="https://github.com/math-camp/course">Computational Math/Stats camp</a>. Based on your placement exam results, we will be reviewing some of this material more in-depth while omitting other topics entirely.</p>
+<div id="what-are-we-skipping" class="section level3">
+<h3>What are we skipping</h3>
+<ul>
+<li>Linear algebra - we’ll discuss vectors/matricies/arrays as data objects in R and perform basic algebraic operations, but we are not going to be performing complex linear algebra methods in this course (e.g. matrix decompositions, singular value decomposition [SVD], principal components analysis [PCA]). We will return to those methods in the winter Perspectives quarter.</li>
+<li>Calculus - we are not reviewing all the rules for calculating derivatives and antiderivatives. We will use calculus in this class, but mostly this will be in a computational approach (i.e. optimizing functions). We are not going to calculate derivatives/integrals by hand.</li>
+</ul>
+<p>This class will focus mostly on probability and statistical inference, with some overlap and extension of materials from the camp.</p>
+</div>
+</div>
+<div id="how-we-will-do-this" class="section level2">
+<h2>How we will do this</h2>
+<ul>
+<li>This is not an analytically-based course. That is, we will not be exclusively completing pencil-and-paper exercises. There may be some exercises based on this and you will still need to use appropriate mathematical notation to explain your solutions to exercises, but all assignments will be submitted electronically via Git pull request.</li>
+<li>We will focus more on the theory of how methods work, rather than rote application. The course is not proof-based; instead we will use simulation methods to prove different theorems and statistical principles. This will require programming on your part, performed in R.</li>
+</ul>
+<div id="complete-the-readings" class="section level3">
+<h3>Complete the readings</h3>
+<p>Many classes will have assigned readings. <strong>You need to complete these before coming to class.</strong> I will assume you have done so and have at least a basic understanding of the material. Classes will be a mix of lecture and live-coding/in-class exercises. If you do not come to class prepared, then there is no point in coming to class.</p>
+</div>
+<div id="minute-rule" class="section level3">
+<h3>15 minute rule</h3>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr">
+15 min rule: when stuck, you HAVE to try on your own for 15 min; after 15 min, you HAVE to ask for help.- Brain AMA <a href="https://t.co/MS7FnjXoGH">pic.twitter.com/MS7FnjXoGH</a>
+</p>
+— Rachel Thomas (<span class="citation">@math_rachel</span>) <a href="https://twitter.com/math_rachel/status/764931533383749632">August 14, 2016</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>We will follow the <strong>15 minute rule</strong> in this class. If you encounter a problem in your assignments, spend 15 minutes troubleshooting the problem on your own. Make use of <a href="https://www.google.com">Google</a> and <a href="http://stackoverflow.com/">StackOverflow</a> to resolve the error. However, if after 15 minutes you still cannot solve the problem, <strong>ask for help</strong>. We will use GitHub to ask and answer class-related questions).</p>
+</div>
+<div id="plagiarism" class="section level3">
+<h3>Plagiarism</h3>
+<p>I am trying to balance two competing perspectives:</p>
+<ol style="list-style-type: decimal">
+<li>Collaboration is good - researchers usually collaborate with one another on projects. Developers work in teams to write programs. Why reinvent the wheel when it has already been done?</li>
+<li>Collaboration is cheating - this is academia. You are expected to complete your own work. If you copy from someone else, how do I know you actually learned the material?</li>
+</ol>
+<p>The point is that collaboration in this class is good - <strong>to a point</strong>. You are always, unless otherwise noted, expected to write and submit your own work. You should not blindly copy from your peers. You should not copy large chunks of code from the internet. That said, using the internet to debug programs is fine. Asking a classmate to help you debug your program is fine (the key phrase is <em>help you</em>, not do it for you).</p>
+<blockquote>
+<p><a href="https://www.nytimes.com/2017/05/29/us/computer-science-cheating.html">As Computer Coding Classes Swell, So Does Cheating</a></p>
+</blockquote>
+<p><em>The bottom line</em> - if you don’t understand what the program is doing and are not prepared to explain it in detail, you should not submit it.</p>
+</div>
+<div id="evaluations" class="section level3">
+<h3>Evaluations</h3>
+<p>Students will complete weekly problem sets with a combination of analytical and computational problems. Each problem set is worth 10 points. Final grades will be determined based on cumulative performance across the problem sets. We will follow <a href="https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow">this basic homework workflow</a>. If you have never used Git before, you’ll quickly learn as you will use Git in both the Perspectives and CAPP sequence.</p>
+</div>
+</div>
+</div>
+<div id="software-for-the-course" class="section level1">
+<h1>Software for the course</h1>
+<div id="r" class="section level2">
+<h2>R</h2>
+<p>R is open-source software, which means using it is <strong>completely free</strong>. Second, open-source software is developed <strong>collaboratively</strong>, meaning the source code is open to public inspection, modification, and improvement.</p>
+<div id="popular" class="section level3">
+<h3>Popular</h3>
+<p>R is widely used in the physical and social sciences, <a href="http://spectrum.ieee.org/static/interactive-the-top-programming-languages-2016">as well as in government, non-profits, and the private sector</a>.</p>
+<p>Many developers and social scientists write programs in R. As a result, there is also a large support community available to help troubleshoot problematic code. As seen in the Redmonk programming language rankings (which compare languages’ appearances on Github [usage] and StackOverflow [support]), R appears near the top of both rankings.</p>
+<p><a href="https://redmonk.com/sogrady/2018/08/10/language-rankings-6-18/"><img src="https://cfss.uchicago.edu/images/lang.rank_.618-1-1024x708.png" /></a></p>
+</div>
+<div id="lack-of-point-and-click-interface" class="section level3">
+<h3>Lack of point-and-click interface</h3>
+<p>R, like any computing language, relies on programmatic execution of functions. That is, to do anything you must write code. This differs from popular statistical software such as <a href="http://www.stata.com/">Stata</a> or <a href="http://www.ibm.com/analytics/us/en/technology/spss/">SPSS</a> which at their core utilize a command language but overlay them with drop-down menus that enable a point-and-click interface. While much easier to operate, there are several downsides to this approach - mainly that it <a href="https://web.stanford.edu/~gentzkow/research/CodeAndData.pdf">makes it impossible to reproduce one’s analysis</a>.</p>
+</div>
+<div id="things-r-does-well" class="section level3">
+<h3>Things R does well</h3>
+<ul>
+<li>Data analysis - R was written by statisticians for statisticians, so it is designed first and foremost as a language for statistical and data analysis. Much of the cutting-edge research in machine learning occurs in R, and every week there are packages added to <a href="https://cran.r-project.org/">CRAN</a> implementing these new methods. Furthermore, many models in R can be exported to other programming languages such as <code>C</code>, <code>C++</code>, <code>Python</code>, <code>tensorflow</code>, <code>stan</code>, etc.</li>
+<li>Data visualization - while the base R <code>graphics</code> package is comprehensive and powerful, additional libraries such as <a href="http://docs.ggplot2.org/current/"><code>ggplot2</code></a> and <a href="https://cran.r-project.org/web/packages/lattice/index.html"><code>lattice</code></a> make R the go-to language for power data visualization approaches.</li>
+</ul>
+</div>
+<div id="things-r-does-not-do-as-well" class="section level3">
+<h3>Things R does not do as well</h3>
+<ul>
+<li>Speed - while by no means a slug, R is not written to be a fast, speedy language. Depending on the complexity of the task and the size of your data, you may find R taking a long time to execute your program.</li>
+</ul>
+</div>
+<div id="why-are-we-not-using-python" class="section level3">
+<h3>Why are we not using Python?</h3>
+<p><a href="https://xkcd.com/353/"><img src="https://cfss.uchicago.edu/images/xkcd_python.png" /></a></p>
+<p>Python was developed in the 1990s as a general-purpose programming language. It <a href="https://en.wikipedia.org/wiki/Zen_of_Python">emphasizes simplicity over complexity</a> in both its syntax and core functions. As a result, code written in Python is (relatively) easy to read and follow as compared to more complex languages like Perl or Java. As you can see in the above references, Python is just as, if not more, popular than R. It does many things well, like R, but is perhaps better in some aspects:</p>
+<ul>
+<li>General computation - since Python is a general computational language, it is more versatile at non-statistical tasks and is a bit more popular outside the statistics community.</li>
+<li>Speed - because it is a general computing language, Python is optimized to be fast (assuming you write your code optimally). As your data becomes larger or more complex, you might find Python to be faster than R for your analytical needs.</li>
+<li>Workflow - since Python is a general-purpose language, you can build entire applications using it. R, not so much.</li>
+</ul>
+<p>That said, there are also things it does not do as well as R:</p>
+<ul>
+<li>Visualizations - visual graphics libraries in Python are increasing in number and quality (see <a href="http://matplotlib.org/"><code>matplotlib</code></a>, <a href="http://www.pygal.org/en/stable/"><code>pygal</code></a>, and <a href="https://stanford.edu/~mwaskom/software/seaborn/"><code>seaborn</code></a>), but are still behind R in terms of comprehensiveness and ease of use. Of course, once you wish to create interactive and advanced information visualizations, you can also used more specialized software such as <a href="http://www.tableau.com/">Tableau</a> or <a href="https://d3js.org/">D3</a>.</li>
+<li>Add-on libraries - previously Python was criticized for its lack of libraries to perform statistical analysis and data manipulation, especially relative to the plethora of libraries for R. In recent years Python has begun to catch up with libraries for scientific computing (<a href="http://www.numpy.org/"><code>numpy</code></a>), data analysis (<a href="http://pandas.pydata.org/"><code>pandas</code></a>), and machine learning (<a href="http://scikit-learn.org/stable/"><code>scikit-learn</code></a>). However I personally have found immense difficulty installing and managing packages in Python, even with the use of a package manager such as <a href="https://conda.io/docs/"><code>conda</code></a>.</li>
+</ul>
+<p>At the end of the day, I don’t think it is a debate between learning R vs. Python. Frankly to be a desirable (and therefore highly-compensated) data scientist <a href="https://blog.usejournal.com/python-vs-and-r-for-data-science-833b48ccc91d">you should learn both languages.</a> R and Python complement each other, and even R/Python luminaries such as <a href="https://twitter.com/hadleywickham">Hadley Wickham</a> and <a href="https://ursalabs.org/">Wes McKinney</a> promote the benefits of both languages:</p>
+<blockquote class="twitter-tweet" data-lang="en">
+<p lang="en" dir="ltr">
+Python and R are NOT waging war. This is not a helpful characterisation
+</p>
+— Hadley Wickham (<span class="citation">@hadleywickham</span>) <a href="https://twitter.com/hadleywickham/status/855035652710309890?ref_src=twsrc%5Etfw">April 20, 2017</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<p>Since you are not expected to have prior programming experience entering this program and therefore may be learning programming from scratch simultaneously with this class, I cannot rely on you gaining necessary Python skills as we need them. My language of preference is R, and you will see R frequently throughout the winter and spring quarters if you enroll in my sections of Perspectives. Therefore it will be to your benefit to learn how to use R now, and gives you a leg up on your peers in the coming quarters.</p>
+</div>
+</div>
+<div id="rstudio" class="section level2">
+<h2>RStudio</h2>
+<p>As previously mentioned, the base R distribution is not the best for developing and writing programs. Instead, we want an integrated development environment (IDE) which will allow us to write and execute code, debug programs, and automate certain tasks. In this course we will use <a href="https://www.rstudio.com/products/RStudio/">RStudio</a>, perhaps the most popular IDE available for R. Like R, it is open-source, expandable, and provides many useful tools and enhancements over the base R environment.</p>
+</div>
+<div id="git" class="section level2">
+<h2>Git</h2>
+<p>Git is a <em>version control system</em> originally created for developers to collaborate on large software projects. Git tracks changes in the project over time so that there is always a comprehensive, structured record of the project. Each project is stored in a <em>repository</em> that includes all files that are part of the project. As social scientists, this is more than just computer scripts - this can include data files and reports, as well as our source code.</p>
+<p>Git can be used locally by you on a single computer to track changes in a project. You do not need to be connected to the internet to use Git. However if you want to share your work with a larger audience, the easiest solution is to host the repository on a web site for others to download and inspect. You can host a public (open to the world) or private (open to just you or a few individuals) repository. <a href="https://www.github.com">GitHub</a> has become the largest hoster of Git repositories and includes many useful features beyond the standard Git functions.</p>
+<p>Chances are that by now you’ve seen or even used GitHub. Professionally, you should know how to use Git and GitHub to manage projects and share code. In this class, we will use Git and GitHub to host our <a href="https://github.com/css18/css18.github.io">course site</a>, share code, and distribute/collect assignments.</p>
+</div>
+<div id="latex" class="section level2">
+<h2><span class="math inline">\(\LaTeX\)</span></h2>
+<ul>
+<li>High-quality typesetting system</li>
+<li>De facto standard for production of technical and scientific documentation
+<ul>
+<li>Books</li>
+<li>Journal articles</li>
+</ul></li>
+<li>Free software</li>
+<li>Renders documents as PDFs</li>
+<li><p>Makes typesetting easy</p>
+<div class="sourceCode"><pre class="sourceCode latex"><code class="sourceCode latex"><span class="ss">$$f(x) = </span><span class="sc">\frac</span><span class="ss">{</span><span class="sc">\exp</span><span class="ss">(-</span><span class="sc">\frac</span><span class="ss">{(x - </span><span class="sc">\mu</span><span class="ss">)^2}{2</span><span class="sc">\sigma</span><span class="ss">^2} )}{ </span><span class="sc">\sqrt</span><span class="ss">{2</span><span class="sc">\pi</span><span class="ss"> </span><span class="sc">\sigma</span><span class="ss">^2}}$$</span></code></pre></div>
+<p><span class="math display">\[f(x) = \frac{\exp(-\frac{(x - \mu)^2}{2\sigma^2} )}{ \sqrt{2\pi \sigma^2}}\]</span></p></li>
+<li>Tables/figures/general typesetting/nice presentations - easier in <span class="math inline">\(\LaTeX\)</span>
+<ul>
+<li>Papers</li>
+<li>Books</li>
+<li>Dissertations/theses</li>
+<li>Slides (beamer)</li>
+</ul></li>
+<li><p>Steep learning curve up front, but leads to big dividends later</p></li>
+</ul>
+<div id="markdown" class="section level3">
+<h3>Markdown</h3>
+<ul>
+<li>Lightweight markup language with plain text formatting syntax</li>
+<li>Easy to convert to HTML, PDF, and more</li>
+<li>Used commonly on GitHub documentation, Jupyter Notebooks, R Markdown, and more</li>
+<li>Simplified syntax compared to <span class="math inline">\(\LaTeX\)</span> - also less flexibility</li>
+<li>Publishing formats
+<ul>
+<li>HTML</li>
+<li>PDF</li>
+<li>Websites</li>
+<li>Slides</li>
+<li>Dashboards</li>
+<li>Word/ODT/RTF (eww)</li>
+</ul></li>
+</ul>
+<p>We’ll use Markdown and <span class="math inline">\(\LaTeX\)</span> in the problem sets to generate the final output for your R Markdown documents. I imagine you’ll also use <span class="math inline">\(\LaTeX\)</span> extensively in the fall Perspectives course (it’s Dr. Evans’s preferred format), so it helps to learn it right off the bat. Make sure you install the appropriate distribution of <span class="math inline">\(\LaTeX\)</span> for your computer, as RStudio cannot render R Markdown documents as PDFs without an existing distribution on your computer.</p>
+</div>
+</div>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-09-27</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package   * version date       source        
+##  backports   1.1.2   2017-12-13 CRAN (R 3.5.0)
+##  base      * 3.5.1   2018-07-05 local         
+##  compiler    3.5.1   2018-07-05 local         
+##  datasets  * 3.5.1   2018-07-05 local         
+##  devtools    1.13.6  2018-06-27 CRAN (R 3.5.0)
+##  digest      0.6.15  2018-01-28 CRAN (R 3.5.0)
+##  evaluate    0.11    2018-07-17 CRAN (R 3.5.0)
+##  graphics  * 3.5.1   2018-07-05 local         
+##  grDevices * 3.5.1   2018-07-05 local         
+##  htmltools   0.3.6   2017-04-28 CRAN (R 3.5.0)
+##  knitr       1.20    2018-02-20 CRAN (R 3.5.0)
+##  magrittr    1.5     2014-11-22 CRAN (R 3.5.0)
+##  memoise     1.1.0   2017-04-21 CRAN (R 3.5.0)
+##  methods   * 3.5.1   2018-07-05 local         
+##  Rcpp        0.12.18 2018-07-23 CRAN (R 3.5.0)
+##  rmarkdown   1.10    2018-06-11 CRAN (R 3.5.0)
+##  rprojroot   1.3-2   2018-01-03 CRAN (R 3.5.0)
+##  stats     * 3.5.1   2018-07-05 local         
+##  stringi     1.2.4   2018-07-20 CRAN (R 3.5.0)
+##  stringr     1.3.1   2018-05-10 CRAN (R 3.5.0)
+##  tools       3.5.1   2018-07-05 local         
+##  utils     * 3.5.1   2018-07-05 local         
+##  withr       2.1.2   2018-03-15 CRAN (R 3.5.0)
+##  yaml        2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
