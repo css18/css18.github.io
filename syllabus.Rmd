@@ -11,7 +11,7 @@ library(stringr)
 
 ```{r include = FALSE}
 # import excel table with topics
-rawdat <- read_excel(file.path("course_admin", "schedule.xlsx"))
+rawdat <- read_excel(file.path("course-admin", "schedule.xlsx"))
 
 # clean up table and extract date info
 cdat <- rawdat %>%
