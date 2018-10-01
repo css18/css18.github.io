@@ -1,0 +1,32 @@
+---
+title: "Data objects/tidy data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm004 - October 10, 2018
+
+## Overview
+
+* Define a tibble
+* Demonstrate how vectors can be read and parsed
+* Define various data file formats and functions for importation
+* Define tidy data and its characteristics
+* Practice tidying data
+
+## Before class
+
+* Read Chapters 9-12 from [R for Data Science](http://r4ds.had.co.nz/)
+* Read [Wickham, H. (2014). Tidy data. *Journal of Statistical Software*, 59(10), 1-23.](https://www.jstatsoft.org/article/view/v059i10)
+    * Ignore the code examples - `plyr` and `reshape2` are no longer the dominant packages in R for reshaping and tidying data. Focus instead on the definition and types of "messy" datasets
+
+## Slides and class materials
+
+* 
+
+## What you need to do
+
+* [Install and setup software](https://cfss.uchicago.edu/setup00.html)
