@@ -852,7 +852,10 @@ pie_pie <- ggplot(pie, aes(x = factor(1), y = value)) +
   theme_void() +
   theme(legend.position = "none")
 
-gridExtra::grid.arrange(pie_bar, pie_prop, pie_pie)
+pie_bar +
+  pie_prop +
+  pie_pie +
+  plot_layout(ncol = 1)
 
 # table
 pie %>%
@@ -977,7 +980,7 @@ ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
   geom_point()
 ```
 
-With seven categories, this is becoming more tricky. What if we have even more categories?
+With seven categories, this is becoming more tricky. What if we have even more categories? Consider a dataset of individual Olympians who competed in the 2012 Summer Olympics.
 
 ```{r olympics}
 data(oly12, package = "VGAMdata")
@@ -1050,91 +1053,19 @@ ggpairs(select(rcfss::scorecard, type:debt))
 
 ### Heatmap of correlation coefficients
 
-Scatterplot matricies can provide lots of information, but can also be very densely packed. Perhaps instead we want to quickly visualize the correlation between each of the variables.^[Example drawn from [ ggplot2 : Quick correlation matrix heatmap - R software and data visualization](http://www.sthda.com/english/wiki/ggplot2-quick-correlation-matrix-heatmap-r-software-and-data-visualization).] The function below calculates Pearson's correlation coefficient for each combination of continuous variables and visualizes them using a heatmap.
+Scatterplot matricies can provide lots of information, but can also be very densely packed. Perhaps instead we want to quickly visualize the correlation between each of the variables. `GGally` also contains the `ggcorr()` function which calculates Pearson's correlation coefficient for each combination of continuous variables and visualizes them using a heatmap.
 
-```{r coef-heatmap-function}
-cormat_heatmap <- function(data){
-  # generate correlation matrix
-  cormat <- round(cor(data), 2)
-  
-  # melt into a tidy table
-  get_upper_tri <- function(cormat){
-    cormat[lower.tri(cormat)]<- NA
-    return(cormat)
-  }
-  
-  upper_tri <- get_upper_tri(cormat)
-  
-  # reorder matrix based on coefficient value
-  reorder_cormat <- function(cormat){
-    # Use correlation between variables as distance
-    dd <- as.dist((1-cormat)/2)
-    hc <- hclust(dd)
-    cormat <-cormat[hc$order, hc$order]
-  }
-  
-  cormat <- reorder_cormat(cormat)
-  upper_tri <- get_upper_tri(cormat)
-  
-  # Melt the correlation matrix
-  melted_cormat <- reshape2::melt(upper_tri, na.rm = TRUE)
-  
-  # Create a ggheatmap
-  ggheatmap <- ggplot(melted_cormat, aes(Var2, Var1, fill = value))+
-    geom_tile(color = "white")+
-    scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-                         midpoint = 0, limit = c(-1,1), space = "Lab", 
-                         name="Pearson\nCorrelation") +
-    theme_minimal()+ # minimal theme
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, 
-                                     size = 12, hjust = 1))+
-    coord_fixed()
-  
-  # add correlation values to graph
-  ggheatmap + 
-    geom_text(aes(Var2, Var1, label = value), color = "black", size = 4) +
-    theme(
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      panel.grid.major = element_blank(),
-      panel.border = element_blank(),
-      panel.background = element_blank(),
-      axis.ticks = element_blank(),
-      legend.position = "bottom")
-}
-
-cormat_heatmap(select_if(mpg, is.numeric))
-cormat_heatmap(select_if(credit, is.numeric))
-cormat_heatmap(select_if(diamonds, is.numeric))
+```{r ggcorr}
+ggcorr(mpg)
+ggcorr(credit)
+ggcorr(diamonds)
 ```
 
-We quickly see for each dataset which variables are correlated most strongly with one another.
+We quickly see for each dataset which variables are correlated most strongly with one another. `ggcorr()` also allows customization of the appearance of the heatmap. For example, we can display the actual correlation coefficient directly in the graph by setting `label = TRUE`:
 
-### Parallel coordinate plots
-
-**Parallel coordinate plots** are an alternative graphical format for multivariate data analysis (continuous or discrete). They can be quite busy and messy. Key things for parallel coordinate plots:
-
-* Ordering variables in different ways helps to identify relevant patterns. Therefore a lot of this is trial and error
-* Adding interactivity helps
-
-```{r pcp}
-library(plotly)
-
-ggparcoord(data = iris, columns = 1:4, groupColumn = 5)
-
-# with the iris data, order the axes by overall class (Species) separation
-# using the anyClass option
-ggparcoord(data = iris, columns = 1:4, groupColumn = 5, order = "anyClass")
-
-# add points to the plot, add a title, and use an alpha scalar to make the
-# lines transparent
-p <- ggparcoord(data = iris, columns = 1:4, groupColumn = 5, order = "anyClass", 
-    showPoints = TRUE, title = "Parallel Coordinate Plot for the Iris Data", 
-    alphaLines = 0.3)
-p
-
-# add some basic interactivity
-ggplotly(p)
+```{r ggcorr-label}
+ggcorr(credit, label = TRUE)
+ggcorr(credit, label = TRUE, label_round = 2, label_alpha = TRUE)
 ```
 
 # Session Info {.toc-ignore}
