@@ -11,7 +11,7 @@
 
 
 
-<title>Data visualizations</title>
+<title>Graphical data analysis</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -334,7 +334,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Data visualizations</h1>
+<h1 class="title toc-ignore">Graphical data analysis</h1>
 
 </div>
 
@@ -448,11 +448,11 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
 <p>Our <span class="math inline">\(R^2\)</span> is just 0.042. That’s a pretty crappy model. And it misses a lot of other interesting aspects of the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tips, <span class="kw">aes</span>(tip)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/tips-hist-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/tips-hist-1.png" width="672" /></p>
 <p>The histogram of tip amounts (binwidth = <span class="math inline">\(1\)</span>) shows the distribution is skewed right and unimodal. Overall the tips are not that large.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tips, <span class="kw">aes</span>(tip)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">1</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/tips-round-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/tips-round-1.png" width="672" /></p>
 <p>By shrinking the binwidth to <span class="math inline">\(.10\)</span>, we see a new phenomenon. Peaks occur at whole and half-dollar amounts, likely caused by customers picking round numbers for tips. We see this a lot too at the gas pump.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tips, <span class="kw">aes</span>(totbill, tip)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
@@ -462,7 +462,7 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
 <span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> tips <span class="op">%&gt;%</span>
 <span class="st">              </span><span class="kw">summarize</span>(<span class="dt">rsq =</span> <span class="kw">format</span>(<span class="kw">cor</span>(totbill, tip), <span class="dt">digits =</span> <span class="dv">3</span>)),
             <span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">y =</span> <span class="dv">9</span>, <span class="dt">label =</span> rsq))</code></pre></div>
-<p><img src="data-viz_files/figure-html/tips-scatter-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/tips-scatter-1.png" width="672" /></p>
 <p>By generating a scatterplot with a line representing a generous tipper (defined as a tip of 18%), we see that the majority of patrons are cheap tippers. The <span class="math inline">\(R^2\)</span> is decent for the observations, suggesting a moderate to strong correlation between the variables. But this correlation is not consistent across all observations in the data: there is more variation from the line as the total bill increases.</p>
 <p>Of course we are also frequently interested in multiple variables and their covariation with one another, such as smoker and sex:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tips, <span class="kw">aes</span>(totbill, tip)) <span class="op">+</span>
@@ -475,7 +475,7 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
 <span class="st">              </span><span class="kw">group_by</span>(smoker, sex) <span class="op">%&gt;%</span>
 <span class="st">              </span><span class="kw">summarize</span>(<span class="dt">rsq =</span> <span class="kw">format</span>(<span class="kw">cor</span>(totbill, tip), <span class="dt">digits =</span> <span class="dv">3</span>)),
             <span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">2</span>, <span class="dt">y =</span> <span class="dv">9</span>, <span class="dt">label =</span> rsq))</code></pre></div>
-<p><img src="data-viz_files/figure-html/tips-scatter-many-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/tips-scatter-many-1.png" width="672" /></p>
 <p>With the faceted scatterplot (with <span class="math inline">\(R^2\)</span> in the top-left of each facet), we can draw several comparisons and conclusions. For instance, non-smokers have a stronger correlation between total bill amount and tip size than smokers. Additionally for non-smokers, men tend to pay larger bills than women.</p>
 <p>Without graphical analysis, we would have missed these nuances to the data.</p>
 </div>
@@ -520,14 +520,14 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
        <span class="dt">subtitle =</span> <span class="st">&quot;10 bins, origin = 0&quot;</span>,
        <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
        <span class="dt">y =</span> <span class="st">&quot;Frequency&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/infant-hist-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/infant-hist-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(infant, <span class="kw">aes</span>(mortal)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">bins =</span> <span class="dv">10</span>, <span class="dt">boundary =</span> <span class="op">-</span><span class="dv">5</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Histogram of infant mortality rate for 195 nations&quot;</span>,
        <span class="dt">subtitle =</span> <span class="st">&quot;10 bins, origin = -5&quot;</span>,
        <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
        <span class="dt">y =</span> <span class="st">&quot;Frequency&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/infant-hist-2.png" width="672" /></p>
+<p><img src="gda_files/figure-html/infant-hist-2.png" width="672" /></p>
 <p>Both histograms above use bins of width 10 but differ in their <strong>origin</strong>, or the starting point for the histogram. The first graph uses bins starting at 0 (e.g. 0 to 10, 10 to 20, 20 to 30), whereas the second graph uses bins starting at -5 (e.g. -5 to 5, 5 to 15, 15 to 25). Determining the optimal binwidth and origin point can be trial-and-error, though there are more complex options to try and optimize these values.</p>
 </div>
 <div id="density-estimation" class="section level2">
@@ -554,7 +554,7 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Naive density estimator of infant mortality rate for 195 nations&quot;</span>,
        <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
        <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <p>The downside to the rectangular weighting function is that the resulting density plot is not very clean and smooth. As observations enter and exit the window defined by the rectangle <span class="math inline">\(W(z)\)</span>, the resulting estimator is rough.</p>
 <p>The rectangular weighting function produces a density estimate which covers an area of <span class="math inline">\(1\)</span>; that is, integrating over the range of <span class="math inline">\(X\)</span> for <span class="math inline">\(\hat{p}(x)\)</span> yields a value of 1. Any function that has this property (such as a probability density function) can be used as a weight function.</p>
 <p>Another term for a weight function is a <strong>kernel</strong>. We should select a kernel that is smooth, symmertric, and unimodal to smooth out these rough edges of the naive density estimator. Therefore we can write the general density estimator as:</p>
@@ -580,7 +580,7 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
          <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
          <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
 }</code></pre></div>
-<p><img src="data-viz_files/figure-html/gaussian-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/gaussian-1.png" width="672" /></p>
 <p>Now we have a much smoother density function.</p>
 </div>
 <div id="rectangular-uniform-kernel" class="section level5">
@@ -609,7 +609,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
          <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
          <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
 }</code></pre></div>
-<p><img src="data-viz_files/figure-html/uniform-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/uniform-1.png" width="672" /></p>
 </div>
 <div id="triangular-kernel" class="section level5">
 <h5>Triangular kernel</h5>
@@ -632,7 +632,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
          <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
          <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
 }</code></pre></div>
-<p><img src="data-viz_files/figure-html/triangular-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/triangular-1.png" width="672" /></p>
 </div>
 <div id="quartic-biweight-kernel" class="section level5">
 <h5>Quartic (biweight) kernel</h5>
@@ -655,7 +655,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
          <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
          <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
 }</code></pre></div>
-<p><img src="data-viz_files/figure-html/biweight-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/biweight-1.png" width="672" /></p>
 </div>
 <div id="epanechnikov-kernel" class="section level5">
 <h5>Epanechnikov kernel</h5>
@@ -678,7 +678,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
          <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
          <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
 }</code></pre></div>
-<p><img src="data-viz_files/figure-html/epanechnikov-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/epanechnikov-1.png" width="672" /></p>
 </div>
 <div id="comparison-of-kernels" class="section level5">
 <h5>Comparison of kernels</h5>
@@ -696,7 +696,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.04</span>, <span class="dv">1</span>),
         <span class="dt">legend.justification =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>))</code></pre></div>
-<p><img src="data-viz_files/figure-html/kernels-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/kernels-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(infant, <span class="kw">aes</span>(mortal)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gaussian&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;gaussian&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Epanechnikov&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;epanechnikov&quot;</span>) <span class="op">+</span>
@@ -711,7 +711,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.96</span>, <span class="dv">1</span>),
         <span class="dt">legend.justification =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),
         <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>))</code></pre></div>
-<p><img src="data-viz_files/figure-html/kernels-2.png" width="672" /></p>
+<p><img src="gda_files/figure-html/kernels-2.png" width="672" /></p>
 </div>
 <div id="selecting-the-bandwidth-h" class="section level4">
 <h4>Selecting the bandwidth <span class="math inline">\(h\)</span></h4>
@@ -724,7 +724,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
        <span class="dt">subtitle =</span> <span class="st">&quot;Three different bandwidth parameters&quot;</span>,
        <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
        <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/gaussian-h-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/gaussian-h-1.png" width="672" /></p>
 <p>If the underlying density of the sample is normal with standard deviation <span class="math inline">\(\sigma\)</span>, then for the Gaussian kernel estimation the most efficient bandwidth <span class="math inline">\(h\)</span> will be:</p>
 <p><span class="math display">\[h = 0.9 \sigma n^{-1 / 5}\]</span></p>
 <p>As the sample size increases, the optimal window narrows and permits finer detail than a smaller sample. Of course we don’t actually know the population standard deviation <span class="math inline">\(\sigma\)</span>. Instead we know the sample standard deviation <span class="math inline">\(s\)</span>. If the underlying density is normal, we could just substitute <span class="math inline">\(s\)</span> as an unbiased estimate for <span class="math inline">\(\sigma\)</span>. Of course the problem is that we <strong>assumed</strong> the underlying density is normal. If this is not true, then it’s possible that the sample standard deviation is inflated. In that case, we can adjust by using an “adaptive” estimator of spread:</p>
@@ -740,7 +740,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Boxplot of infant mortality rate for 195 nations&quot;</span>,
        <span class="dt">x =</span> <span class="ot">NULL</span>,
        <span class="dt">y =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/boxplot-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/boxplot-1.png" width="672" /></p>
 <p>A <strong>box plot</strong> or <strong>boxplot</strong> is a method for graphically depicting groups of numerical data through their quartiles. Box plots may also have lines extending vertically from the boxes (whiskers) indicating variability outside the upper and lower quartiles, hence the terms box-and-whisker plot and box-and-whisker diagram. Outliers may be plotted as individual points.</p>
 <ul>
 <li>Bottom and top of the box always represent the first and third quartiles</li>
@@ -759,7 +759,7 @@ x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Violin plot of infant mortality rate for 195 nations&quot;</span>,
        <span class="dt">x =</span> <span class="ot">NULL</span>,
        <span class="dt">y =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/violin-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/violin-1.png" width="672" /></p>
 <p>A <strong>violin plot</strong> is a compact display of a continuous distribution. In essence, it is a mirrored density plot displayed in the same way as a boxplot. Because a boxplot only reports summary statistics, a violin plot is more useful if you want to compare or show the presence of different peaks, their position, and relative amplitude.</p>
 </div>
 </div>
@@ -788,7 +788,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="kw">ggplot</span>(galton_tidy, <span class="kw">aes</span>(height)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>person, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/get-galton-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/get-galton-1.png" width="672" /></p>
 <p><code>galton</code> contains heights (in inches) for 928 children and 205 “midparents”. Each parent height is an average of the father’s height and 1.08 ties the mother’s height. The daughters’ heights are aslo said to have been multiplied by 1.08. This dataset was famously used by Sir Francis Galton to develop theories of correlation and regression in the 19th century.</p>
 <p>Above we see two histograms plotted, one for the children and one for the parents. Each has the same binwidth (1 inch). While they look symmetric with no outliers, it is difficult to directly compare the histograms because they use different scales for the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes.</p>
 <div id="investigate-for-gaps-or-heaping" class="section level4">
@@ -797,7 +797,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton_tidy, <span class="kw">aes</span>(height)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>person, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/galton-heaping-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-heaping-1.png" width="672" /></p>
 <p>We can see that there are only a limited number of unique values used for height. In both histograms there appear to be narrow gaps between each bar. In fact, if we were to look at the original data, we’d see that nearly all the children’s heights end in <span class="math inline">\(.0\)</span> and <span class="math inline">\(.5\)</span>, whereas all the adults’ heights end in <span class="math inline">\(.2\)</span> and <span class="math inline">\(.7\)</span>. This suggests limited precision in the estimates of height.</p>
 </div>
 <div id="comparing-the-distributions" class="section level4">
@@ -806,7 +806,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton_tidy, <span class="kw">aes</span>(height, <span class="dt">fill =</span> person)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>()</code></pre></div>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="data-viz_files/figure-html/galton-both-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-both-1.png" width="672" /></p>
 <p>Oops, this is not really any good. Bars are being drawn overtop of one another and it is not possible to follow along. We could instead draw a separate histogram for each distribution in two separate grids <strong>but use the same <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axis scales</strong>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">galton_median &lt;-<span class="st"> </span>galton_tidy <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">group_by</span>(person) <span class="op">%&gt;%</span>
@@ -816,14 +816,14 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(height), <span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">data =</span> galton_median, <span class="kw">aes</span>(<span class="dt">xintercept =</span> median), <span class="dt">color =</span> <span class="st">&quot;red&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>person, <span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/galton-sep-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-sep-1.png" width="672" /></p>
 <p>Or I find it easier if we put the data on the same panel, either using a density estimate or a boxplot:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton_tidy, <span class="kw">aes</span>(height, <span class="dt">color =</span> person)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/galton-density-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-density-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton_tidy, <span class="kw">aes</span>(person, height)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/galton-box-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-box-1.png" width="672" /></p>
 <p>Both plots suggest that while the medians are similar, the parents’ heights have far less variation than the children’s heights. In fact, this makes perfect sense because the parents’ heights are themselves an average of mother and father, so we should expect less variation.</p>
 </div>
 </div>
@@ -835,13 +835,13 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="kw">ggplot</span>(movies, <span class="kw">aes</span>(length)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>()</code></pre></div>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="data-viz_files/figure-html/movies-hist-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-hist-1.png" width="672" /></p>
 <p>This plot is not very useful, except that it tells us we have at least one <strong>outlier</strong>, or extremely long movie, in the data. This is why the data appears heavily skewed. With over 58,000 movies in the first two bins, one case will never be visible. This histogram is not very useful here.</p>
 <p>A boxplot, on the other hand, does a nice job of summarizing and visualizing outliers.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(movies, <span class="kw">aes</span>(<span class="st">&quot;&quot;</span>, length)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/movies-box-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-box-1.png" width="672" /></p>
 <p>There are actually quite a few outliers in the data. We could now use this information to filter the dataset and find out which movies these are: are they errors in coding the observation, or just an extremely long film?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">filter</span>(movies, length <span class="op">&gt;</span><span class="st"> </span><span class="dv">1000</span>)</code></pre></div>
 <pre><code>## # A tibble: 3 x 24
@@ -862,15 +862,15 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>,
        <span class="dt">y =</span> <span class="st">&quot;Movie length (in minutes)&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/movies-all-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-all-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(movies_lite, <span class="kw">aes</span>(length)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Movie length (in minutes)&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/movies-all-2.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-all-2.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(movies_lite, <span class="kw">aes</span>(length)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Movie length (in minutes)&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/movies-all-3.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-all-3.png" width="672" /></p>
 <p>I think the third plot provides the most information:</p>
 <ol style="list-style-type: decimal">
 <li>There are few long films (i.e. over 2 and a half hours)</li>
@@ -884,7 +884,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <p>Recall the earlier example of using a density estimate to compare the distribution of heights for children and parents:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton_tidy, <span class="kw">aes</span>(height, <span class="dt">color =</span> person)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/galton-density2-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-density2-1.png" width="672" /></p>
 <p>This worked because we were only comparing between two subgroups. What happens if we want to compare across more than that? At what point does the density estimate not prove effective anymore?</p>
 <p>Let’s consider <code>movies</code> and compare the distribution of film length by <strong>genre</strong> using a density estimate:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">genre &lt;-<span class="st"> </span>movies_lite <span class="op">%&gt;%</span>
@@ -894,7 +894,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(genre, <span class="kw">aes</span>(length, <span class="dt">color =</span> genre)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_density</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/genre-density-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/genre-density-1.png" width="672" /></p>
 <p>This is really messy - can we learn much from it? There still appear to be two peaks for each genre of film, but beyond that I cannot really tell a story from this. What are our alternative options?</p>
 <div id="multiple-windows-plot" class="section level4">
 <h4>Multiple windows plot</h4>
@@ -904,13 +904,13 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Movie length (in minutes)&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>genre)</code></pre></div>
-<p><img src="data-viz_files/figure-html/genre-facet-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/genre-facet-1.png" width="672" /></p>
 <p>There is still a lot going on here, but I think it’s easier to digest than the density estimate with multiple colors. We can see that over all there are far more comedies, dramas, and short films than any other category. The bimodal peaks still seem to apply to comedies, but beyond that it is not clear other genres have the same feature. Short films and animations appear to have a single peak around 10 minutes or so, whereas action films, documentaries, and romances appear to have a single peak closer to 90 minutes. Perhaps genre explains the bimodality in the data.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(genre, <span class="kw">aes</span>(length)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Movie length (in minutes)&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>genre, <span class="dt">scales =</span> <span class="st">&quot;free_y&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/genre-facet-freey-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/genre-facet-freey-1.png" width="672" /></p>
 <p>We can adjust the <span class="math inline">\(y\)</span> axes to freely adjust to the natural peak of each subgroup. This distorts the comparisons between groups in that we cannot see immediately that comedies and dramas dominate the dataset, but it does zoom in a bit more on the smaller categories without switching entirely to a density estimate (we can still observe heaping). The story remains pretty similar.</p>
 </div>
 <div id="boxplot-1" class="section level4">
@@ -919,7 +919,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Genre&quot;</span>,
        <span class="dt">y =</span> <span class="st">&quot;Movie length (in minutes)&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/genre-box-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/genre-box-1.png" width="672" /></p>
 <p>A boxplot reveals the clear differences in median run time and the fact that each genre has a substantial number of outliers, but I don’t know if it reveals quite the same story. Do you see anything different?</p>
 </div>
 </div>
@@ -953,7 +953,7 @@ gss_cat</code></pre></div>
 <p>A simple bar chart tells us the racial makeup of the survey respondents:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(gss_cat, <span class="kw">aes</span>(race)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_bar</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/race-bar-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/race-bar-1.png" width="672" /></p>
 <p>So we can see that there are approximately 16,000 whites, 3000 blacks, and 2000 “other”.</p>
 <div id="concerns-with-bar-charts" class="section level4">
 <h4>Concerns with bar charts</h4>
@@ -963,7 +963,7 @@ gss_cat</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(gss_cat, <span class="kw">aes</span>(race)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">scale_x_discrete</span>(<span class="dt">drop =</span> <span class="ot">FALSE</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/race-bar-omit-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/race-bar-omit-1.png" width="672" /></p>
 <p>These levels represent valid values that simply did not occur in this dataset. You probably would want to omit this in the final paper where you publish the graph, but for GDA purposes it may be important to keep in your graph.</p>
 </div>
 <div id="order-matters" class="section level5">
@@ -980,17 +980,17 @@ gss_cat</code></pre></div>
 <span class="kw">ggplot</span>(relig_summary, <span class="kw">aes</span>(relig, tvhours)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">coord_flip</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/relig-bar-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/relig-bar-1.png" width="672" /></p>
 <p>Religion is a <strong>nominal variable</strong> - there is no inherent ordering to the variable. So why order the bars in this way? Simply, this was the default order. But we don’t have to keep it this way. You probably want to draw the graph in an order that makes sense given some overall pattern. For instance, should we order it alphabetically?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(relig_summary, <span class="kw">aes</span>(<span class="kw">factor</span>(relig, <span class="dt">levels =</span> <span class="kw">rev</span>(<span class="kw">sort</span>(<span class="kw">levels</span>(relig)))), tvhours)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">coord_flip</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/relig-alpha-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/relig-alpha-1.png" width="672" /></p>
 <p>Hmm. Not really useful here. What about instead sorting in order of most TV watched to least TV watched?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(relig_summary, <span class="kw">aes</span>(<span class="kw">fct_reorder</span>(relig, tvhours), tvhours)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">coord_flip</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/relig-order-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/relig-order-1.png" width="672" /></p>
 <p>This makes more sense because we can make direct comparisons based on the number of TV hours watched, which we probably care about most in this situation.</p>
 <p>What if we create a similar plot looking at how average age varies across reported income level? Notice also that instead of a bar graph, I draw a <strong>dot graph</strong>. Basically a scatterplot for discrete variables. The main difference is that a bar chart should always start at an origin of <span class="math inline">\(0\)</span>, whereas dot graphs can use meaningful values in the data to draw the minimum and maximum range of the axis.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rincome_summary &lt;-<span class="st"> </span>gss_cat <span class="op">%&gt;%</span>
@@ -1003,11 +1003,11 @@ gss_cat</code></pre></div>
 
 <span class="kw">ggplot</span>(rincome_summary, <span class="kw">aes</span>(age, <span class="kw">fct_reorder</span>(rincome, age))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/income-plot-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/income-plot-1.png" width="672" /></p>
 <p>In this situation, arbitrary reordering doesn’t make sense. Income levels have a natural order to them. Instead, perhaps we should maintain that order, but put the non-income values at the bottom of the graph:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(rincome_summary, <span class="kw">aes</span>(age, <span class="kw">fct_relevel</span>(rincome, <span class="st">&quot;Not applicable&quot;</span>))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/income-bottom-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/income-bottom-1.png" width="672" /></p>
 <p>Why do you think the average age for “Not applicable” is so high?</p>
 </div>
 </div>
@@ -1022,7 +1022,7 @@ gun_deaths <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">na.omit</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="kw">fct_reorder</span>(intent, n, <span class="dt">.desc =</span> <span class="ot">TRUE</span>), n)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/intent-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/intent-1.png" width="672" /></p>
 <p>Most gun deaths are by suicide, with homicides making up a large component as well. Does this vary by race?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gun_deaths <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">count</span>(intent, race) <span class="op">%&gt;%</span>
@@ -1031,7 +1031,7 @@ gun_deaths <span class="op">%&gt;%</span>
                                             <span class="st">&quot;Accidental&quot;</span>, <span class="st">&quot;Undetermined&quot;</span>))) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(intent, n, <span class="dt">fill =</span> race)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/intent-stack-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/intent-stack-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gun_deaths <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">count</span>(intent, race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">na.omit</span>() <span class="op">%&gt;%</span>
@@ -1039,7 +1039,7 @@ gun_deaths <span class="op">%&gt;%</span>
                                             <span class="st">&quot;Accidental&quot;</span>, <span class="st">&quot;Undetermined&quot;</span>))) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(intent, n, <span class="dt">fill =</span> race)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">position =</span> <span class="st">&quot;dodge&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/intent-dodge-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/intent-dodge-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">gun_deaths <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">count</span>(intent, race) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">na.omit</span>() <span class="op">%&gt;%</span>
@@ -1047,7 +1047,7 @@ gun_deaths <span class="op">%&gt;%</span>
                                             <span class="st">&quot;Accidental&quot;</span>, <span class="st">&quot;Undetermined&quot;</span>))) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(intent, n, <span class="dt">fill =</span> race)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>(<span class="dt">position =</span> <span class="st">&quot;fill&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/intent-fill-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/intent-fill-1.png" width="672" /></p>
 </div>
 </div>
 <div id="pie-chart" class="section level3">
@@ -1057,7 +1057,7 @@ gun_deaths <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">na.omit</span>() <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">pct =</span> n <span class="op">/</span><span class="st"> </span><span class="kw">sum</span>(n)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">with</span>(<span class="kw">pie</span>(pct, <span class="dt">labels =</span> intent, <span class="dt">clockwise =</span> <span class="ot">TRUE</span>))</code></pre></div>
-<p><img src="data-viz_files/figure-html/pie-chart-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/pie-chart-1.png" width="672" /></p>
 <p>Ahh yes, the dreaded <strong>pie chart</strong>. Pie charts are proportional graphs which use angles, arc lengths, and area to identify the frequency of observations in each group. This is different from bar graphs, which use height of the bars (or length) to identify the frequency of observations in each group. Pie charts have received a lot of criticisms from academics and visualization experts. The key question is which is easier to distinguish: line length or area, angle, and arc length?</p>
 <blockquote>
 <p><a href="http://onlinelibrary.wiley.com.proxy.uchicago.edu/doi/10.1002/acp.2350050106/abstract;jsessionid=E21007114F95498B3EA95F35DD6A21BF.f03t04">Spence, Ian, and Stephan Lewandowsky. “Displaying proportions and percentages.” <em>Applied Cognitive Psychology</em> 5.1 (1991): 61-77.</a></p>
@@ -1104,7 +1104,7 @@ pie_bar <span class="op">+</span>
 <span class="st">  </span>pie_prop <span class="op">+</span>
 <span class="st">  </span>pie_pie <span class="op">+</span>
 <span class="st">  </span><span class="kw">plot_layout</span>(<span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/pie-data-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/pie-data-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># table</span>
 pie <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(value) <span class="op">%&gt;%</span>
@@ -1180,7 +1180,7 @@ pie <span class="op">%&gt;%</span>
 <h3><code>movies</code> example</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(movies, <span class="kw">aes</span>(votes, rating)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/movies-votes-rating-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-votes-rating-1.png" width="672" /></p>
 <p>Insights that could be found include:</p>
 <ol style="list-style-type: decimal">
 <li>No films with lots of votes and a low average rating</li>
@@ -1198,7 +1198,7 @@ pie <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>()</code></pre></div>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
-<p><img src="data-viz_files/figure-html/movies-votes-rating-smooth-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/movies-votes-rating-smooth-1.png" width="672" /></p>
 <ul>
 <li>Adds a non-linear smoothing line to the graph</li>
 <li>Suggests a positive, non-linear association between votes and rating</li>
@@ -1209,17 +1209,17 @@ pie <span class="op">%&gt;%</span>
 <h3>Adding jitter to the graph</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton, <span class="kw">aes</span>(parent, child)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/heights-scatter-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/heights-scatter-1.png" width="672" /></p>
 <p>Sometimes continuous variables don’t have many unique values due to rounding, such as Galton’s height dataset. In this situation, we can draw a scatterplot but we cannot see how many unique values actually exist in the dataset. One alternative is to <strong>jitter</strong> each value, or add a bit of random noise to the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> coordinates for each data point. Because the noise is added at random, it should not unfairly distort or bias the graph.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton, <span class="kw">aes</span>(parent, child)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_jitter</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/heights-jitter-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/heights-jitter-1.png" width="672" /></p>
 <p>We can now see that some combinations of parent-child heights are more common than others. Is there a positive trend?</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(galton, <span class="kw">aes</span>(parent, child)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha =</span> .<span class="dv">2</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">slope =</span> <span class="dv">1</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>)</code></pre></div>
-<p><img src="data-viz_files/figure-html/galton-smooth-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/galton-smooth-1.png" width="672" /></p>
 <p>Here I added a linear (OLS) smoothing line, add a dashed reference line for a perfect 1-to-1 relationship between parent and child height, and fade the data points by adding some transparency, to make the graph less messy. We can see the relationship between parent and child height is positive and somewhat close to 1-to-1, though not precisely.</p>
 <p>Note that smoothing lines are not definitive proof of correlation or causation. The relationship seen in the smoothing line could be driven by some third, ungraphed variable. Further exploration is certainly warranted, as well as theory to back up your claims.</p>
 </div>
@@ -1228,7 +1228,7 @@ pie <span class="op">%&gt;%</span>
 <p>If you want to check for conditional relationships using scatterplots, you have a few options. If there is a small number of groups, you could add a color aesthetic to the graph to differentiate between each group.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> mpg, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> displ, <span class="dt">y =</span> hwy, <span class="dt">color =</span> drv)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/auto-drv-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/auto-drv-1.png" width="672" /></p>
 <p>Here we have a dataset of automobiles and want to understand the relationship between engine size and highway fuel efficiency, conditional on the drive-type. By changing the color of each data point based on its group membership, we can see a few things:</p>
 <ol style="list-style-type: decimal">
 <li>Front wheel drive cars do not have fuel efficiency below 20 MPG</li>
@@ -1238,14 +1238,14 @@ pie <span class="op">%&gt;%</span>
 <p>However, as the number of groups increases, it becomes more difficult to visually distinguish between each group.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(<span class="dt">data =</span> mpg, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> displ, <span class="dt">y =</span> hwy, <span class="dt">color =</span> class)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
-<p><img src="data-viz_files/figure-html/auto-class-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/auto-class-1.png" width="672" /></p>
 <p>With seven categories, this is becoming more tricky. What if we have even more categories? Consider a dataset of individual Olympians who competed in the 2012 Summer Olympics.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(oly12, <span class="dt">package =</span> <span class="st">&quot;VGAMdata&quot;</span>)
 
 <span class="kw">ggplot</span>(oly12, <span class="kw">aes</span>(Height, Weight, <span class="dt">color =</span> Sport)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
 <pre><code>## Warning: Removed 1346 rows containing missing values (geom_point).</code></pre>
-<p><img src="data-viz_files/figure-html/olympics-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/olympics-1.png" width="672" /></p>
 <p>Too many categories. Instead, build a facet graph.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">oly12 <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">Sport =</span> <span class="kw">abbreviate</span>(Sport, <span class="dv">12</span>)) <span class="op">%&gt;%</span>
@@ -1253,7 +1253,7 @@ pie <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>Sport)</code></pre></div>
 <pre><code>## Warning: Removed 1346 rows containing missing values (geom_point).</code></pre>
-<p><img src="data-viz_files/figure-html/olympics-facet-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/olympics-facet-1.png" width="672" /></p>
 <p>While still a bit cramped, it helps. Now we can see some different features of the data.</p>
 <ol style="list-style-type: decimal">
 <li>Some sports have no height/weight information for competitors</li>
@@ -1267,7 +1267,7 @@ pie <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>Sport)</code></pre></div>
 <pre><code>## Warning: Removed 69 rows containing missing values (geom_point).</code></pre>
-<p><img src="data-viz_files/figure-html/olympics-facet-lite-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/olympics-facet-lite-1.png" width="672" /></p>
 </div>
 <div id="scatterplot-matrix" class="section level3">
 <h3>Scatterplot matrix</h3>
@@ -1295,7 +1295,7 @@ pie <span class="op">%&gt;%</span>
 <p>If we want to quickly assess the relationship between all of the variables (in preparation for more advanced statistical learning techniques), we could generate a matrix of scatterplots using the base <code>graphics</code> package:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># only graph numeric variables</span>
 <span class="kw">pairs</span>(<span class="kw">select_if</span>(credit, is.numeric))</code></pre></div>
-<p><img src="data-viz_files/figure-html/credit-scatter-matrix-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/credit-scatter-matrix-1.png" width="672" /></p>
 <p>We can use this to look for trends and associations between each set of variables. This base <code>graphics</code> implementation is very minimal, as it is strictly for numeric variables and only shows tinyscatterplots.</p>
 <p>We can also use <code>GGally::ggpairs()</code> to generate a scatterplot matrix. <code>GGally</code> is a package for R that extends <code>ggplot2</code> by adding helper functions for common multivariate data structures. <code>ggpairs()</code> is a function that allows us to quickly generate a scatterplot matrix.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GGally)</code></pre></div>
@@ -1305,11 +1305,11 @@ pie <span class="op">%&gt;%</span>
 ## 
 ##     nasa</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggpairs</span>(<span class="kw">select_if</span>(credit, is.numeric))</code></pre></div>
-<p><img src="data-viz_files/figure-html/credit-scatter-ggpairs-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/credit-scatter-ggpairs-1.png" width="672" /></p>
 <p>When applied to strictly numeric variables, the lower triangle generates scatterplots, the upper triangle prints the correlation coefficient, and the diagonal panels are density plots of the variable.</p>
 <p><code>ggpairs()</code> also works on datasets with a mix of qualitative and quantitative variables, drawing appropriate graphs based on whether the variables are continuous or discrete:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggpairs</span>(<span class="kw">select</span>(rcfss<span class="op">::</span>scorecard, type<span class="op">:</span>debt))</code></pre></div>
-<p><img src="data-viz_files/figure-html/diamonds-scatter-matrix-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/diamonds-scatter-matrix-1.png" width="672" /></p>
 </div>
 <div id="heatmap-of-correlation-coefficients" class="section level3">
 <h3>Heatmap of correlation coefficients</h3>
@@ -1317,25 +1317,25 @@ pie <span class="op">%&gt;%</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggcorr</span>(mpg)</code></pre></div>
 <pre><code>## Warning in ggcorr(mpg): data in column(s) &#39;manufacturer&#39;, &#39;model&#39;, &#39;trans&#39;,
 ## &#39;drv&#39;, &#39;fl&#39;, &#39;class&#39; are not numeric and were ignored</code></pre>
-<p><img src="data-viz_files/figure-html/ggcorr-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/ggcorr-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggcorr</span>(credit)</code></pre></div>
 <pre><code>## Warning in ggcorr(credit): data in column(s) &#39;gender&#39;, &#39;student&#39;,
 ## &#39;married&#39;, &#39;ethnicity&#39; are not numeric and were ignored</code></pre>
-<p><img src="data-viz_files/figure-html/ggcorr-2.png" width="672" /></p>
+<p><img src="gda_files/figure-html/ggcorr-2.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggcorr</span>(diamonds)</code></pre></div>
 <pre><code>## Warning in ggcorr(diamonds): data in column(s) &#39;cut&#39;, &#39;color&#39;, &#39;clarity&#39;
 ## are not numeric and were ignored</code></pre>
-<p><img src="data-viz_files/figure-html/ggcorr-3.png" width="672" /></p>
+<p><img src="gda_files/figure-html/ggcorr-3.png" width="672" /></p>
 <p>We quickly see for each dataset which variables are correlated most strongly with one another. <code>ggcorr()</code> also allows customization of the appearance of the heatmap. For example, we can display the actual correlation coefficient directly in the graph by setting <code>label = TRUE</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggcorr</span>(credit, <span class="dt">label =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## Warning in ggcorr(credit, label = TRUE): data in column(s) &#39;gender&#39;,
 ## &#39;student&#39;, &#39;married&#39;, &#39;ethnicity&#39; are not numeric and were ignored</code></pre>
-<p><img src="data-viz_files/figure-html/ggcorr-label-1.png" width="672" /></p>
+<p><img src="gda_files/figure-html/ggcorr-label-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggcorr</span>(credit, <span class="dt">label =</span> <span class="ot">TRUE</span>, <span class="dt">label_round =</span> <span class="dv">2</span>, <span class="dt">label_alpha =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## Warning in ggcorr(credit, label = TRUE, label_round = 2, label_alpha =
 ## TRUE): data in column(s) &#39;gender&#39;, &#39;student&#39;, &#39;married&#39;, &#39;ethnicity&#39; are
 ## not numeric and were ignored</code></pre>
-<p><img src="data-viz_files/figure-html/ggcorr-label-2.png" width="672" /></p>
+<p><img src="gda_files/figure-html/ggcorr-label-2.png" width="672" /></p>
 </div>
 </div>
 </div>
@@ -1365,12 +1365,12 @@ pie <span class="op">%&gt;%</span>
 ##  colorspace     1.3-2   2016-12-14 CRAN (R 3.5.0)                      
 ##  compiler       3.5.1   2018-07-05 local                               
 ##  crayon         1.3.4   2017-09-16 CRAN (R 3.5.0)                      
-##  data.table     1.11.4  2018-05-27 CRAN (R 3.5.0)                      
 ##  datasets     * 3.5.1   2018-07-05 local                               
 ##  devtools       1.13.6  2018-06-27 CRAN (R 3.5.0)                      
 ##  digest         0.6.15  2018-01-28 CRAN (R 3.5.0)                      
 ##  dplyr        * 0.7.6   2018-06-29 cran (@0.7.6)                       
 ##  evaluate       0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  fansi          0.3.0   2018-08-13 CRAN (R 3.5.0)                      
 ##  forcats      * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
 ##  GGally       * 1.4.0   2018-05-17 CRAN (R 3.5.0)                      
 ##  ggplot2      * 3.0.0   2018-07-03 CRAN (R 3.5.0)                      
@@ -1384,7 +1384,6 @@ pie <span class="op">%&gt;%</span>
 ##  highr          0.7     2018-06-09 CRAN (R 3.5.0)                      
 ##  hms            0.4.2   2018-03-10 CRAN (R 3.5.0)                      
 ##  htmltools      0.3.6   2017-04-28 CRAN (R 3.5.0)                      
-##  htmlwidgets    1.2     2018-04-19 CRAN (R 3.5.0)                      
 ##  httr           1.3.1   2017-08-20 CRAN (R 3.5.0)                      
 ##  jsonlite       1.5     2017-06-01 CRAN (R 3.5.0)                      
 ##  knitr        * 1.20    2018-02-20 CRAN (R 3.5.0)                      
@@ -1393,23 +1392,26 @@ pie <span class="op">%&gt;%</span>
 ##  lazyeval       0.2.1   2017-10-29 CRAN (R 3.5.0)                      
 ##  lubridate      1.7.4   2018-04-11 CRAN (R 3.5.0)                      
 ##  magrittr       1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  Matrix         1.2-14  2018-04-13 CRAN (R 3.5.1)                      
 ##  memoise        1.1.0   2017-04-21 CRAN (R 3.5.0)                      
 ##  methods      * 3.5.1   2018-07-05 local                               
+##  mgcv           1.8-24  2018-06-23 CRAN (R 3.5.1)                      
 ##  modelr         0.1.2   2018-05-11 CRAN (R 3.5.0)                      
 ##  munsell        0.5.0   2018-06-12 CRAN (R 3.5.0)                      
 ##  nlme           3.1-137 2018-04-07 CRAN (R 3.5.1)                      
 ##  patchwork    * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
 ##  pillar         1.3.0   2018-07-14 CRAN (R 3.5.0)                      
 ##  pkgconfig      2.0.2   2018-08-16 CRAN (R 3.5.1)                      
-##  plotly       * 4.8.0   2018-07-20 CRAN (R 3.5.1)                      
 ##  plyr           1.8.4   2016-06-08 CRAN (R 3.5.0)                      
 ##  purrr        * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
 ##  R6             2.2.2   2017-06-17 CRAN (R 3.5.0)                      
+##  rcfss          0.1.5   2018-05-30 local                               
 ##  RColorBrewer   1.1-2   2014-12-07 CRAN (R 3.5.0)                      
 ##  Rcpp           0.12.18 2018-07-23 CRAN (R 3.5.0)                      
 ##  readr        * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
 ##  readxl         1.1.0   2018-04-20 CRAN (R 3.5.0)                      
 ##  reshape        0.8.7   2017-08-06 CRAN (R 3.5.0)                      
+##  reshape2       1.4.3   2017-12-11 CRAN (R 3.5.0)                      
 ##  rlang          0.2.1   2018-05-30 CRAN (R 3.5.0)                      
 ##  rmarkdown      1.10    2018-06-11 CRAN (R 3.5.0)                      
 ##  rprojroot      1.3-2   2018-01-03 CRAN (R 3.5.0)                      
@@ -1424,8 +1426,8 @@ pie <span class="op">%&gt;%</span>
 ##  tidyselect     0.2.4   2018-02-26 CRAN (R 3.5.0)                      
 ##  tidyverse    * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
 ##  tools          3.5.1   2018-07-05 local                               
+##  utf8           1.1.4   2018-05-24 CRAN (R 3.5.0)                      
 ##  utils        * 3.5.1   2018-07-05 local                               
-##  viridisLite    0.3.0   2018-02-01 CRAN (R 3.5.0)                      
 ##  withr          2.1.2   2018-03-15 CRAN (R 3.5.0)                      
 ##  xml2           1.2.0   2018-01-24 CRAN (R 3.5.0)                      
 ##  yaml           2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>

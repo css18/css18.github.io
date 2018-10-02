@@ -1,5 +1,5 @@
 ---
-title: "Data visualizations"
+title: "Graphical data analysis"
 output:
   html_document:
     toc: true
