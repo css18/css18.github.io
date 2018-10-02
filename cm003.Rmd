@@ -1,0 +1,29 @@
+---
+title: "Graphical data analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm003 - October 8, 2018
+
+## Overview
+
+* Define graphical data analysis
+* Demonstrate methods for examining continuous and discrete variables
+* Implement methods for assessing variation and covariation in a dataset
+
+## Before class
+
+* 
+
+## Slides and class materials
+
+* [Slides](extras/cm003_slides.html)
+* [Graphical data analysis](gda.html)
+
+## Additional resources
+
+* [Unwin, A. (2015). *Graphical data analysis with R*. CRC Press.](https://catalog.lib.uchicago.edu/vufind/Record/11609643) - great book on graphical data analysis methods and implementations in R using a range of packages. Good for both the theory and application.
