@@ -1,0 +1,137 @@
+---
+title: "Introduction to the course"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+
+library(tidyverse)
+library(broom)
+
+theme_set(theme_minimal(base_size = 20))
+```
+
+## Me (Dr. Benjamin Soltoff)
+
+* Background
+* Training/experience
+* Software
+
+## Course website
+
+> https://css18.github.io
+
+## Course objectives
+
+* Construct and execute basic programs in R
+* Visualize information and data
+* Generate reproducible documents with [R Markdown](http://rmarkdown.rstudio.com/)
+* Utilize professional document typesetting with mathematical notation via Markdown and $\LaTeX$
+* Define key concepts related to theory of probability
+* Identify and simulate random variables
+* Calculate expected value and variance of random variables
+* Write likelihood functions and optimizers
+* Conduct hypothesis tests
+* Implement Bayesian methods of inference
+* Evaluate via simulations the major properties and assumptions of OLS
+* Conduct inference and hypothesis testing for regression models
+
+## What are we skipping
+
+* Linear algebra
+* Calculus
+* Focus mostly on probability and statistical inference
+
+## How we will do this
+
+* Computational exercises
+* Theory and application
+
+## 15 minute rule
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">15 min rule: when stuck, you HAVE to try on your own for 15 min; after 15 min, you HAVE to ask for help.- Brain AMA <a href="https://t.co/MS7FnjXoGH">pic.twitter.com/MS7FnjXoGH</a></p>&mdash; Rachel Thomas (@math_rachel) <a href="https://twitter.com/math_rachel/status/764931533383749632">August 14, 2016</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## Plagiarism
+
+I am trying to balance two competing perspectives:
+
+1. Collaboration is good
+1. Collaboration is cheating
+
+## Plagiarism
+
+> If you don't understand what the program is doing and are not prepared to explain it in detail, you should not submit it.
+
+## Evaluations
+
+* Weekly problem sets with a combination of analytical and computational problems
+* Each worth 10 points
+* [Basic homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow)
+
+## R
+
+* Open-source
+* Collaborative
+* Popular
+
+## Popular
+
+[![](https://cfss.uchicago.edu/images/lang.rank_.618-1-1024x708.png)](https://redmonk.com/sogrady/2018/08/10/language-rankings-6-18/)
+
+## Benefits/drawbacks of R
+
+* Data analysis
+* Data visualization
+* Speed
+
+## Why are we not using Python?
+
+[![](https://cfss.uchicago.edu/images/xkcd_python.png)](https://xkcd.com/353/)
+
+## Benefits/drawbacks of Python
+
+* General computation
+* Speed
+* Workflow
+* Visualizations
+* Add-on libraries
+
+## It's not a war
+
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Python and R are NOT waging war. This is not a helpful characterisation</p>&mdash; Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/855035652710309890?ref_src=twsrc%5Etfw">April 20, 2017</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+## Other software
+
+* [RStudio](https://www.rstudio.com/products/RStudio/)
+* Git/GitHub
+* $\LaTeX$
+* Markdown
+
+## $\LaTeX$
+
+* High-quality typesetting system
+* De facto standard for production of technical and scientific documentation
+* Renders documents as PDFs
+* Makes typesetting easy
+
+    ```latex
+    $$f(x) = \frac{\exp(-\frac{(x - \mu)^2}{2\sigma^2} )}{ \sqrt{2\pi \sigma^2}}$$
+    ```
+
+    $$f(x) = \frac{\exp(-\frac{(x - \mu)^2}{2\sigma^2} )}{ \sqrt{2\pi \sigma^2}}$$
+
+* Steep learning curve up front, but leads to big dividends later
+
+## Markdown
+
+* Lightweight markup language with plain text formatting syntax
+* Easy to convert to HTML, PDF, and more
+* Used commonly on GitHub documentation, Jupyter Notebooks, R Markdown, and more
+* Simplified syntax compared to $\LaTeX$ - also less flexibility
+* Many publishing formats

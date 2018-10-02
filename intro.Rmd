@@ -14,7 +14,18 @@ knitr::opts_chunk$set(cache = TRUE)
 
 ## Me (Dr. Benjamin Soltoff)
 
-I am a lecturer in the [Masters in Computational Social Science](http://macss.uchicago.edu) program. I earned my PhD in political science from [Penn State University](http://polisci.la.psu.edu/) in 2015. [My research interests](https://www.bensoltoff.com) focus on judicial politics, state courts, and agenda-setting. Methodologically I am interested in statistical learning and text analysis. I was first drawn to programming in grad school, starting out in [Stata](http://www.stata.com/) and eventually making the transition to [R](https://www.r-project.org/) and [Python](https://www.python.org/). I learned these programming languages out of necessity - I needed to process, analyze, and code tens of thousands of judicial opinions and extract key information into a tabular format. I am not a computer scientist. I am a social scientist who uses programming and computational tools to answer my research questions.
+I am a lecturer in the [Masters in Computational Social Science](http://macss.uchicago.edu) program. I earned my PhD in political science from [Penn State University](http://polisci.la.psu.edu/) in 2015. [My research interests](https://www.bensoltoff.com) focus on judicial politics, state courts, and agenda-setting. Methodologically I am interested in statistical learning and text analysis. I have training and experience in:
+
+* Probability and statistical theory
+* Descriptive and univariate/bivariate inference
+* Least squares regression
+* Generalized linear models
+* Maximum likelihood estimation
+* Machine learning/statistical learning algorithms
+* Multilevel models
+* Causal inference
+
+I have implemented these methods across a range of software, starting with  [Stata](http://www.stata.com/) and eventually making the transition to [R](https://www.r-project.org/) and [Python](https://www.python.org/). I am not a computer scientist, nor am I a statistician. I am a social scientist who uses statistical methods and computational tools to answer my research questions. That said, I feel fairly well trained in the theory and application of these methods at the graduate-level.
 
 ## Course website
 
@@ -58,16 +69,16 @@ Many classes will have assigned readings. **You need to complete these before co
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">15 min rule: when stuck, you HAVE to try on your own for 15 min; after 15 min, you HAVE to ask for help.- Brain AMA <a href="https://t.co/MS7FnjXoGH">pic.twitter.com/MS7FnjXoGH</a></p>&mdash; Rachel Thomas (@math_rachel) <a href="https://twitter.com/math_rachel/status/764931533383749632">August 14, 2016</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-We will follow the **15 minute rule** in this class. If you encounter a problem in your assignments, spend 15 minutes troubleshooting the problem on your own. Make use of [Google](https://www.google.com) and [StackOverflow](http://stackoverflow.com/) to resolve the error. However, if after 15 minutes you still cannot solve the problem, **ask for help**. We will use GitHub to ask and answer class-related questions).
+We will follow the **15 minute rule** in this class. If you encounter a problem in your assignments, spend 15 minutes troubleshooting the problem on your own. Make use of [Google](https://www.google.com) and [StackOverflow](http://stackoverflow.com/) to resolve the error. However, if after 15 minutes you still cannot solve the problem, **ask for help**. We will use GitHub to ask and answer class-related questions.
 
 ### Plagiarism
 
 I am trying to balance two competing perspectives:
 
 1. Collaboration is good - researchers usually collaborate with one another on projects. Developers work in teams to write programs. Why reinvent the wheel when it has already been done?
-2. Collaboration is cheating - this is academia. You are expected to complete your own work. If you copy from someone else, how do I know you actually learned the material?
+1. Collaboration is cheating - this is academia. You are expected to complete your own work. If you copy from someone else, how do I know you actually learned the material?
 
-The point is that collaboration in this class is good - **to a point**. You are always, unless otherwise noted, expected to write and submit your own work. You should not blindly copy from your peers. You should not copy large chunks of code from the internet. That said, using the internet to debug programs is fine. Asking a classmate to help you debug your program is fine (the key phrase is *help you*, not do it for you).
+The point is that collaboration in this class is good - **to a point**. You are always, unless otherwise noted, expected to write and submit your own work. You should not blindly copy from your peers. You should not copy large chunks of code from the internet. That said, using the internet to debug programs is fine. Asking a classmate to help you is fine (the key phrase is *help you*, not do it for you).
 
 > [As Computer Coding Classes Swell, So Does Cheating](https://www.nytimes.com/2017/05/29/us/computer-science-cheating.html)
 
