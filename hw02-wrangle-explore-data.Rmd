@@ -5,7 +5,7 @@ output: html_document
 
 # Overview
 
-Due before class on October 15th.
+Due before class on October 16th.
 
 # Fork the `hw02` repository
 

@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-# cm003 - October 8, 2018
+# cm003 - October 9, 2018
 
 ## Overview
 
