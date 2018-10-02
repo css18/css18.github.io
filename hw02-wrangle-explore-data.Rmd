@@ -1,0 +1,180 @@
+---
+title: "Homework 01/02: Wrangling and exploring data"
+output: html_document
+---
+
+# Overview
+
+Due before class on October 15th.
+
+# Fork the `hw02` repository
+
+Go [here](https://github.com/css18/hw02) to fork the repo for homework 02.
+
+# Part 1: Exploring clean data (10 points)
+
+[FiveThirtyEight](http://fivethirtyeight.com/), a data journalism site devoted to politics, sports, science, economics, and culture, recently published a series of articles on [gun deaths in America](http://fivethirtyeight.com/features/gun-deaths-introduction/). Gun violence in the United States is a significant political issue, and while reducing gun deaths is a noble goal, we must first understand the causes and patterns in gun violence in order to craft appropriate policies. As part of the project, FiveThirtyEight collected data from the Centers for Disease Control and Prevention, as well as other governmental agencies and non-profits, on all gun deaths in the United States from 2012-2014.
+
+## Obtain the data
+
+I have included this dataset in the [`rcfss`](https://github.com/uc-cfss/rcfss) library on GitHub. To install the package, use the command `devtools::install_github("uc-cfss/rcfss")` in R. If you don't already have the `devtools` library installed, you will get an error. Go back and install this first using `install.packages()`, then install `rcfss`. The gun deaths dataset can be loaded using `data("gun_deaths")`. Use the help function in R (`?gun_deaths`) to get detailed information on the variables and coding information.
+
+## Explore the data
+
+### Very specific prompts
+
+1. Generate a data frame that summarizes the number of gun deaths per month.
+    1. Print the data frame as [a formatted `kable()` table](#formatting-tables).
+    1. Generate a bar chart with human-readable labels on the x-axis. That is, each month should be labeled "Jan", "Feb", "Mar" (full or abbreviated month names are fine), not `1`, `2`, `3`.
+1. Generate a bar chart that identifies the number of gun deaths associated with each type of intent cause of death. The bars should be sorted from highest to lowest values.
+1. Generate a boxplot visualizing the age of gun death victims, by sex. Print the average age of female gun death victims.
+
+### More open-ended questions
+
+Answer the following questions. Generate appropriate figures/tables to support your conclusions.
+
+1. How many white males with at least a high school education were killed by guns in 2012?
+1. Which season of the year has the most gun deaths? Assume that
+    * Winter = January-March
+    * Spring = April-June
+    * Summer = July-September
+    * Fall = October-December
+    * **Hint**: you need to convert a continuous variable into a categorical variable. [Find a function that does that.](https://www.google.com)
+1. Are whites who are killed by guns more likely to die because of suicide or homicide? How does this compare to blacks and hispanics?
+
+### Formatting graphs
+
+While you are practicing data analysis, your final graphs should be appropriate for sharing with outsiders. That means your graphs should have:
+
+* [A title](http://r4ds.had.co.nz/graphics-for-communication.html#label)
+* Labels on the axes (see `?labs` for details)
+
+This is just a starting point. Consider adopting your own color scales, [taking control of your legends (if any)](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/), playing around with [themes](https://ggplot2.tidyverse.org/reference/index.html#section-themes), etc.
+
+### Formatting tables
+
+When presenting tabular data (aka `dplyr::summarize()`), make sure you format it correctly. Use the `kable()` function from the `knitr` package to format the table for the final document. For instance, this is a poorly presented table summarizing where gun deaths occurred:
+
+```{r packages, message = FALSE}
+library(tidyverse)
+library(knitr)
+library(rcfss)
+```
+
+```{r table-bad}
+# calculate total gun deaths by location
+count(gun_deaths, place)
+```
+
+Instead, use `kable()` to format the table, add a caption, and label the columns:
+
+```{r table-good}
+count(gun_deaths, place) %>%
+  kable(caption = "Gun deaths in the United States (2012-2014), by location",
+        col.names = c("Location", "Number of deaths"))
+```
+
+Run `?kable` in the console to see how additional options.
+
+> Note that when viewed on GitHub, table captions will not show up. Just a (missing) feature of Markdown on GitHub `r emo::ji("sad")`
+
+# Part 2: Tidying messy data (6 points)
+
+In the `rcfss` package, there is a data frame called `dadmom`.
+
+```{r, echo = FALSE, message = FALSE}
+library(tidyverse)
+library(rcfss)
+
+data("dadmom")
+dadmom
+```
+
+Tidy this data frame so that it adheres to the tidy data principles:
+
+1. Each variable must have its own column.
+1. Each observation must have its own row.
+1. Each value must have its own cell.
+
+**NOTE: You can accomplish this task in a single piped operation using only `tidyr` functions. Code which does not use `tidyr` functions is acceptable, but will not merit a "check plus" on your evaluation.**
+
+# Part 3: Joining data frames (4 points)
+
+Recall the `gapminder` data frame [we previously explored](dataviz_gapminder.html). That data frame contains just six columns from the larger [data in Gapminder World](https://www.gapminder.org/data/). In this part, you will join the original `gapminder` data frame with a new data file containing the [HIV prevalence rate](http://www.gapminder.org/world/#$majorMode=chart$is;shi=t;ly=2003;lb=f;il=t;fs=11;al=30;stl=t;st=t;nsl=t;se=t$wst;tts=C$ts;sp=5.59290322580644;ti=2010$zpv;v=0$inc_x;mmid=XCOORDS;iid=phAwcNAVuyj1jiMAkmq1iMg;by=ind$inc_y;mmid=YCOORDS;iid=pyj6tScZqmEfbZyl0qjbiRQ;by=ind$inc_s;uniValue=8.21;iid=phAwcNAVuyj0XOoBL_n5tAQ;by=ind$inc_c;uniValue=255;gid=CATID0;by=grp$map_x;scale=log;dataMin=194;dataMax=96846$map_y;scale=lin;dataMin=0.0095;dataMax=27$map_s;sma=50;smi=2$cd;bd=0$inds=) in the country.^[More specifically, the estimated number of people living with HIV per 100 population of age group 15-49.]
+
+The HIV prevalence rate is stored in the `data` folder as a CSV file. You need to import and merge the data with `gapminder` to answer these two questions:
+
+1. What is the relationship between HIV prevalence and life expectancy? Generate a scatterplot with a smoothing line to report your results.
+1. Which continents have the most observations with missing HIV data? Generate a bar chart, ordered in descending height (i.e. the continent with the most missing values on the left, the continent with the fewest missing values on the right).
+
+For each question, you need to perform a [specific type of join operation](http://r4ds.had.co.nz/relational-data.html). Think about what type makes the most sense **and explain why you chose it**.
+
+# Part 4: Exploring the General Social Survey (10 points)
+
+The [General Social Survey](http://gss.norc.org/) (GSS) gathers data on American society in order to monitor and explain trends and constants in attitudes, behaviors, and attributes. It is conducted biannually through in-person interviews using a probability sampling approach. It is one of the most commonly studied datasets in the social science disciplines.
+
+Using the graphical data analysis skills we have reviewed in-class, you will conduct an exploratory analysis of the data to identify interesting questions and (potential) answers. Remember the types of questions we seek to answer using GDA:
+
+1. What type of variation occurs within my variables?
+1. What type of covariation occurs between my variables?
+1. Are there outliers in the data?
+1. Do I have missingness? Are there patterns to it?
+1. How much variation/error exists in my statistical estimates? Is there a pattern to it?
+
+## What not to do
+
+##### Build a statistical model
+
+No complex statistical methods should be employed. Focus instead on primarily graphical analysis, though you can also use basic statistical tests you may have learned in other classes (e.g. tests for normality, difference of means).
+
+##### Adjust for survey weights
+
+Do not worry about using survey weights in your exploratory analysis. Just treat every observation equally.
+
+## What you should do
+
+The final submission should include two components.
+
+### Lab notebook (6 points)
+
+This is a record of all your exploratory analysis. It should be extensive (minimum 30-40 graphs), and mostly code and graphics.
+
+* Minimally annotate your code and output as necessary to keep track of what you've done and highlight important insights gained through your exploration
+* It should be somewhat stream-of-conscious (that is, a stored record of your exploration as you explore the data), though certainly feel free to maintain a structure or go back and reformat different sections
+* Don't bother cleaning up each graph to have meaningful labels
+
+### Exploration write-up (4 points)
+
+In a short paper (around 750 words), summarize your insights and what you've learned about the data. This could include one or two important research questions you think you could answer using the data, as well as some initial hypotheses supported by your exploratory analysis. Or perhaps you've identified unusual variation in a single variable, or extreme outliers or systematic missingness in the data that should be accounted for in future analysis. **This component will look different for each student.** That's fine. What I want to see is genuine effort and some thought put into what you've learned from this GDA.
+
+* This component should include mostly written analysis and a handful of graphs to support your questions and answers
+* Clean up these graphs so they are publication-ready. This means give each graph a meaningful title, axes labels, legends, etc.
+
+## Accessing the data
+
+You can access this data file in the `poliscidata` package:
+
+```r
+install.packages("poliscidata")
+data(gss, package = "poliscidata")
+
+# convert to tibble
+library(tidyverse)
+gss <- as_tibble(gss)
+```
+
+## Dataset documentation
+
+In the `documentation` folder, there are three files that are potentially relevant to your analysis.
+
+* [`codebook.txt`](documentation/codebook.txt) - a codebook of the dataset automatically generated by Stata
+* [`GSS_Codebook_index.pdf`](documentation/GSS_Codebook_index.pdf) - a list of all variables available from the GSS, with their variable names in the data file and a brief description of the variable
+* [`GSS_Codebook_mainbody.pdf`](documentation/GSS_Codebook_mainbody.pdf) - a detailed description of all variables available from the GSS, with full question wording and potential responses
+
+You can also find more information on the survey and specific variables at the [GSS website](http://gss.norc.org/).
+
+# Submit the assignment
+
+Your assignment should be submitted as a set of R Markdown documents. **Don't know what an R Markdown document is? [Read this!](http://rmarkdown.rstudio.com/lesson-1.html) Or [this!](http://r4ds.had.co.nz/r-markdown.html)** I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.
+
+Follow instructions on [homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow). As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.

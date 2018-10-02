@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework 01/02: Wrangling and exploring data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+
+.section h2 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h3 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h4 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h5 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+.section h6 {
+  padding-top: 71px;
+  margin-top: -71px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework 01/02: Wrangling and exploring data</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Due before class on October 15th.</p>
+</div>
+<div id="fork-the-hw02-repository" class="section level1">
+<h1>Fork the <code>hw02</code> repository</h1>
+<p>Go <a href="https://github.com/css18/hw02">here</a> to fork the repo for homework 02.</p>
+</div>
+<div id="part-1-exploring-clean-data-10-points" class="section level1">
+<h1>Part 1: Exploring clean data (10 points)</h1>
+<p><a href="http://fivethirtyeight.com/">FiveThirtyEight</a>, a data journalism site devoted to politics, sports, science, economics, and culture, recently published a series of articles on <a href="http://fivethirtyeight.com/features/gun-deaths-introduction/">gun deaths in America</a>. Gun violence in the United States is a significant political issue, and while reducing gun deaths is a noble goal, we must first understand the causes and patterns in gun violence in order to craft appropriate policies. As part of the project, FiveThirtyEight collected data from the Centers for Disease Control and Prevention, as well as other governmental agencies and non-profits, on all gun deaths in the United States from 2012-2014.</p>
+<div id="obtain-the-data" class="section level2">
+<h2>Obtain the data</h2>
+<p>I have included this dataset in the <a href="https://github.com/uc-cfss/rcfss"><code>rcfss</code></a> library on GitHub. To install the package, use the command <code>devtools::install_github(&quot;uc-cfss/rcfss&quot;)</code> in R. If you don’t already have the <code>devtools</code> library installed, you will get an error. Go back and install this first using <code>install.packages()</code>, then install <code>rcfss</code>. The gun deaths dataset can be loaded using <code>data(&quot;gun_deaths&quot;)</code>. Use the help function in R (<code>?gun_deaths</code>) to get detailed information on the variables and coding information.</p>
+</div>
+<div id="explore-the-data" class="section level2">
+<h2>Explore the data</h2>
+<div id="very-specific-prompts" class="section level3">
+<h3>Very specific prompts</h3>
+<ol style="list-style-type: decimal">
+<li>Generate a data frame that summarizes the number of gun deaths per month.
+<ol style="list-style-type: decimal">
+<li>Print the data frame as <a href="#formatting-tables">a formatted <code>kable()</code> table</a>.</li>
+<li>Generate a bar chart with human-readable labels on the x-axis. That is, each month should be labeled “Jan”, “Feb”, “Mar” (full or abbreviated month names are fine), not <code>1</code>, <code>2</code>, <code>3</code>.</li>
+</ol></li>
+<li>Generate a bar chart that identifies the number of gun deaths associated with each type of intent cause of death. The bars should be sorted from highest to lowest values.</li>
+<li>Generate a boxplot visualizing the age of gun death victims, by sex. Print the average age of female gun death victims.</li>
+</ol>
+</div>
+<div id="more-open-ended-questions" class="section level3">
+<h3>More open-ended questions</h3>
+<p>Answer the following questions. Generate appropriate figures/tables to support your conclusions.</p>
+<ol style="list-style-type: decimal">
+<li>How many white males with at least a high school education were killed by guns in 2012?</li>
+<li>Which season of the year has the most gun deaths? Assume that
+<ul>
+<li>Winter = January-March</li>
+<li>Spring = April-June</li>
+<li>Summer = July-September</li>
+<li>Fall = October-December</li>
+<li><strong>Hint</strong>: you need to convert a continuous variable into a categorical variable. <a href="https://www.google.com">Find a function that does that.</a></li>
+</ul></li>
+<li>Are whites who are killed by guns more likely to die because of suicide or homicide? How does this compare to blacks and hispanics?</li>
+</ol>
+</div>
+<div id="formatting-graphs" class="section level3">
+<h3>Formatting graphs</h3>
+<p>While you are practicing data analysis, your final graphs should be appropriate for sharing with outsiders. That means your graphs should have:</p>
+<ul>
+<li><a href="http://r4ds.had.co.nz/graphics-for-communication.html#label">A title</a></li>
+<li>Labels on the axes (see <code>?labs</code> for details)</li>
+</ul>
+<p>This is just a starting point. Consider adopting your own color scales, <a href="http://www.cookbook-r.com/Graphs/Legends_(ggplot2)/">taking control of your legends (if any)</a>, playing around with <a href="https://ggplot2.tidyverse.org/reference/index.html#section-themes">themes</a>, etc.</p>
+</div>
+<div id="formatting-tables" class="section level3">
+<h3>Formatting tables</h3>
+<p>When presenting tabular data (aka <code>dplyr::summarize()</code>), make sure you format it correctly. Use the <code>kable()</code> function from the <code>knitr</code> package to format the table for the final document. For instance, this is a poorly presented table summarizing where gun deaths occurred:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(knitr)
+<span class="kw">library</span>(rcfss)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># calculate total gun deaths by location</span>
+<span class="kw">count</span>(gun_deaths, place)</code></pre></div>
+<pre><code>## # A tibble: 11 x 2
+##    place                       n
+##    &lt;chr&gt;                   &lt;int&gt;
+##  1 Farm                      470
+##  2 Home                    60486
+##  3 Industrial/construction   248
+##  4 Other specified         13751
+##  5 Other unspecified        8867
+##  6 Residential institution   203
+##  7 School/instiution         671
+##  8 Sports                    128
+##  9 Street                  11151
+## 10 Trade/service area       3439
+## 11 &lt;NA&gt;                     1384</code></pre>
+<p>Instead, use <code>kable()</code> to format the table, add a caption, and label the columns:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">count</span>(gun_deaths, place) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Gun deaths in the United States (2012-2014), by location&quot;</span>,
+        <span class="dt">col.names =</span> <span class="kw">c</span>(<span class="st">&quot;Location&quot;</span>, <span class="st">&quot;Number of deaths&quot;</span>))</code></pre></div>
+<table>
+<caption>Gun deaths in the United States (2012-2014), by location</caption>
+<thead>
+<tr class="header">
+<th align="left">Location</th>
+<th align="right">Number of deaths</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Farm</td>
+<td align="right">470</td>
+</tr>
+<tr class="even">
+<td align="left">Home</td>
+<td align="right">60486</td>
+</tr>
+<tr class="odd">
+<td align="left">Industrial/construction</td>
+<td align="right">248</td>
+</tr>
+<tr class="even">
+<td align="left">Other specified</td>
+<td align="right">13751</td>
+</tr>
+<tr class="odd">
+<td align="left">Other unspecified</td>
+<td align="right">8867</td>
+</tr>
+<tr class="even">
+<td align="left">Residential institution</td>
+<td align="right">203</td>
+</tr>
+<tr class="odd">
+<td align="left">School/instiution</td>
+<td align="right">671</td>
+</tr>
+<tr class="even">
+<td align="left">Sports</td>
+<td align="right">128</td>
+</tr>
+<tr class="odd">
+<td align="left">Street</td>
+<td align="right">11151</td>
+</tr>
+<tr class="even">
+<td align="left">Trade/service area</td>
+<td align="right">3439</td>
+</tr>
+<tr class="odd">
+<td align="left">NA</td>
+<td align="right">1384</td>
+</tr>
+</tbody>
+</table>
+<p>Run <code>?kable</code> in the console to see how additional options.</p>
+<blockquote>
+<p>Note that when viewed on GitHub, table captions will not show up. Just a (missing) feature of Markdown on GitHub 😓</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="part-2-tidying-messy-data-6-points" class="section level1">
+<h1>Part 2: Tidying messy data (6 points)</h1>
+<p>In the <code>rcfss</code> package, there is a data frame called <code>dadmom</code>.</p>
+<pre><code>## # A tibble: 3 x 5
+##   famid named  incd namem  incm
+##   &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt;
+## 1     1 Bill  30000 Bess  15000
+## 2     2 Art   22000 Amy   18000
+## 3     3 Paul  25000 Pat   50000</code></pre>
+<p>Tidy this data frame so that it adheres to the tidy data principles:</p>
+<ol style="list-style-type: decimal">
+<li>Each variable must have its own column.</li>
+<li>Each observation must have its own row.</li>
+<li>Each value must have its own cell.</li>
+</ol>
+<p><strong>NOTE: You can accomplish this task in a single piped operation using only <code>tidyr</code> functions. Code which does not use <code>tidyr</code> functions is acceptable, but will not merit a “check plus” on your evaluation.</strong></p>
+</div>
+<div id="part-3-joining-data-frames-4-points" class="section level1">
+<h1>Part 3: Joining data frames (4 points)</h1>
+<p>Recall the <code>gapminder</code> data frame <a href="dataviz_gapminder.html">we previously explored</a>. That data frame contains just six columns from the larger <a href="https://www.gapminder.org/data/">data in Gapminder World</a>. In this part, you will join the original <code>gapminder</code> data frame with a new data file containing the <a href="http://www.gapminder.org/world/#$majorMode=chart$is;shi=t;ly=2003;lb=f;il=t;fs=11;al=30;stl=t;st=t;nsl=t;se=t$wst;tts=C$ts;sp=5.59290322580644;ti=2010$zpv;v=0$inc_x;mmid=XCOORDS;iid=phAwcNAVuyj1jiMAkmq1iMg;by=ind$inc_y;mmid=YCOORDS;iid=pyj6tScZqmEfbZyl0qjbiRQ;by=ind$inc_s;uniValue=8.21;iid=phAwcNAVuyj0XOoBL_n5tAQ;by=ind$inc_c;uniValue=255;gid=CATID0;by=grp$map_x;scale=log;dataMin=194;dataMax=96846$map_y;scale=lin;dataMin=0.0095;dataMax=27$map_s;sma=50;smi=2$cd;bd=0$inds=">HIV prevalence rate</a> in the country.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<p>The HIV prevalence rate is stored in the <code>data</code> folder as a CSV file. You need to import and merge the data with <code>gapminder</code> to answer these two questions:</p>
+<ol style="list-style-type: decimal">
+<li>What is the relationship between HIV prevalence and life expectancy? Generate a scatterplot with a smoothing line to report your results.</li>
+<li>Which continents have the most observations with missing HIV data? Generate a bar chart, ordered in descending height (i.e. the continent with the most missing values on the left, the continent with the fewest missing values on the right).</li>
+</ol>
+<p>For each question, you need to perform a <a href="http://r4ds.had.co.nz/relational-data.html">specific type of join operation</a>. Think about what type makes the most sense <strong>and explain why you chose it</strong>.</p>
+</div>
+<div id="part-4-exploring-the-general-social-survey-10-points" class="section level1">
+<h1>Part 4: Exploring the General Social Survey (10 points)</h1>
+<p>The <a href="http://gss.norc.org/">General Social Survey</a> (GSS) gathers data on American society in order to monitor and explain trends and constants in attitudes, behaviors, and attributes. It is conducted biannually through in-person interviews using a probability sampling approach. It is one of the most commonly studied datasets in the social science disciplines.</p>
+<p>Using the graphical data analysis skills we have reviewed in-class, you will conduct an exploratory analysis of the data to identify interesting questions and (potential) answers. Remember the types of questions we seek to answer using GDA:</p>
+<ol style="list-style-type: decimal">
+<li>What type of variation occurs within my variables?</li>
+<li>What type of covariation occurs between my variables?</li>
+<li>Are there outliers in the data?</li>
+<li>Do I have missingness? Are there patterns to it?</li>
+<li>How much variation/error exists in my statistical estimates? Is there a pattern to it?</li>
+</ol>
+<div id="what-not-to-do" class="section level2">
+<h2>What not to do</h2>
+<div id="build-a-statistical-model" class="section level5">
+<h5>Build a statistical model</h5>
+<p>No complex statistical methods should be employed. Focus instead on primarily graphical analysis, though you can also use basic statistical tests you may have learned in other classes (e.g. tests for normality, difference of means).</p>
+</div>
+<div id="adjust-for-survey-weights" class="section level5">
+<h5>Adjust for survey weights</h5>
+<p>Do not worry about using survey weights in your exploratory analysis. Just treat every observation equally.</p>
+</div>
+</div>
+<div id="what-you-should-do" class="section level2">
+<h2>What you should do</h2>
+<p>The final submission should include two components.</p>
+<div id="lab-notebook-6-points" class="section level3">
+<h3>Lab notebook (6 points)</h3>
+<p>This is a record of all your exploratory analysis. It should be extensive (minimum 30-40 graphs), and mostly code and graphics.</p>
+<ul>
+<li>Minimally annotate your code and output as necessary to keep track of what you’ve done and highlight important insights gained through your exploration</li>
+<li>It should be somewhat stream-of-conscious (that is, a stored record of your exploration as you explore the data), though certainly feel free to maintain a structure or go back and reformat different sections</li>
+<li>Don’t bother cleaning up each graph to have meaningful labels</li>
+</ul>
+</div>
+<div id="exploration-write-up-4-points" class="section level3">
+<h3>Exploration write-up (4 points)</h3>
+<p>In a short paper (around 750 words), summarize your insights and what you’ve learned about the data. This could include one or two important research questions you think you could answer using the data, as well as some initial hypotheses supported by your exploratory analysis. Or perhaps you’ve identified unusual variation in a single variable, or extreme outliers or systematic missingness in the data that should be accounted for in future analysis. <strong>This component will look different for each student.</strong> That’s fine. What I want to see is genuine effort and some thought put into what you’ve learned from this GDA.</p>
+<ul>
+<li>This component should include mostly written analysis and a handful of graphs to support your questions and answers</li>
+<li>Clean up these graphs so they are publication-ready. This means give each graph a meaningful title, axes labels, legends, etc.</li>
+</ul>
+</div>
+</div>
+<div id="accessing-the-data" class="section level2">
+<h2>Accessing the data</h2>
+<p>You can access this data file in the <code>poliscidata</code> package:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;poliscidata&quot;</span>)
+<span class="kw">data</span>(gss, <span class="dt">package =</span> <span class="st">&quot;poliscidata&quot;</span>)
+
+<span class="co"># convert to tibble</span>
+<span class="kw">library</span>(tidyverse)
+gss &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(gss)</code></pre></div>
+</div>
+<div id="dataset-documentation" class="section level2">
+<h2>Dataset documentation</h2>
+<p>In the <code>documentation</code> folder, there are three files that are potentially relevant to your analysis.</p>
+<ul>
+<li><a href="documentation/codebook.txt"><code>codebook.txt</code></a> - a codebook of the dataset automatically generated by Stata</li>
+<li><a href="documentation/GSS_Codebook_index.pdf"><code>GSS_Codebook_index.pdf</code></a> - a list of all variables available from the GSS, with their variable names in the data file and a brief description of the variable</li>
+<li><a href="documentation/GSS_Codebook_mainbody.pdf"><code>GSS_Codebook_mainbody.pdf</code></a> - a detailed description of all variables available from the GSS, with full question wording and potential responses</li>
+</ul>
+<p>You can also find more information on the survey and specific variables at the <a href="http://gss.norc.org/">GSS website</a>.</p>
+</div>
+</div>
+<div id="submit-the-assignment" class="section level1">
+<h1>Submit the assignment</h1>
+<p>Your assignment should be submitted as a set of R Markdown documents. <strong>Don’t know what an R Markdown document is? <a href="http://rmarkdown.rstudio.com/lesson-1.html">Read this!</a> Or <a href="http://r4ds.had.co.nz/r-markdown.html">this!</a></strong> I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.</p>
+<p>Follow instructions on <a href="https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow">homework workflow</a>. As part of the pull request, you’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>More specifically, the estimated number of people living with HIV per 100 population of age group 15-49.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
