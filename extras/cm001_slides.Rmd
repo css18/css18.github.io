@@ -53,12 +53,12 @@ theme_set(theme_minimal(base_size = 20))
 
 ## 15 minute rule
 
+<center>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">15 min rule: when stuck, you HAVE to try on your own for 15 min; after 15 min, you HAVE to ask for help.- Brain AMA <a href="https://t.co/MS7FnjXoGH">pic.twitter.com/MS7FnjXoGH</a></p>&mdash; Rachel Thomas (@math_rachel) <a href="https://twitter.com/math_rachel/status/764931533383749632">August 14, 2016</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
 
 ## Plagiarism
-
-I am trying to balance two competing perspectives:
 
 1. Collaboration is good
 1. Collaboration is cheating
@@ -103,8 +103,10 @@ I am trying to balance two competing perspectives:
 
 ## It's not a war
 
+<center>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Python and R are NOT waging war. This is not a helpful characterisation</p>&mdash; Hadley Wickham (@hadleywickham) <a href="https://twitter.com/hadleywickham/status/855035652710309890?ref_src=twsrc%5Etfw">April 20, 2017</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</center>
 
 ## Other software
 
