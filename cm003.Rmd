@@ -17,12 +17,12 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## Before class
 
-* 
+* [Read/skim *Graphical data analysis*](gda.html)
 
 ## Slides and class materials
 
 * [Slides](extras/cm003_slides.html)
-* [Graphical data analysis](gda.html)
+* [Practice exploring college education (data)](https://cfss.uchicago.edu/eda_college.html)
 
 ## Additional resources
 
