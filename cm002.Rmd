@@ -50,3 +50,7 @@ knitr::opts_chunk$set(cache=TRUE)
 
 * [Data visualization with ggplot2 cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
 * [RStudio IDE Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2016/01/rstudio-IDE-cheatsheet.pdf) - if you don't know what all the buttons and panels do in RStudio, this is a great decoder
+
+## To do before next class
+
+* Email me your GitHub username
