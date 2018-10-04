@@ -10,7 +10,7 @@ navbar:
       href: syllabus.html
 output:
   html_document:
-    theme: readable
+    theme: flatly
     highlight: pygments
     include:
       in_header: _google-analytics.html
