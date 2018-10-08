@@ -1,0 +1,239 @@
+---
+title: "Linear algebra in R"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r packages, cache = FALSE, message = FALSE}
+library(tidyverse)
+library(knitr)
+library(broom)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal())
+```
+
+Matrix algebra provides an elegant way of representing both the data the kind of operations on tables or arrays that frequently come up in data analysis, and when implemented numerically, matrix algebra also provides efficient an means of carrying those operations out. The following is a brief introduction to matrix algebra as implmented in R. For more on theory and mathematics behind matricies, see materials from the [Computational Math/Statistics Camp](https://github.com/math-camp/course).
+
+# Basic matrix definitions in R
+
+Create the $3$ row by $2$ column matrix $\mathbf{A}$. Note the use of the concatenation `c()` function to collect the individual matrix elements (the $a_{ij}$'s) together, and the default fill order (`byrow = FALSE`), which implies filling the matrix by columns:
+
+```{r create-matrix-bycolumn}
+A <- matrix(c(6, 9, 12, 13, 21, 5), nrow = 3, ncol = 2)
+A
+class(A)
+```
+
+The `class()` function indicates that `A` is indeed a matrix (as opposed to a data frame).
+
+Create another matrix, $\mathbf{B}$, with the same elements, only filled by row this time:
+
+```{r create-matrix-byrow}
+B <-  matrix(c(6, 9, 12, 13, 21, 5), nrow = 3, ncol = 2, byrow = TRUE)
+B
+```
+
+Individual matrix elements can be reference using the **square-bracket selection** rules.
+
+```{r matrix-subset}
+A[1, 2] # row 1, col 2
+A[2, 1] # row 2, col 1
+A[2, ] # all elements in row 2
+A[, 2] # all elements in column 2
+```
+
+For comparison, create a vector $\mathbf{c}$:
+
+```{r create-vector}
+c <- c(1,2,3,4,5,6,7,8,9)
+c
+class(c)
+```
+
+At this point, $\mathbf{c}$ is just a list of numbers. The `as.matrix()` function creates a 9 row by 1 column vector, which can be verified by the `dim()` function:
+
+```{r convert-vector}
+c <- as.matrix(c)
+class(c)
+dim(c)
+```
+
+The vector $\mathbf{c}$ has 9 rows and 1 column.
+
+A vector can be reshaped into a matrix:
+
+```{r convert-matrix-ncol}
+C <- matrix(c, nrow = 3, ncol = 3)
+C
+```
+
+A vector can also be created from a single row or column of a matrix:
+
+```{r convert-matrix-subset}
+a1 <- as.matrix(A[, 1]) # vector from column 1
+a1
+dim(a1)
+```
+
+$\mathbf{a1}$ is a 3 row by 1 column column vector.
+
+# Matrix operations
+
+Transposition `t()` flips the rows and columns of a matrix:
+
+```{r transpose}
+A
+t(A)
+C
+t(C)
+```
+
+Vectors and also be transposed, which simply turns a column vector, e.g. $\mathbf{a1}$ into a row vector
+
+```{r transpose-vector}
+a1t <- t(a1)
+a1t
+dim(a1t)
+```
+
+# Matrix algebra
+
+Matrix algebra is basically analogous to scalar algebra (with the exception of division), and obeys most of the same rules that scalar algebra does.
+
+Add two matrices, $\mathbf{A}$ and $\mathbf{B}$:
+
+```{r addition}
+F <- A + B
+F
+```
+
+Note that the individual elements of $\mathbf{A}$ and $\mathbf{B}$ are simply added together to produce the corresponding elements of $\mathbf{F}$ (i.e. $f_{ij} = a_{ij} + b_{ij}$).
+
+In order to be added together, the matrices have to be of the same shape (i.e. have the same number of rows and colums). The shape of a matrix can be verified using the `dim()` function:
+
+```{r dim}
+dim(C)
+dim(A)
+```
+
+Here, $\mathbf{A}$ and $\mathbf{C}$ are not the same shape, and the following code, if executed, would product an error message:
+
+```{r addition-error, error = TRUE}
+G <- A + C
+```
+
+Scalar multiplication involves muliplying each element of a matrix by a scalar value:
+
+```{r scalar-mult}
+H <- 0.5 * A
+H
+```
+
+Here, $h_{ij} = 0.5 \times a_{ij}$. Element-by-element multiplication is also possible for identically shaped matrices, e.g., $p_{ij} = a_{ij} \times b_{ij}$:
+
+```{r element-mult}
+P <- A * B
+P
+```
+
+## Matrix multiplication
+
+**Matrix multiplication** results in a a set of sums and crossproducts, as opposed to element-by-element products. Matrix multiplication is symbolized by the `%*%` operator:
+
+```{r matrix-mult}
+Q <- C %*% A
+Q
+
+dim(C)
+dim(A)
+```
+
+Note that the matrices have to be **conformable**, as they are here (the number of columns of the first matrix must equal the number of rows of the second, and the product matrix $\mathbf{Q}$ here has the number of rows of the first matrix and the number of columns of the second).
+
+The matrices $\mathbf{A}$ and $\mathbf{B}$ are not conformable for multiplication; although they have the same shape, they are not square, and the following code would produce an error:
+
+```{r matrix-mult-error, error = TRUE}
+T <- A %*% B
+dim(A)
+dim(B)
+```
+
+## Special matricies
+
+There are a number of special matrices that come up in data analysis. Here $\mathbf{D}$ is a **diagonal matrix**, with non-zero values along the principal diagonal, and zeros elsewhere:
+
+```{r diag}
+D <- diag(c(6,2,1,3), nrow = 4, ncol = 4)
+D
+```
+
+A special form of a diagonal matrix is the **identity matrix** $\mathbf{I}$, which has ones along the principal diagonal, and zeros elsewhere:
+
+```{r identity}
+I <- diag(1, nrow = 4, ncol = 4)
+I
+```
+
+A special **scalar** that appears often in practice is the **norm** (or **Euclidean norm**) of a vector, which is simply the square root of the sum of squares of the elements of the vector:
+
+```{r norm}
+anorm <- sqrt(t(a1) %*% a1)
+anorm
+```
+
+It can be verified that `sqrt(sum(a1^2))` = $`r sqrt(sum(a1^2))`$.
+
+## Inverting matricies
+
+The matrix algebra equivalent of division is the multiplication of one matrix by the **inverse** of another. Invertible matricies must be square and have a non-zero determinant. Consider the followng matrix $\mathbf{R}$:
+
+```{r square-matrix}
+R <- matrix(c(0, 9, 3, 2, 2, 1, 9, 4, 4), nrow = 3, ncol = 3)
+R
+```
+
+The inverse of the matrix $\mathbf{R}$, $\mathbf{R^{-1}}$, is obtained using the `solve()` function:
+
+```{r inverse}
+Rinv <- solve(R)
+Rinv
+```
+
+As in scalar division, where $a \times \frac{1}{a} = 1$, postmuliplying a matrix by its inverse yields the Identity matrix, $\mathbf{I}$:
+
+```{r check-inverse}
+D <- R %*% Rinv
+D
+```
+
+After rounding using the `zapsmall()` function $\mathbf{D}$ indeed equals $\mathbf{I}$:
+
+```{r zapsmall}
+zapsmall(D)
+```
+
+## Eigenvectors and eigenvalues
+
+An important concept that comes up in multivariate analysis is the **decomposition** of a matrix, into another square matrix, $\mathbf{E}$, and a diagonal matrix, $\mathbf{V}$, that each have some desireable properties, and which make the following statement true: $\mathbf{RE} = \mathbf{EV}$, where $\mathbf{V}$ is a diagonal matrix with the elements $v_i$ along the diagonal. The matrix $\mathbf{E}$ contains the **eigenvectors** of $\mathbf{R}$, while the $v_i$'s are the **eigenvalues** of $\mathbf{R}$.
+
+```{r eigen}
+E <- eigen(R)
+E
+```
+
+# Acknowledgements {.toc-ignore}
+
+* Drawn from [Data wrangling and matrix algebra](http://geog.uoregon.edu/bartlein/courses/geog495/lec08.html)
+
+# Session Info {.toc-ignore}
+
+```{r child='_sessioninfo.Rmd'}
+```
