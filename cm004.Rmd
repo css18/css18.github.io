@@ -25,8 +25,13 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## Slides and class materials
 
-* 
+* [Importing data into R](https://cfss.uchicago.edu/datawrangle_import_functions.html)
+* [Tidy data](https://cfss.uchicago.edu/datawrangle_tidy_data.html)
+* [Data storage types](https://cfss.uchicago.edu/program_vectors.html)
+* Vectors/matricies/arrays and linear algebra
+* [Practice tidying data](https://cfss.uchicago.edu/datawrangle_tidy_exercise.html)
 
 ## What you need to do
 
 * [Install and setup software](https://cfss.uchicago.edu/setup00.html)
+* Complete [homework 01/02](hw02-wrangle-explore-data.html)
