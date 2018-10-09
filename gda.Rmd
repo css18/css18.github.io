@@ -179,7 +179,7 @@ $$\hat{p}(x) = \frac{\#_{i = 1}^n [x_0 + 2(j - 1)h \leq X_i < x_0 + 2jh]}{2nh}$$
 
 where $\#$ is the counting operator. If we remove the arbitrary origin $x_0$ by counting locally within a continuously moving window of half-width $h$ centered at $x$:
 
-$$\hat{p}(x) = \frac{\#_{i = 1}^n [x_0 + 2(j - 1)h \leq X_i < x_0 + 2jh]}{2nh}$$
+$$\hat{p}(x) = \frac{\#_{i = 1}^n [x-h \leq X_i < x+h]}{2nh}$$
 
 We can generalize this equation to evaluate $\hat{p}(x)$ at a large number of $x$ values covering the range of $X$ by applying a locally weighted averaging function using a rectangular weight function:
 
@@ -466,7 +466,7 @@ ggplot(galton_tidy, aes(height)) +
   facet_wrap(~ person, scales = "free")
 ```
 
-`galton` contains heights (in inches) for 928 children and 205 "midparents". Each parent height is an average of the father's height and 1.08 ties the mother's height. The daughters' heights are aslo said to have been multiplied by 1.08. This dataset was famously used by Sir Francis Galton to develop theories of correlation and regression in the 19th century.
+`galton` contains heights (in inches) for 928 children and 205 "midparents". Each parent height is an average of the father's height and 1.08 times the mother's height. The daughters' heights are aslo said to have been multiplied by 1.08. This dataset was famously used by Sir Francis Galton to develop theories of correlation and regression in the 19th century.
 
 Above we see two histograms plotted, one for the children and one for the parents. Each has the same binwidth (1 inch). While they look symmetric with no outliers, it is difficult to directly compare the histograms because they use different scales for the $x$ and $y$ axes.
 

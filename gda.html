@@ -546,7 +546,7 @@ tips_lm &lt;-<span class="st"> </span><span class="kw">lm</span>(tiprate <span c
 <p>Therefore the histogram estimator of the density at any <span class="math inline">\(x\)</span> value located in the <span class="math inline">\(j\)</span>th bin is based the number of observations that fall into that bin:</p>
 <p><span class="math display">\[\hat{p}(x) = \frac{\#_{i = 1}^n [x_0 + 2(j - 1)h \leq X_i &lt; x_0 + 2jh]}{2nh}\]</span></p>
 <p>where <span class="math inline">\(\#\)</span> is the counting operator. If we remove the arbitrary origin <span class="math inline">\(x_0\)</span> by counting locally within a continuously moving window of half-width <span class="math inline">\(h\)</span> centered at <span class="math inline">\(x\)</span>:</p>
-<p><span class="math display">\[\hat{p}(x) = \frac{\#_{i = 1}^n [x_0 + 2(j - 1)h \leq X_i &lt; x_0 + 2jh]}{2nh}\]</span></p>
+<p><span class="math display">\[\hat{p}(x) = \frac{\#_{i = 1}^n [x-h \leq X_i &lt; x+h]}{2nh}\]</span></p>
 <p>We can generalize this equation to evaluate <span class="math inline">\(\hat{p}(x)\)</span> at a large number of <span class="math inline">\(x\)</span> values covering the range of <span class="math inline">\(X\)</span> by applying a locally weighted averaging function using a rectangular weight function:</p>
 <p><span class="math display">\[\hat{p}(x) = \frac{1}{nh} \sum_{i = 1}^n W \left( \frac{x - X_i}{h} \right)\]</span></p>
 <p>where</p>
@@ -796,7 +796,7 @@ galton_tidy &lt;-<span class="st">  </span><span class="kw">as_tibble</span>(gal
 <span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>person, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)</code></pre></div>
 <p><img src="gda_files/figure-html/get-galton-1.png" width="672" /></p>
-<p><code>galton</code> contains heights (in inches) for 928 children and 205 “midparents”. Each parent height is an average of the father’s height and 1.08 ties the mother’s height. The daughters’ heights are aslo said to have been multiplied by 1.08. This dataset was famously used by Sir Francis Galton to develop theories of correlation and regression in the 19th century.</p>
+<p><code>galton</code> contains heights (in inches) for 928 children and 205 “midparents”. Each parent height is an average of the father’s height and 1.08 times the mother’s height. The daughters’ heights are aslo said to have been multiplied by 1.08. This dataset was famously used by Sir Francis Galton to develop theories of correlation and regression in the 19th century.</p>
 <p>Above we see two histograms plotted, one for the children and one for the parents. Each has the same binwidth (1 inch). While they look symmetric with no outliers, it is difficult to directly compare the histograms because they use different scales for the <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> axes.</p>
 <div id="investigate-for-gaps-or-heaping" class="section level4">
 <h4>Investigate for gaps or heaping</h4>

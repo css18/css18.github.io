@@ -203,7 +203,7 @@ x <- rnorm(1000)
 }
 ```
 
-## Comparison of kernels {.scrollable}
+## Comparison of kernels
 
 ```{r kernels}
 triangular <- function(x) {
