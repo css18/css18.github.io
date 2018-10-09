@@ -1,0 +1,712 @@
+---
+title: "Graphical data analysis"
+author: |
+  | MACS 33001
+  | University of Chicago
+date: "November 20, 2017"
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+
+library(tidyverse)
+library(ggthemes)
+library(knitr)
+library(broom)
+library(stringr)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 18))
+```
+
+## Graphical data analysis
+
+1. Generate questions about your data
+1. Search for answers by visualising, transforming, and modeling your data
+1. Use what you learn to refine your questions and or generate new questions
+1. Rinse and repeat until you publish a paper
+
+## Graphical data analysis
+
+1. What type of variation occurs within my variables?
+1. What type of covariation occurs between my variables?
+1. Are there outliers in the data?
+1. Do I have missingness? Are there patterns to it?
+1. How much variation/error exists in my statistical estimates? Is there a pattern to it?
+
+## Differences between GDA and modeling
+
+Tips dataset
+
+Variable | Explanation
+---------|-------------
+`obs` | Observation number
+`totbill` | Total bill (cost of the meal), including tax, in US dollars
+`tip` | Tip (gratuity) in US dollars
+`sex` | Sex of person paying for the meal (0=male, 1=female)
+`smoker` | Smoker in party? (0=No, 1=Yes)
+`day` | 3=Thur, 4=Fri, 5=Sat, 6=Sun
+`time` | 0=Day, 1=Night
+`size` | Size of the party
+
+```{r get-tips, include = FALSE}
+tips <- read_csv("../data/tips.csv")
+str(tips)
+```
+
+## Tips regression
+
+```{r tips-lm}
+tips <- tips %>%
+  mutate(tiprate = tip / totbill)
+
+tips_lm <- lm(tiprate ~ sex + smoker + day + time + size, data = tips)
+tidy(tips_lm)
+```
+
+```{r tips-rsq}
+glance(tips_lm)
+```
+
+## Exploring `tips`
+
+```{r tips-hist}
+ggplot(tips, aes(tip)) +
+  geom_histogram(binwidth = 1)
+```
+
+## Exploring `tips`
+
+```{r tips-round}
+ggplot(tips, aes(tip)) +
+  geom_histogram(binwidth = .1)
+```
+
+## Exploring `tips`
+
+```{r tips-scatter}
+ggplot(tips, aes(totbill, tip)) +
+  geom_point() +
+  geom_abline(slope = .18, linetype = 2) +
+  expand_limits(x = c(0, NA),
+                y = c(0, NA)) +
+  geom_text(data = tips %>%
+              summarize(rsq = format(cor(totbill, tip), digits = 3)),
+            aes(x = 2, y = 9, label = rsq))
+```
+
+## Exploring `tips`
+
+```{r tips-scatter-many}
+ggplot(tips, aes(totbill, tip)) +
+  geom_point() +
+  geom_abline(slope = .18, linetype = 2) +
+  expand_limits(x = c(0, NA),
+                y = c(0, NA)) +
+  facet_grid(smoker ~ sex, labeller = "label_both") +
+  geom_text(data = tips %>%
+              group_by(smoker, sex) %>%
+              summarize(rsq = format(cor(totbill, tip), digits = 3)),
+            aes(x = 2, y = 9, label = rsq))
+```
+
+## GDA vs. CDA
+
+* Graphical data analysis
+* Confirmatory data analysis
+
+## Histograms {.scrollable}
+
+```{r infant-data, include = FALSE}
+infant <- read_csv("../data//infant.csv") %>%
+  # remove non-countries
+  filter(is.na(`Value Footnotes`) | `Value Footnotes` != 1) %>%
+  select(`Country or Area`, Year, Value) %>%
+  rename(country = `Country or Area`,
+         year = Year,
+         mortal = Value)
+```
+
+```{r infant-hist}
+ggplot(infant, aes(mortal)) +
+  geom_histogram(bins = 10, boundary = 0) +
+  labs(title = "Histogram of infant mortality rate for 195 nations",
+       subtitle = "10 bins, origin = 0",
+       x = "Infant mortality rate (per 1,000)",
+       y = "Frequency")
+
+ggplot(infant, aes(mortal)) +
+  geom_histogram(bins = 10, boundary = -5) +
+  labs(title = "Histogram of infant mortality rate for 195 nations",
+       subtitle = "10 bins, origin = -5",
+       x = "Infant mortality rate (per 1,000)",
+       y = "Frequency")
+```
+
+## Nonparametric density estimation
+
+$$x_0 + 2(j - 1)h \leq X_i < x_0 + 2jh$$
+
+$$\hat{p}(x) = \frac{\#_{i = 1}^n [x_0 + 2(j - 1)h \leq X_i < x_0 + 2jh]}{2nh}$$
+
+$$\hat{p}(x) = \frac{\#_{i = 1}^n [x-h \leq X_i < x+h]}{2nh}$$
+
+$$\hat{p}(x) = \frac{1}{nh} \sum_{i = 1}^n W \left( \frac{x - X_i}{h} \right)$$
+
+$$W(z) = \begin{cases} 
+  \frac{1}{2} & \text{for } |z| < 1 \\
+  0 & \text{otherwise} \\
+  \end{cases}$$
+
+$$z = \frac{x - X_i}{h}$$
+
+## Naive density estimation
+
+```{r}
+ggplot(infant, aes(mortal)) +
+  geom_density(kernel = "rectangular") +
+  labs(title = "Naive density estimator of infant mortality rate for 195 nations",
+       x = "Infant mortality rate (per 1,000)",
+       y = "Density")
+```
+
+## Kernels
+
+$$\hat{x}(x) = \frac{1}{nh} \sum_{i = 1}^k K \left( \frac{x - X_i}{h} \right)$$
+
+## Gaussian kernel {.scrollable}
+
+$$K(z) = \frac{1}{\sqrt{2 \pi}}e^{-\frac{1}{2} z^2}$$
+
+```{r gaussian}
+x <- rnorm(1000)
+
+{
+  qplot(x, geom = "blank") +
+    stat_function(fun = dnorm) +
+    labs(title = "Gaussian (normal) kernel",
+         x = NULL,
+         y = NULL)
+} +
+{
+  ggplot(infant, aes(mortal)) +
+    geom_density(kernel = "gaussian") +
+    labs(title = "Infant mortality rate for 195 nations",
+         x = "Infant mortality rate (per 1,000)",
+         y = "Density")
+}
+```
+
+## Comparison of kernels {.scrollable}
+
+```{r kernels}
+triangular <- function(x) {
+  (1 - abs(x)) * ifelse(abs(x) <= 1, 1, 0)
+}
+
+biweight <- function(x) {
+  (15 / 16) * (1 - x^2)^2 * ifelse(abs(x) <= 1, 1, 0)
+}
+
+epanechnikov <- function(x) {
+  (15 / 16) * (1 - x^2)^2 * ifelse(abs(x) <= 1, 1, 0)
+}
+
+library(gridExtra)
+kernels <- qplot(x, geom = "blank") +
+    stat_function(aes(color = "Gaussian"), fun = dnorm) +
+    stat_function(aes(color = "Epanechnikov"), fun = epanechnikov) +
+    stat_function(aes(color = "Rectangular"), fun = dunif,
+                  args = list(min = -1), geom = "step") +
+    stat_function(aes(color = "Triangular"), fun = triangular) +
+    stat_function(aes(color = "Biweight"), fun = biweight) +
+    scale_color_brewer(type = "qual") +
+    labs(x = NULL,
+         y = NULL,
+         color = NULL) +
+    theme(legend.position = "bottom",
+          legend.background = element_rect(fill = "white"))
+
+kdes <- ggplot(infant, aes(mortal)) +
+    geom_density(aes(color = "Gaussian"), kernel = "gaussian") +
+    geom_density(aes(color = "Epanechnikov"), kernel = "epanechnikov") +
+    geom_density(aes(color = "Rectangular"), kernel = "rectangular") +
+    geom_density(aes(color = "Triangular"), kernel = "triangular") +
+    geom_density(aes(color = "Biweight"), kernel = "biweight") +
+    scale_color_brewer(type = "qual") +
+    labs(title = "Density estimators of infant mortality rate for 195 nations",
+         x = "Infant mortality rate (per 1,000)",
+         y = "Density",
+         color = "Kernel") +
+    theme(legend.background = element_rect(fill = "white"))
+
+g_legend <- function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  legend <- tmp$grobs[[leg]]
+  return(legend)
+  }
+
+mylegend <- g_legend(kernels)
+
+p3 <- grid.arrange(arrangeGrob(kernels + theme(legend.position="none"),
+                         kdes + theme(legend.position="none"),
+                         nrow=1),
+             mylegend, nrow = 2, heights = c(10, 1))
+```
+
+## Selecting the bandwidth $h$
+
+```{r gaussian-h}
+ggplot(infant, aes(mortal)) +
+  geom_density(kernel = "gaussian", adjust = 5) +
+  geom_density(kernel = "gaussian", adjust = 1, linetype = 2) +
+  geom_density(kernel = "gaussian", adjust = 1/5, linetype = 3) +
+  labs(title = "Gaussian density estimators of infant mortality rate for 195 nations",
+       subtitle = "Three different bandwidth parameters",
+       x = "Infant mortality rate (per 1,000)",
+       y = "Density")
+```
+
+## Boxplot
+
+```{r boxplot}
+ggplot(infant, aes("", mortal)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of infant mortality rate for 195 nations",
+       x = NULL,
+       y = "Infant mortality rate (per 1,000)")
+```
+
+## Violin plot
+
+```{r violin}
+ggplot(infant, aes("", mortal)) +
+  geom_violin() +
+  labs(title = "Violin plot of infant mortality rate for 195 nations",
+       x = NULL,
+       y = "Infant mortality rate (per 1,000)")
+```
+
+## Things to look for in continuous variables
+
+* Assymetry
+* Outliers
+* Multimodality
+* Gaps
+* Heaping
+* Rounding
+* Impossibilities
+* Errors
+
+## Galton's heights
+
+```{r get-galton}
+data(galton, package = "UsingR")
+
+galton_tidy <-  as_tibble(galton) %>%
+  gather(person, height)
+
+ggplot(galton_tidy, aes(height)) +
+  geom_histogram(binwidth = 1) +
+  facet_wrap(~ person, scales = "free")
+```
+
+## Investigate for gaps or heaping
+
+```{r galton-heaping}
+ggplot(galton_tidy, aes(height)) +
+  geom_histogram(binwidth = .1) +
+  facet_wrap(~ person, scales = "free")
+```
+
+## Comparing the distributions
+
+```{r galton-both}
+ggplot(galton_tidy, aes(height, fill = person)) +
+  geom_histogram()
+```
+
+## Comparing the distributions
+
+```{r galton-sep}
+galton_median <- galton_tidy %>%
+  group_by(person) %>%
+  summarize(median = median(height))
+
+ggplot(galton_tidy) +
+  geom_histogram(aes(height), binwidth = 1) +
+  geom_vline(data = galton_median, aes(xintercept = median), color = "red") +
+  facet_wrap(~ person, ncol = 1)
+```
+
+## Comparing the distributions {.scrollable}
+
+```{r galton-density}
+ggplot(galton_tidy, aes(height, color = person)) +
+  geom_density()
+```
+
+```{r galton-box}
+ggplot(galton_tidy, aes(person, height)) +
+  geom_boxplot()
+```
+
+## Outlier detection
+
+```{r movies-hist}
+data(movies, package = "ggplot2movies")
+
+ggplot(movies, aes(length)) +
+  geom_histogram()
+```
+
+## Outlier detection
+
+```{r movies-box}
+ggplot(movies, aes("", length)) +
+  geom_boxplot() +
+  labs(x = NULL)
+```
+
+## Outlier detection
+
+```{r movies-filter}
+filter(movies, length > 1000)
+```
+
+## Filter outliers {.scrollable}
+
+```{r movies-all}
+movies_lite <- filter(movies, length <= 180)
+
+ggplot(movies_lite, aes("", length)) +
+  geom_boxplot() +
+  coord_flip() +
+  labs(x = NULL,
+       y = "Movie length (in minutes)")
+
+ggplot(movies_lite, aes(length)) +
+  geom_density() +
+  labs(x = "Movie length (in minutes)")
+
+ggplot(movies_lite, aes(length)) +
+  geom_histogram(binwidth = 1) +
+  labs(x = "Movie length (in minutes)")
+```
+
+## Compare distributions of subgroups
+
+```{r galton-density2}
+ggplot(galton_tidy, aes(height, color = person)) +
+  geom_density()
+```
+
+## Compare distributions of subgroups
+
+```{r movies-genre}
+genre <- movies_lite %>%
+  gather(genre, value, Action:Short) %>%
+  filter(value == 1) %>%
+  select(-value)
+```
+
+```{r genre-density}
+ggplot(genre, aes(length, color = genre)) +
+  geom_density() +
+  scale_color_brewer(type = "qual")
+```
+
+## Multiple windows plot
+
+```{r genre-facet}
+ggplot(genre, aes(length)) +
+  geom_histogram(binwidth = 1) +
+  labs(x = "Movie length (in minutes)") +
+  facet_wrap(~ genre)
+```
+
+## Multiple windows plot
+
+```{r genre-facet-freey}
+ggplot(genre, aes(length)) +
+  geom_histogram(binwidth = 1) +
+  labs(x = "Movie length (in minutes)") +
+  facet_wrap(~ genre, scales = "free_y")
+```
+
+## Boxplot
+
+```{r genre-box}
+ggplot(genre, aes(genre, length)) +
+  geom_boxplot() +
+  labs(x = "Genre",
+       y = "Movie length (in minutes)")
+```
+
+## Categorical variables
+
+* Discrete variables with a fixed set of possible values
+
+## Bar chart
+
+```{r gss_cat, include = FALSE}
+library(forcats)
+gss_cat
+```
+
+```{r race-bar}
+ggplot(gss_cat, aes(race)) +
+  geom_bar()
+```
+
+## Omitted categories
+
+```{r race-bar-omit}
+ggplot(gss_cat, aes(race)) +
+  geom_bar() +
+  scale_x_discrete(drop = FALSE)
+```
+
+## Order matters
+
+```{r relig-bar}
+relig_summary <- gss_cat %>%
+  group_by(relig) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(relig_summary, aes(relig, tvhours)) +
+  geom_col() +
+  coord_flip()
+```
+
+## Order matters
+
+```{r relig-alpha}
+ggplot(relig_summary, aes(factor(relig, levels = rev(sort(levels(relig)))), tvhours)) +
+  geom_col() +
+  coord_flip()
+```
+
+## Order matters
+
+```{r relig-order}
+ggplot(relig_summary, aes(fct_reorder(relig, tvhours), tvhours)) +
+  geom_col() +
+  coord_flip()
+```
+
+## Order matters
+
+```{r income-plot}
+rincome_summary <- gss_cat %>%
+  group_by(rincome) %>%
+  summarise(
+    age = mean(age, na.rm = TRUE),
+    tvhours = mean(tvhours, na.rm = TRUE),
+    n = n()
+  )
+
+ggplot(rincome_summary, aes(age, fct_reorder(rincome, age))) +
+  geom_point()
+```
+
+## Order matters
+
+```{r income-bottom}
+ggplot(rincome_summary, aes(age, fct_relevel(rincome, "Not applicable"))) +
+  geom_point()
+```
+
+## Variations on bar charts
+
+```{r intent}
+data(gun_deaths, package = "rcfss")
+
+gun_deaths %>%
+  count(intent) %>%
+  na.omit() %>%
+  ggplot(aes(fct_reorder(intent, n, .desc = TRUE), n)) +
+  geom_col()
+```
+
+## Stacked bar chart
+
+```{r intent-stack}
+gun_deaths %>%
+  count(intent, race) %>%
+  na.omit() %>%
+  mutate(intent = factor(intent, levels = c("Suicide", "Homicide",
+                                            "Accidental", "Undetermined"))) %>%
+  ggplot(aes(intent, n, fill = race)) +
+  geom_col()
+```
+
+## Dodged bar chart
+
+```{r intent-dodge}
+gun_deaths %>%
+  count(intent, race) %>%
+  na.omit() %>%
+  mutate(intent = factor(intent, levels = c("Suicide", "Homicide",
+                                            "Accidental", "Undetermined"))) %>%
+  ggplot(aes(intent, n, fill = race)) +
+  geom_col(position = "dodge")
+```
+
+## Proportional bar chart
+
+```{r intent-fill}
+gun_deaths %>%
+  count(intent, race) %>%
+  na.omit() %>%
+  mutate(intent = factor(intent, levels = c("Suicide", "Homicide",
+                                            "Accidental", "Undetermined"))) %>%
+  ggplot(aes(intent, n, fill = race)) +
+  geom_col(position = "fill")
+```
+
+## Scatterplots
+
+* Causal relationships (linear and nonlinear)
+* Associations (correlations)
+* Outliers or groups of outliers
+* Clusters
+* Gaps
+* Barriers
+* Conditional relationships
+
+## `movies` example
+
+```{r movies-votes-rating}
+ggplot(movies, aes(votes, rating)) +
+  geom_point()
+```
+
+## Smoothing lines
+
+```{r movies-votes-rating-smooth}
+ggplot(movies, aes(votes, rating)) +
+  geom_point() +
+  geom_smooth()
+```
+
+## Adding jitter to the graph
+
+```{r heights-scatter}
+ggplot(galton, aes(parent, child)) +
+  geom_point()
+```
+
+## Adding jitter to the graph
+
+```{r heights-jitter}
+ggplot(galton, aes(parent, child)) +
+  geom_jitter()
+```
+
+## Adding jitter to the graph
+
+```{r galton-smooth}
+ggplot(galton, aes(parent, child)) +
+  geom_jitter(alpha = .2) +
+  geom_abline(slope = 1, linetype = 2) +
+  geom_smooth(method = "lm")
+```
+
+## Comparing groups within scatterplots
+
+```{r auto-drv}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+  geom_point()
+```
+
+## Comparing groups within scatterplots
+
+```{r auto-class}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+  geom_point()
+```
+
+## Comparing groups within scatterplots
+
+```{r olympics}
+data(oly12, package = "VGAMdata")
+
+ggplot(oly12, aes(Height, Weight, color = Sport)) +
+  geom_point()
+```
+
+## Comparing groups within scatterplots
+
+```{r olympics-facet}
+oly12 %>%
+  mutate(Sport = abbreviate(Sport, 12)) %>%
+  ggplot(aes(Height, Weight)) +
+  geom_point(size = 1) +
+  facet_wrap(~ Sport)
+```
+
+## Comparing groups within scatterplots
+
+```{r olympics-facet-lite}
+oly12 %>%
+  filter(Sport %in% c("Judo", "Weightlifting", "Wrestling")) %>%
+  ggplot(aes(Height, Weight)) +
+  geom_point(size = 1) +
+  facet_wrap(~ Sport)
+```
+
+## Scatterplot matrix
+
+```{r credit-import}
+credit <- read_csv("../data/Credit.csv") %>%
+  # remove first ID column
+  select(-X1)
+names(credit) <- stringr::str_to_lower(names(credit))   # convert column names to lowercase
+```
+
+```{r credit-scatter-matrix}
+# only graph numeric variables
+pairs(select_if(credit, is.numeric))
+```
+
+## Scatterplot matrix
+
+```{r credit-scatter-ggpairs}
+library(GGally)
+
+ggpairs(select_if(credit, is.numeric))
+```
+
+## Scatterplot matrix
+
+```{r diamonds-scatter-matrix, warning = FALSE, message = FALSE}
+ggpairs(select(rcfss::scorecard, type:debt))
+```
+
+## Heatmap of correlation coefficients {.scrollable}
+
+```{r ggcorr}
+ggcorr(mpg)
+ggcorr(credit)
+ggcorr(diamonds)
+```
+
+## Heatmap of correlation coefficients {.scrollable}
+
+```{r ggcorr-label}
+ggcorr(credit, label = TRUE)
+ggcorr(credit, label = TRUE, label_round = 2, label_alpha = TRUE)
+```
+
