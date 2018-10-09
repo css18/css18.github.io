@@ -3,7 +3,6 @@ title: "Graphical data analysis"
 author: |
   | MACS 33001
   | University of Chicago
-date: "November 20, 2017"
 output: rcfss::cfss_slides
 ---
 
