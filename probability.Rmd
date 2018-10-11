@@ -1,0 +1,383 @@
+---
+title: "Sample space and probability"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r packages, cache = FALSE, message = FALSE}
+library(tidyverse)
+library(broom)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal())
+```
+
+# Model of probability
+
+1. Sample space - set of all things that could happen
+1. Events - subsets of the sample space
+1. Probability - chance of an event
+
+# Sample space
+
+The **sample space** as the set of all things that can occur. We will collect all distinct outcomes into the set $S$. Examples include:
+
+1. House of Representatives - elections every 2 years
+    * One incumbent: $S = \{W, N\}$
+    * Two incumbents: $S = \{(W,W), (W,N), (N,W), (N,N)\}$
+    * 435 incumbents: $S = 2^{435}$ possible outcomes (permutations)
+1. Number of countries signing treaties
+    * $s = \{0, 1, 2, \ldots, 194\}$
+1. Duration of cabinets
+    * All non-negative real numbers: $[0, \infty)$
+    * $S = \{x : 0 \leq x < \infty\}$
+        * All possible $x$ such that $x$ is between 0 and infinity
+
+> The sample space must define all possible realizations.
+
+# Events
+
+**Events** are a subset of the sample space:
+
+$$E \subset S$$
+
+* Plain English: outcomes from the sample space, collected in a set
+* Congressional election example
+    * One incumbent
+        * $E = W$
+        * $F = N$
+    * Two incumbents
+        * $E = \{(W, N), (W, W) \}$
+        * $F = \{(N, N)\}$
+    * 435 incumbents
+        * Outcome of 2016 election - one event
+        * All outcomes where Dems retake control of the House - one event
+* Notation: $x$ is an *element* of a set $E$
+    $$x \in E$$
+    $$\{N, N\} \in E$$
+
+## Event operations
+
+* $E$ is a **set**, or a collection of distinct objects. We can perform operations on sets to create new sets. Consider two example sets:
+
+* $E = \{ (W,W), (W,N) \}$
+* $F  = \{ (N, N), (W,N) \}$
+* $S = \{(W,W), (W,N), (N,W), (N,N) \}$
+
+Operations determine what lies in the new set $E^{\text{new}}$.
+
+1. Union: $\cup$
+    * All objects that appear in either set (OR)
+    * $E^{\text{new}} = E \cup F  = \{(W,W), (W,N), (N,N) \}$
+1. Intersection: $\cap$
+    * All objects that appear in both sets (AND)
+    * $E^{\text{new}} = E \cap F = \{(W,N)\}$
+1. Complement of set $E$: $E^{c}$
+    * All objects in $S$ that are not in $E$
+    * $E^{c} = \{(N, W) , (N, N) \}$
+    * $F^{c} = \{(N, W) , (W, W) \}$
+    * What is $S^{c}$? - an **empty set** $\emptyset$
+    * Suppose $E = {W}$, $F = {N}$.  Then  $E \cap F = \emptyset$ (there is nothing that lies in both sets)
+
+# Probability
+
+* Probability is the chance of an event occurring
+* $P$ is a function
+* The domain contains all events $E$
+
+## Three axioms
+
+All probability functions $P$ satisfy three axioms:
+
+1. **Nonnegativity**: For all events $E$, $0 \leq P(E) \leq 1$
+1. **Normalization**: $P(S) = 1$
+1. **Additivity**: For all sequences of mutually exclusive events $E_{1}, E_{2}, \ldots,E_{N}$ (where $N$ can go to infinity):
+    $$P\left(\cup_{i=1}^{N} E_{i}  \right)  = \sum_{i=1}^{N} P(E_{i} )$$
+    * Any countable sequence of **mutually exclusive events** can be added together to generate the probability of any of the mutually exclusive events occurring
+
+## Basic examples
+
+## Rolling the dice
+
+Consider the experiment of rolling a pair of 4-sided dice. We assume the dice are fair, and we interpret this assumption to mean that each of the sixteen possible outcomes [pairs $(i,j)$ with $i,j = 1,2,3,4$] has the same probability of $1/16$. To calculate the probablity of an event, we must count the number of elements of the event and divide by 16 (the total number of possible outcomes). Here are some event probabilities calculated this way:
+
+$$
+\begin{aligned}
+\Omega &= \{(1,1), (1,2), (1,3), (1,4), (2,1), (2,2), (2,3), (2,4), \\
+&\quad (3,1), (3,2), (3,3), (3,4), (4,1), (4,2), (4,3), (4,4) \}
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\Pr (\text{the sum of the rolls is even}) &= 8/16 &= 1/2 \\
+\Pr (\text{the sum of the rolls is odd}) &= 8/16 &= 1/2 \\
+\Pr (\text{the first roll is equal to the second}) &= 4/16 &= 1/4 \\
+\Pr (\text{the first roll is larger than the second}) &= 6/16 &= 3/8 \\
+\Pr (\text{at least one roll is equal to 4}) &= 7/16 \\
+\end{aligned}
+$$
+
+## Romeo and Juliet
+
+Romeo and Juliet have a date at a given time, and each will arrive at the meeting place with a delay between 0 and 1 hour, with all pairs of delays being equally likely. The first to arrive will wait for 15 minutes and will leave if the other has not yet arrived. What is the probability that they will meet?
+
+Let us use as the sample space the **unit square**, whose elements are the possible pairs of delays for the two of them. Our interpretation of "equally likely" pairs of delays is to let the probability of a subset of $\Omega$ be equal to its area. This probability law satisfies the three probability axioms. The event that Romeo and Juliet will meet is the shaded region in the figure below, and its probability is calculated to be $7/16$.
+
+```{r romeo-juliet}
+data_frame(x = seq(from = 0, to = 1, by = 0.001),
+           ylow = -.25 + x,
+           yhigh = .25 + x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(aes(y = ylow)) +
+  geom_line(aes(y = yhigh)) +
+  geom_ribbon(aes(ymin = ylow, ymax = yhigh), alpha = .2) +
+  annotate(geom = "text", x = .5, y = .5, label = "M") +
+  scale_x_continuous(breaks = c(0, .25, 1)) +
+  scale_y_continuous(breaks = c(0, .25, 1)) +
+  coord_fixed(xlim = c(0, 1),
+              ylim = c(0, 1),
+              expand = FALSE) +
+  labs(x = "Romeo",
+       y = "Juliet") +
+  theme_classic() +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 1))
+```
+
+The event that Romeo and Juliet will arrive within 15 minutes of each other is 
+
+$$M = \{ (x,y) \mid | x - y | \leq 1/4, 0 \leq x \leq 1, 0 \leq y \leq 1 \}$$.
+
+The area of $M$ is 1 minus the area of the two unshaded triangles, or $1 - (3/4) \times (3/4) = 7/16$. Thus the probabiltiy of meeting is $7/16$.
+
+# Conditional probability
+
+Social scientists almost always examine **conditional** relationships
+
+* Given opposite Party ID, probability of date
+* Given low-interest rates probability of high inflation
+* Given "economic anxiety" probability of voting for Trump
+
+Intuition:
+
+* Some event has occurred: an outcome was realized
+* And with the knowledge that this outcome has already happened 
+* What is the probability that something in another set happens?
+
+Definition:
+
+Suppose we have two events, $E$ and $F$, and that $P(F)>0$.  Then, 
+
+$$
+\begin{eqnarray}
+P(E|F) & = & \frac{P(E\cap F ) } {P(F) }  
+\end{eqnarray}
+$$
+
+* $P(E \cap F)$: Both $E$ and $F$ must occur
+* $P(F)$ normalize: we know $P(F)$ already occurred
+
+## Examples
+
+### Elections
+
+* Example 1
+    * $F = \{\text{All Democrats Win} \}$
+    * $E = \{\text{Nancy Pelosi Wins (D-CA)} \}$
+    * If $F$ occurs then $E$ most occur, $P(E|F) = 1$
+* Example 2
+    * $F = \{\text{All Democrats Win} \}$
+    * $E = \{ \text{Louie Gohmert Wins (R-TX) }$
+    * $F \cap E = \emptyset \Rightarrow P(E|F) = \frac{P(F \cap E) }{P(F)} = \frac{P(\emptyset)}{P(F)} = 0$
+* Example 3: incumbency advantage
+    * $I = \{ \text{Candidate is an incumbent} \}$
+    * $D = \{ \text{Candidate Defeated} \}$
+    * $P(D|I)  = \frac{P(D \cap I)}{P(I) }$
+    * In words -- the probability that a candidate is defeated given that the candidate is an incumbent is equal to the probability of being defeated AND being an incumbent divided by the probability of being an incumbent
+
+
+
+
+## Difference between $P(A|B)$ and $P(B|A)$
+
+$$
+\begin{eqnarray}
+P(A|B) & = & \frac{P(A\cap B)}{P(B)} \\
+P(B|A) & = & \frac{P(A \cap B) } {P(A)}
+\end{eqnarray}
+$$
+
+Less Serious Example $\leadsto$ type of person who attends football games:
+
+$$
+\begin{eqnarray}
+P(\text{Attending a football game}| \text{Drunk}) & = & 0.01  \\
+P(\text{Drunk}| \text{Attending a football game}) & \approx & 1
+\end{eqnarray}
+$$
+    
+# Law of total probability
+
+Suppose that we have a set of events $F_{1}, F_{2}, \ldots, F_{N}$ such that the events are mutually exclusive and together comprise the entire sample space $\cup_{i=1}^{N} F_{i} = \text{Sample Space}$. Then, for any event $E$
+
+$$
+\begin{eqnarray}
+P(E) & = & \sum_{i=1}^{N} P(E | F_{i} ) \times P(F_{i}) 
+\end{eqnarray}
+$$
+
+## Example
+
+* Infer $P(\text{vote})$ after mobilization campaign
+    * $P(\text{vote}|\text{mobilized} ) = 0.75$
+    * $P(\text{vote}| \text{not mobilized} ) = 0.25$
+    * $P(\text{mobilized}) = 0.6 ; P(\text{not mobilized} ) = 0.4$
+    * What is $P(\text{vote})$?
+* Sample space (one person) = $\{$ (mobilized, vote), (mobilized, not vote), (not mobilized, vote) , (not mobilized, not vote) $\}$
+    * Mobilization partitions the space (mutually exclusive and exhaustive) 
+    * We can use the law of total probability
+        $$
+        \begin{eqnarray}
+        P(\text{vote} ) & = & P(\text{mob.} ) \times P(\text{vote}| \text{mob.} ) + P(\text{not mob} \times P(\text{vote} | \text{not mob} )  \\
+         & = & 0.6 \times 0.75 + 0.4 \times 0.25  \\
+          & = & 0.55  
+        \end{eqnarray}
+        $$
+
+# Bayes' Rule
+
+* $P(B|A)$ may be easy to obtain
+* $P(A|B)$ may be harder to determine
+* Bayes' rule provides a method to move from $P(B|A)$ to $P(A|B)$
+
+Bayes' Rule: For two events $A$ and $B$, 
+
+$$
+\begin{eqnarray}
+P(A|B) & = & \frac{P(A)\times P(B|A)}{P(B)} 
+\end{eqnarray}
+$$
+
+The proof is:
+
+$$
+\begin{eqnarray}
+P(A|B) & = & \frac{P(A \cap B) }{P(B) } \\
+&  = & \frac{P(B|A)P(A) } {P(B) } 
+\end{eqnarray}
+$$
+
+* Law of total probability allows us to replace the joint probability of $A$ and $B$ with the alternative expression
+
+## Example
+
+How do we identify racial groups from lists of names? The Census Bureau collects information on distribution of names by race. For example, **Washington** is the "blackest" name in America.
+
+* P(black)= 0.126
+* P(not black) = 1 - P(black) = 0.874
+* P(Washington$|$black) = 0.00378
+* P(Washington$|$not black) = 0.000060615
+
+$$
+\begin{eqnarray}
+P(\text{black}|\text{Wash} ) & = & \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{Wash} ) } \\
+ & = & \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{black})P(\text{Wash}|\text{black}) + P(\text{nb})P(\text{Wash}| \text{nb}) } \\
+ & = & \frac{0.126 \times 0.00378}{0.126\times 0.00378 + 0.874 \times 0.000060616} \\
+ & \approx & 0.9  
+ \end{eqnarray}
+$$
+
+## Let's Make a Deal (aka the Monty Hall problem)
+
+> You blew it, and you blew it big! Since you seem to have difficulty grasping the basic principle at work here, I'll explain. After the host reveals a goat, you now have a one-in-two chance of being correct. Whether you change your selection or not, the odds are the same. There is enough mathematical illiteracy in this country, and we don't need the world's highest IQ propagating more. Shame!
+    – Scott Smith, Ph.D. University of Florida (From Wikipedia)
+    
+* Suppose we have three doors.  $A, B, C$.
+* Behind one door there is a car.  Behind the others is a goat (you don't want a goat)
+    * A contestant guesses a door.
+    * The host opens a different door and then contestant has option to switch
+    * Should the contestant switch?
+* Contestant guesses $A$
+* $P(A) = 1/3 \leadsto$ chance of winning without switch
+* If $C$ is revealed to not have a car:
+
+$$
+\begin{eqnarray}
+P(B| C \text{ revealed} ) & = & \frac{P(B)P(C \text{ revealed} | B)}{P(B)P(C \text{ revealed} | B) + P(A) P(C \text{ revealed} | A) } \\
+& = & \frac{1/3 \times 1}{1/3 \times 1 + 1/3 \times 1/2 } = \frac{1/3}{1/2} = \frac{2}{3} \\
+P(A| C \text{ revealed} ) & = & \frac{P(A) P(C \text{ revealed} | A)}{ P(B)P(C \text{ revealed} | B) + P(A) P(C \text{ revealed} | A) } \\
+& = & \frac{1/3 \times 1/2}{1/3 \times 1 + 1/3 \times 1/2} = \frac{1}{3} 
+\end{eqnarray}
+$$
+
+* Double chances of winning with switch
+
+# Independence of probabilities
+
+Does one event provide information about another event?
+
+* Independence: Two events $E$ and $F$ are independent if 
+
+    $$
+    \begin{eqnarray}
+    P(E\cap F ) & = & P(E)P(F) 
+    \end{eqnarray}
+    $$
+
+* If $E$ and $F$ are not independent, we'll say they are **dependent** 
+* Independence is symetric: if $F$ is independent of $E$, then $E$ is indepenent of $F$
+
+* Flip a fair coin twice
+    * $E = \text{first flip heads}$
+    * $F = \text{second flip heads}$
+
+    $$
+    \begin{eqnarray}
+    P(E \cap F ) & = & P( \{ (H, H) , (H, T) \} \cap \{ (H, H), (T, H) \} )  \\
+     & =& P( \{(H, H)\} )  \\
+     & = & \frac{1}{4}  \\
+    P(E ) & = & \frac{1} {2}  \\
+    P(F) & = & \frac{1}{2}  \\
+    P(E)P(F)  & =& \frac{1}{2} \times \frac{1}{2} = \frac{1}{4}  =P(E \cap F )   
+    \end{eqnarray} 
+    $$
+
+* Suppose $E$ and $F$ are independent.  Then,
+
+    $$
+    \begin{eqnarray}
+    P(E|F ) & = & \frac{P(E \cap F) }{P(F) }  \\
+    & = & \frac{P(E)P(F)}{P(F)} \\
+    & = & P(E)  
+    \end{eqnarray}
+    $$
+
+    * Conditioning on the event $F$ does not modify the probability of $E$.
+    * No information about $E$ in $F$
+
+## Example: Independence and Causal Inference
+
+* Selection and Observational Studies
+    * We often want to infer the effect of some treatment 
+        * Incumbency on vote return
+        * College education and job earnings
+    * Observational studies: observe what we see to make inference 
+    * Problem: units select into treatment
+        * Simple example: enroll in job training if I think it will help 
+        * P(job$|$training in study) $\neq$ P(job$|$forced training)
+    * Background characteristic: difference between treatment and control groups
+* Experiments (second greatest discovery of 20th century): make background characteristics and treatment status independent
+
+
+# Session Info {.toc-ignore}
+
+```{r child='_sessioninfo.Rmd'}
+```

@@ -1,0 +1,31 @@
+---
+title: "Probability"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm005 - October 16, 2018
+
+## Overview
+
+* Review set notation and operations
+* Define probabilistic models
+* Describe conditional probability
+* Define total probability theorem
+* Implement Bayes' Rule
+* Define and evaluate independence of events
+* Identify the importance of counting possible events
+
+## Before class
+
+* Read [chapter 1 (Probability) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+
+## Slides and class materials
+
+* [Slides](extras/cm005_slides.html)
+
+## Additional resources
+

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Sample space and probability</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Sample space and probability</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<div id="model-of-probability" class="section level1">
+<h1>Model of probability</h1>
+<ol style="list-style-type: decimal">
+<li>Sample space - set of all things that could happen</li>
+<li>Events - subsets of the sample space</li>
+<li>Probability - chance of an event</li>
+</ol>
+</div>
+<div id="sample-space" class="section level1">
+<h1>Sample space</h1>
+<p>The <strong>sample space</strong> as the set of all things that can occur. We will collect all distinct outcomes into the set <span class="math inline">\(S\)</span>. Examples include:</p>
+<ol style="list-style-type: decimal">
+<li>House of Representatives - elections every 2 years
+<ul>
+<li>One incumbent: <span class="math inline">\(S = \{W, N\}\)</span></li>
+<li>Two incumbents: <span class="math inline">\(S = \{(W,W), (W,N), (N,W), (N,N)\}\)</span></li>
+<li>435 incumbents: <span class="math inline">\(S = 2^{435}\)</span> possible outcomes (permutations)</li>
+</ul></li>
+<li>Number of countries signing treaties
+<ul>
+<li><span class="math inline">\(s = \{0, 1, 2, \ldots, 194\}\)</span></li>
+</ul></li>
+<li>Duration of cabinets
+<ul>
+<li>All non-negative real numbers: <span class="math inline">\([0, \infty)\)</span></li>
+<li><span class="math inline">\(S = \{x : 0 \leq x &lt; \infty\}\)</span>
+<ul>
+<li>All possible <span class="math inline">\(x\)</span> such that <span class="math inline">\(x\)</span> is between 0 and infinity</li>
+</ul></li>
+</ul></li>
+</ol>
+<blockquote>
+<p>The sample space must define all possible realizations.</p>
+</blockquote>
+</div>
+<div id="events" class="section level1">
+<h1>Events</h1>
+<p><strong>Events</strong> are a subset of the sample space:</p>
+<p><span class="math display">\[E \subset S\]</span></p>
+<ul>
+<li>Plain English: outcomes from the sample space, collected in a set</li>
+<li>Congressional election example
+<ul>
+<li>One incumbent
+<ul>
+<li><span class="math inline">\(E = W\)</span></li>
+<li><span class="math inline">\(F = N\)</span></li>
+</ul></li>
+<li>Two incumbents
+<ul>
+<li><span class="math inline">\(E = \{(W, N), (W, W) \}\)</span></li>
+<li><span class="math inline">\(F = \{(N, N)\}\)</span></li>
+</ul></li>
+<li>435 incumbents
+<ul>
+<li>Outcome of 2016 election - one event</li>
+<li>All outcomes where Dems retake control of the House - one event</li>
+</ul></li>
+</ul></li>
+<li>Notation: <span class="math inline">\(x\)</span> is an <em>element</em> of a set <span class="math inline">\(E\)</span> <span class="math display">\[x \in E\]</span> <span class="math display">\[\{N, N\} \in E\]</span></li>
+</ul>
+<div id="event-operations" class="section level2">
+<h2>Event operations</h2>
+<ul>
+<li><p><span class="math inline">\(E\)</span> is a <strong>set</strong>, or a collection of distinct objects. We can perform operations on sets to create new sets. Consider two example sets:</p></li>
+<li><span class="math inline">\(E = \{ (W,W), (W,N) \}\)</span></li>
+<li><span class="math inline">\(F = \{ (N, N), (W,N) \}\)</span></li>
+<li><p><span class="math inline">\(S = \{(W,W), (W,N), (N,W), (N,N) \}\)</span></p></li>
+</ul>
+<p>Operations determine what lies in the new set <span class="math inline">\(E^{\text{new}}\)</span>.</p>
+<ol style="list-style-type: decimal">
+<li>Union: <span class="math inline">\(\cup\)</span>
+<ul>
+<li>All objects that appear in either set (OR)</li>
+<li><span class="math inline">\(E^{\text{new}} = E \cup F = \{(W,W), (W,N), (N,N) \}\)</span></li>
+</ul></li>
+<li>Intersection: <span class="math inline">\(\cap\)</span>
+<ul>
+<li>All objects that appear in both sets (AND)</li>
+<li><span class="math inline">\(E^{\text{new}} = E \cap F = \{(W,N)\}\)</span></li>
+</ul></li>
+<li>Complement of set <span class="math inline">\(E\)</span>: <span class="math inline">\(E^{c}\)</span>
+<ul>
+<li>All objects in <span class="math inline">\(S\)</span> that are not in <span class="math inline">\(E\)</span></li>
+<li><span class="math inline">\(E^{c} = \{(N, W) , (N, N) \}\)</span></li>
+<li><span class="math inline">\(F^{c} = \{(N, W) , (W, W) \}\)</span></li>
+<li>What is <span class="math inline">\(S^{c}\)</span>? - an <strong>empty set</strong> <span class="math inline">\(\emptyset\)</span></li>
+<li>Suppose <span class="math inline">\(E = {W}\)</span>, <span class="math inline">\(F = {N}\)</span>. Then <span class="math inline">\(E \cap F = \emptyset\)</span> (there is nothing that lies in both sets)</li>
+</ul></li>
+</ol>
+</div>
+</div>
+<div id="probability" class="section level1">
+<h1>Probability</h1>
+<ul>
+<li>Probability is the chance of an event occurring</li>
+<li><span class="math inline">\(P\)</span> is a function</li>
+<li>The domain contains all events <span class="math inline">\(E\)</span></li>
+</ul>
+<div id="three-axioms" class="section level2">
+<h2>Three axioms</h2>
+<p>All probability functions <span class="math inline">\(P\)</span> satisfy three axioms:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Nonnegativity</strong>: For all events <span class="math inline">\(E\)</span>, <span class="math inline">\(0 \leq P(E) \leq 1\)</span></li>
+<li><strong>Normalization</strong>: <span class="math inline">\(P(S) = 1\)</span></li>
+<li><strong>Additivity</strong>: For all sequences of mutually exclusive events <span class="math inline">\(E_{1}, E_{2}, \ldots,E_{N}\)</span> (where <span class="math inline">\(N\)</span> can go to infinity): <span class="math display">\[P\left(\cup_{i=1}^{N} E_{i}  \right)  = \sum_{i=1}^{N} P(E_{i} )\]</span>
+<ul>
+<li>Any countable sequence of <strong>mutually exclusive events</strong> can be added together to generate the probability of any of the mutually exclusive events occurring</li>
+</ul></li>
+</ol>
+</div>
+<div id="basic-examples" class="section level2">
+<h2>Basic examples</h2>
+</div>
+<div id="rolling-the-dice" class="section level2">
+<h2>Rolling the dice</h2>
+<p>Consider the experiment of rolling a pair of 4-sided dice. We assume the dice are fair, and we interpret this assumption to mean that each of the sixteen possible outcomes [pairs <span class="math inline">\((i,j)\)</span> with <span class="math inline">\(i,j = 1,2,3,4\)</span>] has the same probability of <span class="math inline">\(1/16\)</span>. To calculate the probablity of an event, we must count the number of elements of the event and divide by 16 (the total number of possible outcomes). Here are some event probabilities calculated this way:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\Omega &amp;= \{(1,1), (1,2), (1,3), (1,4), (2,1), (2,2), (2,3), (2,4), \\
+&amp;\quad (3,1), (3,2), (3,3), (3,4), (4,1), (4,2), (4,3), (4,4) \}
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\Pr (\text{the sum of the rolls is even}) &amp;= 8/16 &amp;= 1/2 \\
+\Pr (\text{the sum of the rolls is odd}) &amp;= 8/16 &amp;= 1/2 \\
+\Pr (\text{the first roll is equal to the second}) &amp;= 4/16 &amp;= 1/4 \\
+\Pr (\text{the first roll is larger than the second}) &amp;= 6/16 &amp;= 3/8 \\
+\Pr (\text{at least one roll is equal to 4}) &amp;= 7/16 \\
+\end{aligned}
+\]</span></p>
+</div>
+<div id="romeo-and-juliet" class="section level2">
+<h2>Romeo and Juliet</h2>
+<p>Romeo and Juliet have a date at a given time, and each will arrive at the meeting place with a delay between 0 and 1 hour, with all pairs of delays being equally likely. The first to arrive will wait for 15 minutes and will leave if the other has not yet arrived. What is the probability that they will meet?</p>
+<p>Let us use as the sample space the <strong>unit square</strong>, whose elements are the possible pairs of delays for the two of them. Our interpretation of “equally likely” pairs of delays is to let the probability of a subset of <span class="math inline">\(\Omega\)</span> be equal to its area. This probability law satisfies the three probability axioms. The event that Romeo and Juliet will meet is the shaded region in the figure below, and its probability is calculated to be <span class="math inline">\(7/16\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dt">from =</span> <span class="dv">0</span>, <span class="dt">to =</span> <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.001</span>),
+           <span class="dt">ylow =</span> <span class="op">-</span>.<span class="dv">25</span> <span class="op">+</span><span class="st"> </span>x,
+           <span class="dt">yhigh =</span> .<span class="dv">25</span> <span class="op">+</span><span class="st"> </span>x) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y =</span> ylow)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y =</span> yhigh)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> ylow, <span class="dt">ymax =</span> yhigh), <span class="dt">alpha =</span> .<span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> .<span class="dv">5</span>, <span class="dt">y =</span> .<span class="dv">5</span>, <span class="dt">label =</span> <span class="st">&quot;M&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, <span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, .<span class="dv">25</span>, <span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">coord_fixed</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),
+              <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),
+              <span class="dt">expand =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Romeo&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Juliet&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_classic</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">panel.border =</span> <span class="kw">element_rect</span>(<span class="dt">color =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">fill =</span> <span class="ot">NA</span>, <span class="dt">size =</span> <span class="dv">1</span>))</code></pre></div>
+<p><img src="probability_files/figure-html/romeo-juliet-1.png" width="672" /></p>
+<p>The event that Romeo and Juliet will arrive within 15 minutes of each other is</p>
+<p><span class="math display">\[M = \{ (x,y) \mid | x - y | \leq 1/4, 0 \leq x \leq 1, 0 \leq y \leq 1 \}\]</span>.</p>
+<p>The area of <span class="math inline">\(M\)</span> is 1 minus the area of the two unshaded triangles, or <span class="math inline">\(1 - (3/4) \times (3/4) = 7/16\)</span>. Thus the probabiltiy of meeting is <span class="math inline">\(7/16\)</span>.</p>
+</div>
+</div>
+<div id="conditional-probability" class="section level1">
+<h1>Conditional probability</h1>
+<p>Social scientists almost always examine <strong>conditional</strong> relationships</p>
+<ul>
+<li>Given opposite Party ID, probability of date</li>
+<li>Given low-interest rates probability of high inflation</li>
+<li>Given “economic anxiety” probability of voting for Trump</li>
+</ul>
+<p>Intuition:</p>
+<ul>
+<li>Some event has occurred: an outcome was realized</li>
+<li>And with the knowledge that this outcome has already happened</li>
+<li>What is the probability that something in another set happens?</li>
+</ul>
+<p>Definition:</p>
+<p>Suppose we have two events, <span class="math inline">\(E\)</span> and <span class="math inline">\(F\)</span>, and that <span class="math inline">\(P(F)&gt;0\)</span>. Then,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(E|F) &amp; = &amp; \frac{P(E\cap F ) } {P(F) }  
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(P(E \cap F)\)</span>: Both <span class="math inline">\(E\)</span> and <span class="math inline">\(F\)</span> must occur</li>
+<li><span class="math inline">\(P(F)\)</span> normalize: we know <span class="math inline">\(P(F)\)</span> already occurred</li>
+</ul>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<div id="elections" class="section level3">
+<h3>Elections</h3>
+<ul>
+<li>Example 1
+<ul>
+<li><span class="math inline">\(F = \{\text{All Democrats Win} \}\)</span></li>
+<li><span class="math inline">\(E = \{\text{Nancy Pelosi Wins (D-CA)} \}\)</span></li>
+<li>If <span class="math inline">\(F\)</span> occurs then <span class="math inline">\(E\)</span> most occur, <span class="math inline">\(P(E|F) = 1\)</span></li>
+</ul></li>
+<li>Example 2
+<ul>
+<li><span class="math inline">\(F = \{\text{All Democrats Win} \}\)</span></li>
+<li><span class="math inline">\(E = \{ \text{Louie Gohmert Wins (R-TX) }\)</span></li>
+<li><span class="math inline">\(F \cap E = \emptyset \Rightarrow P(E|F) = \frac{P(F \cap E) }{P(F)} = \frac{P(\emptyset)}{P(F)} = 0\)</span></li>
+</ul></li>
+<li>Example 3: incumbency advantage
+<ul>
+<li><span class="math inline">\(I = \{ \text{Candidate is an incumbent} \}\)</span></li>
+<li><span class="math inline">\(D = \{ \text{Candidate Defeated} \}\)</span></li>
+<li><span class="math inline">\(P(D|I) = \frac{P(D \cap I)}{P(I) }\)</span></li>
+<li>In words – the probability that a candidate is defeated given that the candidate is an incumbent is equal to the probability of being defeated AND being an incumbent divided by the probability of being an incumbent</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="difference-between-pab-and-pba" class="section level2">
+<h2>Difference between <span class="math inline">\(P(A|B)\)</span> and <span class="math inline">\(P(B|A)\)</span></h2>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(A|B) &amp; = &amp; \frac{P(A\cap B)}{P(B)} \\
+P(B|A) &amp; = &amp; \frac{P(A \cap B) } {P(A)}
+\end{eqnarray}
+\]</span></p>
+<p>Less Serious Example <span class="math inline">\(\leadsto\)</span> type of person who attends football games:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(\text{Attending a football game}| \text{Drunk}) &amp; = &amp; 0.01  \\
+P(\text{Drunk}| \text{Attending a football game}) &amp; \approx &amp; 1
+\end{eqnarray}
+\]</span></p>
+</div>
+</div>
+<div id="law-of-total-probability" class="section level1">
+<h1>Law of total probability</h1>
+<p>Suppose that we have a set of events <span class="math inline">\(F_{1}, F_{2}, \ldots, F_{N}\)</span> such that the events are mutually exclusive and together comprise the entire sample space <span class="math inline">\(\cup_{i=1}^{N} F_{i} = \text{Sample Space}\)</span>. Then, for any event <span class="math inline">\(E\)</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(E) &amp; = &amp; \sum_{i=1}^{N} P(E | F_{i} ) \times P(F_{i}) 
+\end{eqnarray}
+\]</span></p>
+<div id="example" class="section level2">
+<h2>Example</h2>
+<ul>
+<li>Infer <span class="math inline">\(P(\text{vote})\)</span> after mobilization campaign
+<ul>
+<li><span class="math inline">\(P(\text{vote}|\text{mobilized} ) = 0.75\)</span></li>
+<li><span class="math inline">\(P(\text{vote}| \text{not mobilized} ) = 0.25\)</span></li>
+<li><span class="math inline">\(P(\text{mobilized}) = 0.6 ; P(\text{not mobilized} ) = 0.4\)</span></li>
+<li>What is <span class="math inline">\(P(\text{vote})\)</span>?</li>
+</ul></li>
+<li>Sample space (one person) = <span class="math inline">\(\{\)</span> (mobilized, vote), (mobilized, not vote), (not mobilized, vote) , (not mobilized, not vote) <span class="math inline">\(\}\)</span>
+<ul>
+<li>Mobilization partitions the space (mutually exclusive and exhaustive)</li>
+<li>We can use the law of total probability <span class="math display">\[
+\begin{eqnarray}
+P(\text{vote} ) &amp; = &amp; P(\text{mob.} ) \times P(\text{vote}| \text{mob.} ) + P(\text{not mob} \times P(\text{vote} | \text{not mob} )  \\
+ &amp; = &amp; 0.6 \times 0.75 + 0.4 \times 0.25  \\
+  &amp; = &amp; 0.55  
+\end{eqnarray}
+\]</span></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="bayes-rule" class="section level1">
+<h1>Bayes’ Rule</h1>
+<ul>
+<li><span class="math inline">\(P(B|A)\)</span> may be easy to obtain</li>
+<li><span class="math inline">\(P(A|B)\)</span> may be harder to determine</li>
+<li>Bayes’ rule provides a method to move from <span class="math inline">\(P(B|A)\)</span> to <span class="math inline">\(P(A|B)\)</span></li>
+</ul>
+<p>Bayes’ Rule: For two events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(A|B) &amp; = &amp; \frac{P(A)\times P(B|A)}{P(B)} 
+\end{eqnarray}
+\]</span></p>
+<p>The proof is:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(A|B) &amp; = &amp; \frac{P(A \cap B) }{P(B) } \\
+&amp;  = &amp; \frac{P(B|A)P(A) } {P(B) } 
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Law of total probability allows us to replace the joint probability of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> with the alternative expression</li>
+</ul>
+<div id="example-1" class="section level2">
+<h2>Example</h2>
+<p>How do we identify racial groups from lists of names? The Census Bureau collects information on distribution of names by race. For example, <strong>Washington</strong> is the “blackest” name in America.</p>
+<ul>
+<li>P(black)= 0.126</li>
+<li>P(not black) = 1 - P(black) = 0.874</li>
+<li>P(Washington<span class="math inline">\(|\)</span>black) = 0.00378</li>
+<li>P(Washington<span class="math inline">\(|\)</span>not black) = 0.000060615</li>
+</ul>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(\text{black}|\text{Wash} ) &amp; = &amp; \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{Wash} ) } \\
+ &amp; = &amp; \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{black})P(\text{Wash}|\text{black}) + P(\text{nb})P(\text{Wash}| \text{nb}) } \\
+ &amp; = &amp; \frac{0.126 \times 0.00378}{0.126\times 0.00378 + 0.874 \times 0.000060616} \\
+ &amp; \approx &amp; 0.9  
+ \end{eqnarray}
+\]</span></p>
+</div>
+<div id="lets-make-a-deal-aka-the-monty-hall-problem" class="section level2">
+<h2>Let’s Make a Deal (aka the Monty Hall problem)</h2>
+<blockquote>
+<p>You blew it, and you blew it big! Since you seem to have difficulty grasping the basic principle at work here, I’ll explain. After the host reveals a goat, you now have a one-in-two chance of being correct. Whether you change your selection or not, the odds are the same. There is enough mathematical illiteracy in this country, and we don’t need the world’s highest IQ propagating more. Shame! – Scott Smith, Ph.D. University of Florida (From Wikipedia)</p>
+</blockquote>
+<ul>
+<li>Suppose we have three doors. <span class="math inline">\(A, B, C\)</span>.</li>
+<li>Behind one door there is a car. Behind the others is a goat (you don’t want a goat)
+<ul>
+<li>A contestant guesses a door.</li>
+<li>The host opens a different door and then contestant has option to switch</li>
+<li>Should the contestant switch?</li>
+</ul></li>
+<li>Contestant guesses <span class="math inline">\(A\)</span></li>
+<li><span class="math inline">\(P(A) = 1/3 \leadsto\)</span> chance of winning without switch</li>
+<li>If <span class="math inline">\(C\)</span> is revealed to not have a car:</li>
+</ul>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(B| C \text{ revealed} ) &amp; = &amp; \frac{P(B)P(C \text{ revealed} | B)}{P(B)P(C \text{ revealed} | B) + P(A) P(C \text{ revealed} | A) } \\
+&amp; = &amp; \frac{1/3 \times 1}{1/3 \times 1 + 1/3 \times 1/2 } = \frac{1/3}{1/2} = \frac{2}{3} \\
+P(A| C \text{ revealed} ) &amp; = &amp; \frac{P(A) P(C \text{ revealed} | A)}{ P(B)P(C \text{ revealed} | B) + P(A) P(C \text{ revealed} | A) } \\
+&amp; = &amp; \frac{1/3 \times 1/2}{1/3 \times 1 + 1/3 \times 1/2} = \frac{1}{3} 
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Double chances of winning with switch</li>
+</ul>
+</div>
+</div>
+<div id="independence-of-probabilities" class="section level1">
+<h1>Independence of probabilities</h1>
+<p>Does one event provide information about another event?</p>
+<ul>
+<li><p>Independence: Two events <span class="math inline">\(E\)</span> and <span class="math inline">\(F\)</span> are independent if</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(E\cap F ) &amp; = &amp; P(E)P(F) 
+\end{eqnarray}
+\]</span></p></li>
+<li>If <span class="math inline">\(E\)</span> and <span class="math inline">\(F\)</span> are not independent, we’ll say they are <strong>dependent</strong></li>
+<li><p>Independence is symetric: if <span class="math inline">\(F\)</span> is independent of <span class="math inline">\(E\)</span>, then <span class="math inline">\(E\)</span> is indepenent of <span class="math inline">\(F\)</span></p></li>
+<li>Flip a fair coin twice
+<ul>
+<li><span class="math inline">\(E = \text{first flip heads}\)</span></li>
+<li><span class="math inline">\(F = \text{second flip heads}\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(E \cap F ) &amp; = &amp; P( \{ (H, H) , (H, T) \} \cap \{ (H, H), (T, H) \} )  \\
+ &amp; =&amp; P( \{(H, H)\} )  \\
+ &amp; = &amp; \frac{1}{4}  \\
+P(E ) &amp; = &amp; \frac{1} {2}  \\
+P(F) &amp; = &amp; \frac{1}{2}  \\
+P(E)P(F)  &amp; =&amp; \frac{1}{2} \times \frac{1}{2} = \frac{1}{4}  =P(E \cap F )   
+\end{eqnarray} 
+\]</span></p></li>
+<li><p>Suppose <span class="math inline">\(E\)</span> and <span class="math inline">\(F\)</span> are independent. Then,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(E|F ) &amp; = &amp; \frac{P(E \cap F) }{P(F) }  \\
+&amp; = &amp; \frac{P(E)P(F)}{P(F)} \\
+&amp; = &amp; P(E)  
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Conditioning on the event <span class="math inline">\(F\)</span> does not modify the probability of <span class="math inline">\(E\)</span>.</li>
+<li>No information about <span class="math inline">\(E\)</span> in <span class="math inline">\(F\)</span></li>
+</ul></li>
+</ul>
+<div id="example-independence-and-causal-inference" class="section level2">
+<h2>Example: Independence and Causal Inference</h2>
+<ul>
+<li>Selection and Observational Studies
+<ul>
+<li>We often want to infer the effect of some treatment
+<ul>
+<li>Incumbency on vote return</li>
+<li>College education and job earnings</li>
+</ul></li>
+<li>Observational studies: observe what we see to make inference</li>
+<li>Problem: units select into treatment
+<ul>
+<li>Simple example: enroll in job training if I think it will help</li>
+<li>P(job<span class="math inline">\(|\)</span>training in study) <span class="math inline">\(\neq\)</span> P(job<span class="math inline">\(|\)</span>forced training)</li>
+</ul></li>
+<li>Background characteristic: difference between treatment and control groups</li>
+</ul></li>
+<li>Experiments (second greatest discovery of 20th century): make background characteristics and treatment status independent</li>
+</ul>
+</div>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-10-11</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp   * 0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  codetools    0.2-15  2016-10-05 CRAN (R 3.5.1)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.15  2018-01-28 CRAN (R 3.5.0)                      
+##  dplyr      * 0.7.6   2018-06-29 cran (@0.7.6)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.0.0   2018-07-03 CRAN (R 3.5.0)                      
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr       0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.2.2   2017-06-17 CRAN (R 3.5.0)                      
+##  Rcpp         0.12.18 2018-07-23 CRAN (R 3.5.0)                      
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.2.1   2018-05-30 CRAN (R 3.5.0)                      
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.4   2018-02-26 CRAN (R 3.5.0)                      
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
