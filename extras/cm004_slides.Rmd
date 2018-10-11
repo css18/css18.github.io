@@ -163,6 +163,25 @@ str(x)
 dim(x)
 ```
 
+## Verbiage for data transformation
+
+* `dplyr`
+1. The first argument is a data frame
+1. Subsequent arguments describe what to do with the data frame
+1. The result is a new data frame
+
+## Key functions in `dplyr`
+
+`function()`  | Action performed
+--------------|--------------------------------------------------------
+`filter()`    | Subsets observations based on their values
+`arrange()`   | Changes the order of observations based on their values
+`select()`    | Selects a subset of columns from the data frame
+`rename()`    | Changes the name of columns in the data frame
+`mutate()`    | Creates new columns (or variables)
+`group_by()`  | Changes the unit of analysis from the complete dataset to individual groups
+`summarize()` | Collapses the data frame to a smaller number of rows which summarize the larger data
+
 ## Tidy data
 
 ![Figure 12.1 from [@hadley2016]](http://r4ds.had.co.nz/images/tidy-1.png)
