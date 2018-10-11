@@ -19,7 +19,7 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## Before class
 
-* Read Chapters 9-13 from [R for Data Science](http://r4ds.had.co.nz/)
+* Read Chapters 5, 9-13 from [R for Data Science](http://r4ds.had.co.nz/)
 * Read [Wickham, H. (2014). Tidy data. *Journal of Statistical Software*, 59(10), 1-23.](https://www.jstatsoft.org/article/view/v059i10)
     * Ignore the code examples - `plyr` and `reshape2` are no longer the dominant packages in R for reshaping and tidying data. Focus instead on the definition and types of "messy" datasets
 
