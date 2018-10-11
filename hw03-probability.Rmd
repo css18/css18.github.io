@@ -1,0 +1,79 @@
+---
+title: "Homework 03: Probability"
+output: html_document
+---
+
+# Overview
+
+Due before class on October 23rd.
+
+# Fork the `hw03` repository
+
+Go [here](https://github.com/css18/hw03) to fork the repo for homework 03.
+
+# Exercises on sample spaces and probability (10 points)
+
+Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate $\LaTeX$ mathematical notation.
+
+## Defining the sample space
+
+Consider the experiment of rolling a pair of dice. Suppose we are interested in the **sum of the face values** showing on the dice. The sum of 2 dice could equal any value from 2 to 12; that is, $2,3,4,5,6,7,8,9,10,11,12$. In view of this, a student remarked that since there are 6 even values -- 2, 4, 6, 8, 10, 12 -- but only 5 odd values -- 3, 5, 7, 9, 11 -- there would be, over many trials, more even than odd values. Do you agree?
+
+## Geniuses and chocolate
+
+Out of the students in a class, 60% are geniuses, 70% love chocolate, and 40% fall into both categories. Determine the probability that a randomly selected student is neither a genius nor a chocolate lover.
+
+## Rolling the dice
+
+We roll two fair 6-sided dice. Each one of the 36 possible outcomes is assumed to be equally likely.
+
+a. Find the probability that doubles are rolled.
+a. Given that the roll results in a sum of 4 or less, find the conditional probability that doubles are rolled.
+a. Find the probability that at least one die roll is a 6.
+a. Given that the two dice land on different numbers, find the conditional probability that at least one die roll is a 6.
+
+## A two-envelope puzzle
+
+The release of two out of three prisoners has been announced, but their identity is kept secret. One of the prisoners considers asking a friendly guard to tell him who is the prisoner other than himself that will be released, but hesitates based on the following rationale: at the prisoner's present state of knowledge, the probability of being released is $2/3$, but after he knows the anser, the probability of being released will become $1/2$, since there will be two prisoners (including himself) whose fate is unknown and exactly one of the two will be released. What is wrong with this line of reasoning?
+
+## The hunter
+
+A hunter has two hunting dogs. One day, on the trail of some animal, the hunter comes to a place where the road diverges into two paths. He knows that each dog, indepdnent of the other, will choose the correct path with probability $p$. The hunter decides to let each dog choose a path, and if they agree, take that one, and if they disagree, to randomly pick a path. Is his strategy better than just letting one of the two dogs decide on a path?
+
+## The king's sibling
+
+The king has only one sibling. What is the probability that the sibling is male? Assume that every birth results in a boy with probability $1/2$, independent of other births. Be careful to state any additional assumptions you have to make in order to arrive at an answer.
+
+## The prickly professor
+
+A particular class has had a history of low attendance. The annoyed professor decides that she will not lecture unless at least $k$ of the $n$ students enrolled in the class are present. Each student will independently show up with probability $p_g$ if the weather is good, and $p_b$ if the weather is bad.
+
+a. Given the probability of bad weather on a given day, obtain a mathematical expression for the probability that the professor will teach her class on that day.
+a. Write a function which accepts three inputs:
+    1. $n$ - the number of students enrolled in the class
+    1. $k$ - the number of students necessary to show up in order for the professor to teach the class on a given day
+    1. $p_g$ - the probability the weather is good on a given day (by the axioms of probability, $p_b = 1 - p_g$)
+    
+    The output of the function should be the probability the professor teaches class on a given day.
+a. Identify the probability the professor teaches class for the following scenarios:
+    a. $n = 40, k = 20, p_g = 0.5$
+    a. $n = 60, k = 20, p_g = 0.5$
+    a. $n = 60, k = 20, p_g = 0.7$
+    a. $n = 60, k = 50, p_g = 0.8$
+a. Generate a graph that visualizes the probability that the professor teaches class on a given day for $n=40, k = 20, 0 \leq p_g \leq 1$.
+
+## The birthday problem
+
+Consider $n$ people who are attending a party. We assume that every person has an equal probability of being born on any day during the year, independent of everyone else, and ignore the additional complication presented by leap years (i.e. assume that nobody is born on February 29).
+
+a. Define the sample space of all possible outcomes in terms of $n$.
+a. Identify the generic function that defines the probability that each person has a distinct birthday.
+a. Write a function whose input is $n$, the number of people attending a party, and whose output is the probability that every individual has a unique birthday.
+a. Generate a graph that visualizes the probability that every individual has a unique birthday for $n$ in $[1,365]$.
+a. For what value of $n$ is the probability that every individual has a unique variable approximately $0.5$?
+
+# Submit the assignment
+
+Your assignment should be submitted as an R Markdown document rendered as an HTML document. **Don't know what an R Markdown document is? [Read this!](http://rmarkdown.rstudio.com/lesson-1.html) Or [this!](http://r4ds.had.co.nz/r-markdown.html)** I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.
+
+Follow instructions on [homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow). As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.

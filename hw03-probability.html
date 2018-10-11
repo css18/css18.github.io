@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework 03: Probability</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework 03: Probability</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Due before class on October 23rd.</p>
+</div>
+<div id="fork-the-hw03-repository" class="section level1">
+<h1>Fork the <code>hw03</code> repository</h1>
+<p>Go <a href="https://github.com/css18/hw03">here</a> to fork the repo for homework 03.</p>
+</div>
+<div id="exercises-on-sample-spaces-and-probability-10-points" class="section level1">
+<h1>Exercises on sample spaces and probability (10 points)</h1>
+<p>Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate <span class="math inline">\(\LaTeX\)</span> mathematical notation.</p>
+<div id="defining-the-sample-space" class="section level2">
+<h2>Defining the sample space</h2>
+<p>Consider the experiment of rolling a pair of dice. Suppose we are interested in the <strong>sum of the face values</strong> showing on the dice. The sum of 2 dice could equal any value from 2 to 12; that is, <span class="math inline">\(2,3,4,5,6,7,8,9,10,11,12\)</span>. In view of this, a student remarked that since there are 6 even values – 2, 4, 6, 8, 10, 12 – but only 5 odd values – 3, 5, 7, 9, 11 – there would be, over many trials, more even than odd values. Do you agree?</p>
+</div>
+<div id="geniuses-and-chocolate" class="section level2">
+<h2>Geniuses and chocolate</h2>
+<p>Out of the students in a class, 60% are geniuses, 70% love chocolate, and 40% fall into both categories. Determine the probability that a randomly selected student is neither a genius nor a chocolate lover.</p>
+</div>
+<div id="rolling-the-dice" class="section level2">
+<h2>Rolling the dice</h2>
+<p>We roll two fair 6-sided dice. Each one of the 36 possible outcomes is assumed to be equally likely.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Find the probability that doubles are rolled.</li>
+<li>Given that the roll results in a sum of 4 or less, find the conditional probability that doubles are rolled.</li>
+<li>Find the probability that at least one die roll is a 6.</li>
+<li>Given that the two dice land on different numbers, find the conditional probability that at least one die roll is a 6.</li>
+</ol>
+</div>
+<div id="a-two-envelope-puzzle" class="section level2">
+<h2>A two-envelope puzzle</h2>
+<p>The release of two out of three prisoners has been announced, but their identity is kept secret. One of the prisoners considers asking a friendly guard to tell him who is the prisoner other than himself that will be released, but hesitates based on the following rationale: at the prisoner’s present state of knowledge, the probability of being released is <span class="math inline">\(2/3\)</span>, but after he knows the anser, the probability of being released will become <span class="math inline">\(1/2\)</span>, since there will be two prisoners (including himself) whose fate is unknown and exactly one of the two will be released. What is wrong with this line of reasoning?</p>
+</div>
+<div id="the-hunter" class="section level2">
+<h2>The hunter</h2>
+<p>A hunter has two hunting dogs. One day, on the trail of some animal, the hunter comes to a place where the road diverges into two paths. He knows that each dog, indepdnent of the other, will choose the correct path with probability <span class="math inline">\(p\)</span>. The hunter decides to let each dog choose a path, and if they agree, take that one, and if they disagree, to randomly pick a path. Is his strategy better than just letting one of the two dogs decide on a path?</p>
+</div>
+<div id="the-kings-sibling" class="section level2">
+<h2>The king’s sibling</h2>
+<p>The king has only one sibling. What is the probability that the sibling is male? Assume that every birth results in a boy with probability <span class="math inline">\(1/2\)</span>, independent of other births. Be careful to state any additional assumptions you have to make in order to arrive at an answer.</p>
+</div>
+<div id="the-prickly-professor" class="section level2">
+<h2>The prickly professor</h2>
+<p>A particular class has had a history of low attendance. The annoyed professor decides that she will not lecture unless at least <span class="math inline">\(k\)</span> of the <span class="math inline">\(n\)</span> students enrolled in the class are present. Each student will independently show up with probability <span class="math inline">\(p_g\)</span> if the weather is good, and <span class="math inline">\(p_b\)</span> if the weather is bad.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Given the probability of bad weather on a given day, obtain a mathematical expression for the probability that the professor will teach her class on that day.</li>
+<li>Write a function which accepts three inputs:
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(n\)</span> - the number of students enrolled in the class</li>
+<li><span class="math inline">\(k\)</span> - the number of students necessary to show up in order for the professor to teach the class on a given day</li>
+<li><span class="math inline">\(p_g\)</span> - the probability the weather is good on a given day (by the axioms of probability, <span class="math inline">\(p_b = 1 - p_g\)</span>)</li>
+</ol>
+The output of the function should be the probability the professor teaches class on a given day.</li>
+<li>Identify the probability the professor teaches class for the following scenarios:
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(n = 40, k = 20, p_g = 0.5\)</span></li>
+<li><span class="math inline">\(n = 60, k = 20, p_g = 0.5\)</span></li>
+<li><span class="math inline">\(n = 60, k = 20, p_g = 0.7\)</span></li>
+<li><span class="math inline">\(n = 60, k = 50, p_g = 0.8\)</span></li>
+</ol></li>
+<li>Generate a graph that visualizes the probability that the professor teaches class on a given day for <span class="math inline">\(n=40, k = 20, 0 \leq p_g \leq 1\)</span>.</li>
+</ol>
+</div>
+<div id="the-birthday-problem" class="section level2">
+<h2>The birthday problem</h2>
+<p>Consider <span class="math inline">\(n\)</span> people who are attending a party. We assume that every person has an equal probability of being born on any day during the year, independent of everyone else, and ignore the additional complication presented by leap years (i.e. assume that nobody is born on February 29).</p>
+<ol style="list-style-type: lower-alpha">
+<li>Define the sample space of all possible outcomes in terms of <span class="math inline">\(n\)</span>.</li>
+<li>Identify the generic function that defines the probability that each person has a distinct birthday.</li>
+<li>Write a function whose input is <span class="math inline">\(n\)</span>, the number of people attending a party, and whose output is the probability that every individual has a unique birthday.</li>
+<li>Generate a graph that visualizes the probability that every individual has a unique birthday for <span class="math inline">\(n\)</span> in <span class="math inline">\([1,365]\)</span>.</li>
+<li>For what value of <span class="math inline">\(n\)</span> is the probability that every individual has a unique variable approximately <span class="math inline">\(0.5\)</span>?</li>
+</ol>
+</div>
+</div>
+<div id="submit-the-assignment" class="section level1">
+<h1>Submit the assignment</h1>
+<p>Your assignment should be submitted as an R Markdown document rendered as an HTML document. <strong>Don’t know what an R Markdown document is? <a href="http://rmarkdown.rstudio.com/lesson-1.html">Read this!</a> Or <a href="http://r4ds.had.co.nz/r-markdown.html">this!</a></strong> I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.</p>
+<p>Follow instructions on <a href="https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow">homework workflow</a>. As part of the pull request, you’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.</p>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
