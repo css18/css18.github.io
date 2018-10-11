@@ -26,12 +26,13 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Slides and class materials
 
 * [Slides](extras/cm004_slides.html)
-* [Importing data into R](https://cfss.uchicago.edu/datawrangle_import_functions.html)
-* [Tidy data](https://cfss.uchicago.edu/datawrangle_tidy_data.html)
 * [Data storage types](https://cfss.uchicago.edu/program_vectors.html)
-* [Linear algebra in R](linear-algebra.html)
-* [Relational data: a quick review](https://cfss.uchicago.edu/datawrangle_relational_data.html)
+* [Tidy data](https://cfss.uchicago.edu/datawrangle_tidy_data.html)
 * [Practice tidying data](https://cfss.uchicago.edu/datawrangle_tidy_exercise.html)
+
+* [Importing data into R](https://cfss.uchicago.edu/datawrangle_import_functions.html)
+* [Relational data: a quick review](https://cfss.uchicago.edu/datawrangle_relational_data.html)
+* [Linear algebra in R](linear-algebra.html)
 
 ## What you need to do
 
