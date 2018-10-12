@@ -557,6 +557,8 @@ where $p(i)$ are the binomial probabilities. Thus, the probability of an operati
 
 $$\sum_{i=k}^n \binom{n}{i} p^i (1-p)^{n-i}$$
 
+For instance, if $n=100, k=60, p=0.7$, the probability of an operational system is `r pbinom(60, 100, 0.7, lower.tail = FALSE)`.
+
 # Session Info {.toc-ignore}
 
 ```{r child='_sessioninfo.Rmd'}
