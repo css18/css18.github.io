@@ -49,12 +49,6 @@ The king has only one sibling. What is the probability that the sibling is male?
 A particular class has had a history of low attendance. The annoyed professor decides that she will not lecture unless at least $k$ of the $n$ students enrolled in the class are present. Each student will independently show up with probability $p_g$ if the weather is good, and $p_b$ if the weather is bad.
 
 a. Given the probability of bad weather on a given day, obtain a mathematical expression for the probability that the professor will teach her class on that day.
-a. Write a function which accepts three inputs:
-    1. $n$ - the number of students enrolled in the class
-    1. $k$ - the number of students necessary to show up in order for the professor to teach the class on a given day
-    1. $p_g$ - the probability the weather is good on a given day (by the axioms of probability, $p_b = 1 - p_g$)
-    
-    The output of the function should be the probability the professor teaches class on a given day.
 a. Identify the probability the professor teaches class for the following scenarios:
     a. $n = 40, k = 20, p_g = 0.5$
     a. $n = 60, k = 20, p_g = 0.5$
