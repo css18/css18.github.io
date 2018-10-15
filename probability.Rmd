@@ -663,6 +663,10 @@ a. What is the probability that on a given day, the cars will park in such a way
     
     Note that we could have solved the second part of the problem by neglecting the fact that the cars are distinct. Suppose the foreign cars are indistinguishable, and also that the US cars are indistinguishable. Out of the 20 available spaces, we need to choose 10 spaces in which to place the US cars, and thus there are $\binom{20}{10}$ possible outcomes. Out of these outcomes, there are only two in which the cars alternate, depending on whether we start with a US or a foreign car. Thus, the desired probability is $2 / \binom{20}{10}$, which coincides with our earlier answer.
 
+# Acknowledgements {.toc-ignore}
+
+* Material drawn from **Introduction to Probability** (2nd edition) by Bertsekas and Tsitsiklis
+
 # Session Info {.toc-ignore}
 
 ```{r child='_sessioninfo.Rmd'}
