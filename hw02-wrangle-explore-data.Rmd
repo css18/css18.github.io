@@ -135,7 +135,7 @@ Do not worry about using survey weights in your exploratory analysis. Just treat
 
 The final submission should include two components.
 
-### Lab notebook (6 points)
+### Lab notebook (4 points)
 
 This is a record of all your exploratory analysis. It should be extensive (minimum 30-40 graphs), and mostly code and graphics.
 
@@ -143,7 +143,7 @@ This is a record of all your exploratory analysis. It should be extensive (minim
 * It should be somewhat stream-of-conscious (that is, a stored record of your exploration as you explore the data), though certainly feel free to maintain a structure or go back and reformat different sections
 * Don't bother cleaning up each graph to have meaningful labels
 
-### Exploration write-up (4 points)
+### Exploration write-up (3 points)
 
 In a short paper (around 750 words), summarize your insights and what you've learned about the data. This could include one or two important research questions you think you could answer using the data, as well as some initial hypotheses supported by your exploratory analysis. Or perhaps you've identified unusual variation in a single variable, or extreme outliers or systematic missingness in the data that should be accounted for in future analysis. **This component will look different for each student.** That's fine. What I want to see is genuine effort and some thought put into what you've learned from this GDA.
 
