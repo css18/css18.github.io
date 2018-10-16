@@ -31,14 +31,14 @@ theme_set(theme_minimal())
 The **sample space** as the set of all things that can occur. We will collect all distinct outcomes into the set $S$. Examples include:
 
 1. House of Representatives - elections every 2 years
-    * One incumbent: $S = \{W, N\}$
-    * Two incumbents: $S = \{(W,W), (W,N), (N,W), (N,N)\}$
-    * 435 incumbents: $S = 2^{435}$ possible outcomes (permutations)
+    * One incumbent: $\Omega = \{W, N\}$
+    * Two incumbents: $\Omega = \{(W,W), (W,N), (N,W), (N,N)\}$
+    * 435 incumbents: $\Omega = 2^{435}$ possible outcomes (permutations)
 1. Number of countries signing treaties
-    * $s = \{0, 1, 2, \ldots, 194\}$
+    * $\Omega = \{0, 1, 2, \ldots, 194\}$
 1. Duration of cabinets
     * All non-negative real numbers: $[0, \infty)$
-    * $S = \{x : 0 \leq x < \infty\}$
+    * $\Omega = \{x : 0 \leq x < \infty\}$
         * All possible $x$ such that $x$ is between 0 and infinity
 
 > The sample space must define all possible realizations.
@@ -47,7 +47,7 @@ The **sample space** as the set of all things that can occur. We will collect al
 
 **Events** are a subset of the sample space:
 
-$$E \subset S$$
+$$E \subset \Omega$$
 
 * Plain English: outcomes from the sample space, collected in a set
 * Congressional election example
@@ -70,7 +70,7 @@ $$E \subset S$$
 
 * $E = \{ (W,W), (W,N) \}$
 * $F  = \{ (N, N), (W,N) \}$
-* $S = \{(W,W), (W,N), (N,W), (N,N) \}$
+* $\Omega = \{(W,W), (W,N), (N,W), (N,N) \}$
 
 Operations determine what lies in the new set $E^{\text{new}}$.
 
@@ -84,7 +84,7 @@ Operations determine what lies in the new set $E^{\text{new}}$.
     * All objects in $S$ that are not in $E$
     * $E^{c} = \{(N, W) , (N, N) \}$
     * $F^{c} = \{(N, W) , (W, W) \}$
-    * What is $S^{c}$? - an **empty set** $\emptyset$
+    * What is $\Omega^{c}$? - an **empty set** $\emptyset$
     * Suppose $E = {W}$, $F = {N}$.  Then  $E \cap F = \emptyset$ (there is nothing that lies in both sets)
 
 # Probability
@@ -118,11 +118,11 @@ $$
 
 $$
 \begin{aligned}
-\Pr (\text{the sum of the rolls is even}) &= 8/16 &= 1/2 \\
-\Pr (\text{the sum of the rolls is odd}) &= 8/16 &= 1/2 \\
-\Pr (\text{the first roll is equal to the second}) &= 4/16 &= 1/4 \\
-\Pr (\text{the first roll is larger than the second}) &= 6/16 &= 3/8 \\
-\Pr (\text{at least one roll is equal to 4}) &= 7/16 \\
+\Pr (\text{the sum of the rolls is even}) &= 8/16 = 1/2 \\
+\Pr (\text{the sum of the rolls is odd}) &= 8/16 = 1/2 \\
+\Pr (\text{the first roll is equal to the second}) &= 4/16 = 1/4 \\
+\Pr (\text{the first roll is larger than the second}) &= 6/16 = 3/8 \\
+\Pr (\text{at least one roll is equal to 4}) &= 7/16
 \end{aligned}
 $$
 
@@ -156,7 +156,7 @@ The event that Romeo and Juliet will arrive within 15 minutes of each other is
 
 $$M = \{ (x,y) \mid | x - y | \leq 1/4, 0 \leq x \leq 1, 0 \leq y \leq 1 \}$$.
 
-The area of $M$ is 1 minus the area of the two unshaded triangles, or $1 - (3/4) \times (3/4) = 7/16$. Thus the probabiltiy of meeting is $7/16$.
+The area of $M$ is 1 minus the area of the two unshaded triangles, or $1 - (3/4) \times (3/4) = 7/16$. Thus the probability of meeting is $7/16$.
 
 # Conditional probability
 
@@ -213,6 +213,10 @@ a. The probability that at least one team is successful is $3/4$.
 
 Assuming that exactly one successful design is produced, what is the probability that it was designed by team $N$?
 
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
 There are four possible outcomes here, corresponding to the four combinations of success and failure of the two teams:
 
 * $SS$: both succeed
@@ -245,6 +249,9 @@ $$
 \Pr (FS | \{ SF, FS \}) = \frac{\frac{1}{12}}{\frac{1}{4} + \frac{1}{12}} = \frac{\frac{1}{12}}{\frac{3}{12} + \frac{1}{12}} = \frac{\frac{1}{12}}{\frac{4}{12}} = \frac{12}{12 \times 4} = \frac{1}{4}
 $$
 
+  </p>
+</details>
+
 ## Difference between $P(A|B)$ and $P(B|A)$
 
 $$
@@ -265,7 +272,7 @@ $$
     
 # Law of total probability
 
-Suppose that we have a set of events $F_{1}, F_{2}, \ldots, F_{N}$ such that the events are mutually exclusive and together comprise the entire sample space $\cup_{i=1}^{N} F_{i} = \text{Sample Space}$. Then, for any event $E$
+Suppose that we have a set of events $F_{1}, F_{2}, \ldots, F_{N}$ such that the events are mutually exclusive and together comprise the entire sample space $\cup_{i=1}^{N} F_{i} = \Omega$. Then, for any event $E$
 
 $$
 \begin{eqnarray}
@@ -276,6 +283,10 @@ $$
 ## Example: chess tournament
 
 You enter a chess tournament where your probability of winning a game is $0.3$ against half the players (type 1), $0.4$ against a quarter of the players (type 2), and $0.5$ against the remaining quarter of the players (type 3). You play a game against a randomly chosen opponent. What is the probability of winning?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
 
 Let $A_i$ be the event of playing with an opponent of type $i$. We have
 
@@ -295,7 +306,12 @@ $$
 \end{aligned}
 $$
 
+  </p>
+</details>
+
 # Bayes' Rule
+
+![[Modified Bayes' Theorem](https://xkcd.com/2059/)](https://imgs.xkcd.com/comics/modified_bayes_theorem.png)
 
 * $P(B|A)$ may be easy to obtain
 * $P(A|B)$ may be harder to determine
@@ -318,7 +334,7 @@ P(A|B) & = & \frac{P(A \cap B) }{P(B) } \\
 \end{eqnarray}
 $$
 
-* Law of total probability allows us to replace the joint probability of $A$ and $B$ with the alternative expression
+* Conditional probability allows us to replace the joint probability of $A$ and $B$ with the alternative expression
 
 ## Examples
 
@@ -332,7 +348,13 @@ Also, let $B$ be the event of winning. We have
 
 $$\Pr (B | A_1) = 0.3, \quad \Pr (B | A_2) = 0.4, \quad \Pr (B | A_3) = 0.5$$
 
-Suppose that you win. What is the probability $\Pr (A_1 | B)$ that you had an opponent of type 1? Using Bayes' rule, we have
+Suppose that you win. What is the probability $\Pr (A_1 | B)$ that you had an opponent of type 1?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+Using Bayes' rule, we have
 
 $$
 \begin{aligned}
@@ -343,14 +365,24 @@ $$
 \end{aligned}
 $$
 
+  </p>
+</details>
+
 ### Identifying racial groups by name
 
 How do we identify racial groups from lists of names? The Census Bureau collects information on distribution of names by race. For example, **Washington** is the "blackest" name in America.
 
-* P(black)= 0.126
-* P(not black) = 1 - P(black) = 0.874
-* P(Washington$|$black) = 0.00378
-* P(Washington$|$not black) = 0.000060615
+* $\Pr (\text{black}) = 0.126$
+* $\Pr (\text{not black}) = 1 - \Pr (\text{black}) = 0.874$
+* $\Pr (\text{Washington} | \text{black}) = 0.00378$
+* $\Pr (\text{Washington} | \text{not black}) = 0.000060615$
+* What is the probability of being black conditional on having the name "Washington"?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+Using Bayes' rule, we have
 
 $$
 \begin{eqnarray}
@@ -361,11 +393,18 @@ P(\text{black}|\text{Wash} ) & = & \frac{P(\text{black}) P(\text{Wash}| \text{bl
  \end{eqnarray}
 $$
 
+  </p>
+</details>
+
 ### False-positive puzzle
 
 A test for a certain rare disease is assumed to be correct 95% of the time: if a person has the disease, the test results are positive with probability $0.95$, and if the person does not have the disease, the test results are negative with probability $0.95$. A random person drawn from a certain population has probability $0.001$ of having the disease. Gien that the person just tested positive, what is the probability of having the disease?
 
-If $A$ is the event that the person has the disease, and $B$ is the even that the test results are positive
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+If $A$ is the event that the person has the disease, and $B$ is the event that the test results are positive
 
 $$
 \begin{aligned}
@@ -385,6 +424,9 @@ $$
 &= 0.0187
 \end{aligned}
 $$
+
+  </p>
+</details>
 
 # Independence of probabilities
 
@@ -549,6 +591,10 @@ $$\sum_{k=0}^n \binom{n}{k} p^k (1-p)^{n-k} = 1$$
 
 A system consists of $n$ identical components, each of which is operational with probability $p$, independent of other components. The system is operational if at least $k$ out of the $n$ components are operational. What is the probability that the system is operational?
 
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
 Let $A_i$ be the event that exactly $i$ components are operational. The probability that the system is operational is the probability of the union $\bigcup_{i=k}^n A_i$, and since the $A_i$ are disjoint, it is equal to
 
 $$\sum_{i=k}^n \Pr (A_i) = \sum_{i=k}^n p(i)$$
@@ -558,6 +604,9 @@ where $p(i)$ are the binomial probabilities. Thus, the probability of an operati
 $$\sum_{i=k}^n \binom{n}{i} p^i (1-p)^{n-i}$$
 
 For instance, if $n=100, k=60, p=0.7$, the probability of an operational system is `r pbinom(60, 100, 0.7, lower.tail = FALSE)`.
+
+  </p>
+</details>
 
 # Counting
 
@@ -649,7 +698,7 @@ $$\binom{n}{k} = \binom{4}{2} = \frac{4!}{2!2!} = 6$$
 
 #### Parking cars
 
-Twenty distinct cars park in the same parking lot every day. Ten of these cars are US-made, while the other ten are foreign-made. THe parking lot has exactly twenty spaces, all in a row, so the cars park side by side. However, the drivers have varying schedules, so the position any car might take on a certain day is random.
+Twenty distinct cars park in the same parking lot every day. Ten of these cars are US-made, while the other ten are foreign-made. The parking lot has exactly twenty spaces, all in a row, so the cars park side by side. However, the drivers have varying schedules, so the position any car might take on a certain day is random.
 
 a. In how many different ways can the cars line up?
 

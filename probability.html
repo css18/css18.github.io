@@ -360,18 +360,18 @@ div.tocify {
 <ol style="list-style-type: decimal">
 <li>House of Representatives - elections every 2 years
 <ul>
-<li>One incumbent: <span class="math inline">\(S = \{W, N\}\)</span></li>
-<li>Two incumbents: <span class="math inline">\(S = \{(W,W), (W,N), (N,W), (N,N)\}\)</span></li>
-<li>435 incumbents: <span class="math inline">\(S = 2^{435}\)</span> possible outcomes (permutations)</li>
+<li>One incumbent: <span class="math inline">\(\Omega = \{W, N\}\)</span></li>
+<li>Two incumbents: <span class="math inline">\(\Omega = \{(W,W), (W,N), (N,W), (N,N)\}\)</span></li>
+<li>435 incumbents: <span class="math inline">\(\Omega = 2^{435}\)</span> possible outcomes (permutations)</li>
 </ul></li>
 <li>Number of countries signing treaties
 <ul>
-<li><span class="math inline">\(s = \{0, 1, 2, \ldots, 194\}\)</span></li>
+<li><span class="math inline">\(\Omega = \{0, 1, 2, \ldots, 194\}\)</span></li>
 </ul></li>
 <li>Duration of cabinets
 <ul>
 <li>All non-negative real numbers: <span class="math inline">\([0, \infty)\)</span></li>
-<li><span class="math inline">\(S = \{x : 0 \leq x &lt; \infty\}\)</span>
+<li><span class="math inline">\(\Omega = \{x : 0 \leq x &lt; \infty\}\)</span>
 <ul>
 <li>All possible <span class="math inline">\(x\)</span> such that <span class="math inline">\(x\)</span> is between 0 and infinity</li>
 </ul></li>
@@ -384,7 +384,7 @@ div.tocify {
 <div id="events" class="section level1">
 <h1>Events</h1>
 <p><strong>Events</strong> are a subset of the sample space:</p>
-<p><span class="math display">\[E \subset S\]</span></p>
+<p><span class="math display">\[E \subset \Omega\]</span></p>
 <ul>
 <li>Plain English: outcomes from the sample space, collected in a set</li>
 <li>Congressional election example
@@ -413,7 +413,7 @@ div.tocify {
 <li><p><span class="math inline">\(E\)</span> is a <strong>set</strong>, or a collection of distinct objects. We can perform operations on sets to create new sets. Consider two example sets:</p></li>
 <li><span class="math inline">\(E = \{ (W,W), (W,N) \}\)</span></li>
 <li><span class="math inline">\(F = \{ (N, N), (W,N) \}\)</span></li>
-<li><p><span class="math inline">\(S = \{(W,W), (W,N), (N,W), (N,N) \}\)</span></p></li>
+<li><p><span class="math inline">\(\Omega = \{(W,W), (W,N), (N,W), (N,N) \}\)</span></p></li>
 </ul>
 <p>Operations determine what lies in the new set <span class="math inline">\(E^{\text{new}}\)</span>.</p>
 <ol style="list-style-type: decimal">
@@ -432,7 +432,7 @@ div.tocify {
 <li>All objects in <span class="math inline">\(S\)</span> that are not in <span class="math inline">\(E\)</span></li>
 <li><span class="math inline">\(E^{c} = \{(N, W) , (N, N) \}\)</span></li>
 <li><span class="math inline">\(F^{c} = \{(N, W) , (W, W) \}\)</span></li>
-<li>What is <span class="math inline">\(S^{c}\)</span>? - an <strong>empty set</strong> <span class="math inline">\(\emptyset\)</span></li>
+<li>What is <span class="math inline">\(\Omega^{c}\)</span>? - an <strong>empty set</strong> <span class="math inline">\(\emptyset\)</span></li>
 <li>Suppose <span class="math inline">\(E = {W}\)</span>, <span class="math inline">\(F = {N}\)</span>. Then <span class="math inline">\(E \cap F = \emptyset\)</span> (there is nothing that lies in both sets)</li>
 </ul></li>
 </ol>
@@ -471,11 +471,11 @@ div.tocify {
 \]</span></p>
 <p><span class="math display">\[
 \begin{aligned}
-\Pr (\text{the sum of the rolls is even}) &amp;= 8/16 &amp;= 1/2 \\
-\Pr (\text{the sum of the rolls is odd}) &amp;= 8/16 &amp;= 1/2 \\
-\Pr (\text{the first roll is equal to the second}) &amp;= 4/16 &amp;= 1/4 \\
-\Pr (\text{the first roll is larger than the second}) &amp;= 6/16 &amp;= 3/8 \\
-\Pr (\text{at least one roll is equal to 4}) &amp;= 7/16 \\
+\Pr (\text{the sum of the rolls is even}) &amp;= 8/16 = 1/2 \\
+\Pr (\text{the sum of the rolls is odd}) &amp;= 8/16 = 1/2 \\
+\Pr (\text{the first roll is equal to the second}) &amp;= 4/16 = 1/4 \\
+\Pr (\text{the first roll is larger than the second}) &amp;= 6/16 = 3/8 \\
+\Pr (\text{at least one roll is equal to 4}) &amp;= 7/16
 \end{aligned}
 \]</span></p>
 </div>
@@ -503,7 +503,7 @@ div.tocify {
 <p><img src="probability_files/figure-html/romeo-juliet-1.png" width="672" /></p>
 <p>The event that Romeo and Juliet will arrive within 15 minutes of each other is</p>
 <p><span class="math display">\[M = \{ (x,y) \mid | x - y | \leq 1/4, 0 \leq x \leq 1, 0 \leq y \leq 1 \}\]</span>.</p>
-<p>The area of <span class="math inline">\(M\)</span> is 1 minus the area of the two unshaded triangles, or <span class="math inline">\(1 - (3/4) \times (3/4) = 7/16\)</span>. Thus the probabiltiy of meeting is <span class="math inline">\(7/16\)</span>.</p>
+<p>The area of <span class="math inline">\(M\)</span> is 1 minus the area of the two unshaded triangles, or <span class="math inline">\(1 - (3/4) \times (3/4) = 7/16\)</span>. Thus the probability of meeting is <span class="math inline">\(7/16\)</span>.</p>
 </div>
 </div>
 <div id="conditional-probability" class="section level1">
@@ -567,6 +567,8 @@ P(E|F) &amp; = &amp; \frac{P(E\cap F ) } {P(F) }
 <li>The probability that at least one team is successful is <span class="math inline">\(3/4\)</span>.</li>
 </ol>
 <p>Assuming that exactly one successful design is produced, what is the probability that it was designed by team <span class="math inline">\(N\)</span>?</p>
+<details> <summary>Click for the solution</summary>
+<p>
 <p>There are four possible outcomes here, corresponding to the four combinations of success and failure of the two teams:</p>
 <ul>
 <li><span class="math inline">\(SS\)</span>: both succeed</li>
@@ -591,6 +593,8 @@ P(E|F) &amp; = &amp; \frac{P(E\cap F ) } {P(F) }
 <p><span class="math display">\[
 \Pr (FS | \{ SF, FS \}) = \frac{\frac{1}{12}}{\frac{1}{4} + \frac{1}{12}} = \frac{\frac{1}{12}}{\frac{3}{12} + \frac{1}{12}} = \frac{\frac{1}{12}}{\frac{4}{12}} = \frac{12}{12 \times 4} = \frac{1}{4}
 \]</span></p>
+</p>
+<p></details></p>
 </div>
 <div id="difference-between-pab-and-pba" class="section level2">
 <h2>Difference between <span class="math inline">\(P(A|B)\)</span> and <span class="math inline">\(P(B|A)\)</span></h2>
@@ -611,7 +615,7 @@ P(\text{Drunk}| \text{Attending a football game}) &amp; \approx &amp; 1
 </div>
 <div id="law-of-total-probability" class="section level1">
 <h1>Law of total probability</h1>
-<p>Suppose that we have a set of events <span class="math inline">\(F_{1}, F_{2}, \ldots, F_{N}\)</span> such that the events are mutually exclusive and together comprise the entire sample space <span class="math inline">\(\cup_{i=1}^{N} F_{i} = \text{Sample Space}\)</span>. Then, for any event <span class="math inline">\(E\)</span></p>
+<p>Suppose that we have a set of events <span class="math inline">\(F_{1}, F_{2}, \ldots, F_{N}\)</span> such that the events are mutually exclusive and together comprise the entire sample space <span class="math inline">\(\cup_{i=1}^{N} F_{i} = \Omega\)</span>. Then, for any event <span class="math inline">\(E\)</span></p>
 <p><span class="math display">\[
 \begin{eqnarray}
 P(E) &amp; = &amp; \sum_{i=1}^{N} P(E | F_{i} ) \times P(F_{i}) 
@@ -620,6 +624,8 @@ P(E) &amp; = &amp; \sum_{i=1}^{N} P(E | F_{i} ) \times P(F_{i})
 <div id="example-chess-tournament" class="section level2">
 <h2>Example: chess tournament</h2>
 <p>You enter a chess tournament where your probability of winning a game is <span class="math inline">\(0.3\)</span> against half the players (type 1), <span class="math inline">\(0.4\)</span> against a quarter of the players (type 2), and <span class="math inline">\(0.5\)</span> against the remaining quarter of the players (type 3). You play a game against a randomly chosen opponent. What is the probability of winning?</p>
+<details> <summary>Click for the solution</summary>
+<p>
 <p>Let <span class="math inline">\(A_i\)</span> be the event of playing with an opponent of type <span class="math inline">\(i\)</span>. We have</p>
 <p><span class="math display">\[\Pr (A_1) = 0.5, \quad \Pr (A_2) = 0.25, \quad \Pr (A_3) = 0.25\]</span></p>
 <p>Also, let <span class="math inline">\(B\)</span> be the event of winning. We have</p>
@@ -632,10 +638,16 @@ P(E) &amp; = &amp; \sum_{i=1}^{N} P(E | F_{i} ) \times P(F_{i})
 &amp;= 0.375
 \end{aligned}
 \]</span></p>
+</p>
+<p></details></p>
 </div>
 </div>
 <div id="bayes-rule" class="section level1">
 <h1>Bayes’ Rule</h1>
+<div class="figure">
+<img src="https://imgs.xkcd.com/comics/modified_bayes_theorem.png" alt="Modified Bayes’ Theorem" />
+<p class="caption"><a href="https://xkcd.com/2059/">Modified Bayes’ Theorem</a></p>
+</div>
 <ul>
 <li><span class="math inline">\(P(B|A)\)</span> may be easy to obtain</li>
 <li><span class="math inline">\(P(A|B)\)</span> may be harder to determine</li>
@@ -655,7 +667,7 @@ P(A|B) &amp; = &amp; \frac{P(A \cap B) }{P(B) } \\
 \end{eqnarray}
 \]</span></p>
 <ul>
-<li>Law of total probability allows us to replace the joint probability of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> with the alternative expression</li>
+<li>Conditional probability allows us to replace the joint probability of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> with the alternative expression</li>
 </ul>
 <div id="examples-1" class="section level2">
 <h2>Examples</h2>
@@ -665,7 +677,10 @@ P(A|B) &amp; = &amp; \frac{P(A \cap B) }{P(B) } \\
 <p><span class="math display">\[\Pr (A_1) = 0.5, \quad \Pr (A_2) = 0.25, \quad \Pr (A_3) = 0.25\]</span></p>
 <p>Also, let <span class="math inline">\(B\)</span> be the event of winning. We have</p>
 <p><span class="math display">\[\Pr (B | A_1) = 0.3, \quad \Pr (B | A_2) = 0.4, \quad \Pr (B | A_3) = 0.5\]</span></p>
-<p>Suppose that you win. What is the probability <span class="math inline">\(\Pr (A_1 | B)\)</span> that you had an opponent of type 1? Using Bayes’ rule, we have</p>
+<p>Suppose that you win. What is the probability <span class="math inline">\(\Pr (A_1 | B)\)</span> that you had an opponent of type 1?</p>
+<details> <summary>Click for the solution</summary>
+<p>
+<p>Using Bayes’ rule, we have</p>
 <p><span class="math display">\[
 \begin{aligned}
 \Pr (A_1 | B) &amp;= \frac{\Pr (A_1) \Pr (B | A_1)}{\Pr (A_1) \Pr (B | A_1) + \Pr (A_2) \Pr (B | A_2) + \Pr (A_3) \Pr (B | A_3)} \\
@@ -674,16 +689,22 @@ P(A|B) &amp; = &amp; \frac{P(A \cap B) }{P(B) } \\
 &amp;= 0.4
 \end{aligned}
 \]</span></p>
+</p>
+<p></details></p>
 </div>
 <div id="identifying-racial-groups-by-name" class="section level3">
 <h3>Identifying racial groups by name</h3>
 <p>How do we identify racial groups from lists of names? The Census Bureau collects information on distribution of names by race. For example, <strong>Washington</strong> is the “blackest” name in America.</p>
 <ul>
-<li>P(black)= 0.126</li>
-<li>P(not black) = 1 - P(black) = 0.874</li>
-<li>P(Washington<span class="math inline">\(|\)</span>black) = 0.00378</li>
-<li>P(Washington<span class="math inline">\(|\)</span>not black) = 0.000060615</li>
+<li><span class="math inline">\(\Pr (\text{black}) = 0.126\)</span></li>
+<li><span class="math inline">\(\Pr (\text{not black}) = 1 - \Pr (\text{black}) = 0.874\)</span></li>
+<li><span class="math inline">\(\Pr (\text{Washington} | \text{black}) = 0.00378\)</span></li>
+<li><span class="math inline">\(\Pr (\text{Washington} | \text{not black}) = 0.000060615\)</span></li>
+<li>What is the probability of being black conditional on having the name “Washington”?</li>
 </ul>
+<details> <summary>Click for the solution</summary>
+<p>
+<p>Using Bayes’ rule, we have</p>
 <p><span class="math display">\[
 \begin{eqnarray}
 P(\text{black}|\text{Wash} ) &amp; = &amp; \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{Wash} ) } \\
@@ -692,11 +713,15 @@ P(\text{black}|\text{Wash} ) &amp; = &amp; \frac{P(\text{black}) P(\text{Wash}| 
  &amp; \approx &amp; 0.9  
  \end{eqnarray}
 \]</span></p>
+</p>
+<p></details></p>
 </div>
 <div id="false-positive-puzzle" class="section level3">
 <h3>False-positive puzzle</h3>
 <p>A test for a certain rare disease is assumed to be correct 95% of the time: if a person has the disease, the test results are positive with probability <span class="math inline">\(0.95\)</span>, and if the person does not have the disease, the test results are negative with probability <span class="math inline">\(0.95\)</span>. A random person drawn from a certain population has probability <span class="math inline">\(0.001\)</span> of having the disease. Gien that the person just tested positive, what is the probability of having the disease?</p>
-<p>If <span class="math inline">\(A\)</span> is the event that the person has the disease, and <span class="math inline">\(B\)</span> is the even that the test results are positive</p>
+<details> <summary>Click for the solution</summary>
+<p>
+<p>If <span class="math inline">\(A\)</span> is the event that the person has the disease, and <span class="math inline">\(B\)</span> is the event that the test results are positive</p>
 <p><span class="math display">\[
 \begin{aligned}
 \Pr (A) &amp;= 0.001 \\
@@ -713,6 +738,8 @@ P(\text{black}|\text{Wash} ) &amp; = &amp; \frac{P(\text{black}) P(\text{Wash}| 
 &amp;= 0.0187
 \end{aligned}
 \]</span></p>
+</p>
+<p></details></p>
 </div>
 </div>
 </div>
@@ -851,11 +878,15 @@ P(E|F ) &amp; = &amp; \frac{P(E \cap F) }{P(F) }  \\
 <div id="reliability-of-an-k-out-of-n-system" class="section level3">
 <h3>Reliability of an <span class="math inline">\(k\)</span>-out-of-<span class="math inline">\(n\)</span> system</h3>
 <p>A system consists of <span class="math inline">\(n\)</span> identical components, each of which is operational with probability <span class="math inline">\(p\)</span>, independent of other components. The system is operational if at least <span class="math inline">\(k\)</span> out of the <span class="math inline">\(n\)</span> components are operational. What is the probability that the system is operational?</p>
+<details> <summary>Click for the solution</summary>
+<p>
 <p>Let <span class="math inline">\(A_i\)</span> be the event that exactly <span class="math inline">\(i\)</span> components are operational. The probability that the system is operational is the probability of the union <span class="math inline">\(\bigcup_{i=k}^n A_i\)</span>, and since the <span class="math inline">\(A_i\)</span> are disjoint, it is equal to</p>
 <p><span class="math display">\[\sum_{i=k}^n \Pr (A_i) = \sum_{i=k}^n p(i)\]</span></p>
 <p>where <span class="math inline">\(p(i)\)</span> are the binomial probabilities. Thus, the probability of an operational system is</p>
 <p><span class="math display">\[\sum_{i=k}^n \binom{n}{i} p^i (1-p)^{n-i}\]</span></p>
 <p>For instance, if <span class="math inline">\(n=100, k=60, p=0.7\)</span>, the probability of an operational system is 0.979.</p>
+</p>
+<p></details></p>
 </div>
 </div>
 </div>
@@ -932,7 +963,7 @@ n(n-1) \cdots (n-k-1) &amp;= \frac{n(n-1) \cdots (n-k+1) (n-k) \cdots 2 \times 1
 </div>
 <div id="parking-cars" class="section level4">
 <h4>Parking cars</h4>
-<p>Twenty distinct cars park in the same parking lot every day. Ten of these cars are US-made, while the other ten are foreign-made. THe parking lot has exactly twenty spaces, all in a row, so the cars park side by side. However, the drivers have varying schedules, so the position any car might take on a certain day is random.</p>
+<p>Twenty distinct cars park in the same parking lot every day. Ten of these cars are US-made, while the other ten are foreign-made. The parking lot has exactly twenty spaces, all in a row, so the cars park side by side. However, the drivers have varying schedules, so the position any car might take on a certain day is random.</p>
 <ol style="list-style-type: lower-alpha">
 <li><p>In how many different ways can the cars line up?</p>
 <p>Since the cars are all distinct, there are <span class="math inline">\(n! = 20!\)</span> ways to line them up.</p></li>
@@ -962,7 +993,7 @@ n(n-1) \cdots (n-k-1) &amp;= \frac{n(n-1) \cdots (n-k+1) (n-k) \cdots 2 \times 1
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       America/Chicago             
-##  date     2018-10-15</code></pre>
+##  date     2018-10-16</code></pre>
 <pre><code>## Packages -----------------------------------------------------------------</code></pre>
 <pre><code>##  package    * version date       source                              
 ##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      

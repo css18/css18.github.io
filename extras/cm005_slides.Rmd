@@ -1,0 +1,487 @@
+---
+title: "Sample space and probability"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 18))
+```
+
+## Model of probability
+
+1. Sample space - set of all things that could happen
+1. Events - subsets of the sample space
+1. Probability - chance of an event
+
+## Sample space
+
+* Set of all things that can occur
+* $\Omega$
+
+1. House of Representatives - elections every 2 years
+    * One incumbent: $\Omega = \{W, N\}$
+    * Two incumbents: $\Omega = \{(W,W), (W,N), (N,W), (N,N)\}$
+    * 435 incumbents: $\Omega = 2^{435}$ possible outcomes (permutations)
+1. Number of countries signing treaties
+    * $\Omega = \{0, 1, 2, \ldots, 194\}$
+1. Duration of cabinets
+    * All non-negative real numbers: $[0, \infty)$
+    * $\Omega = \{x : 0 \leq x < \infty\}$
+        * All possible $x$ such that $x$ is between 0 and infinity
+* The sample space must define all possible realizations
+
+## Events {.scrollable}
+
+* Subset of the sample space
+
+    $$E \subset \Omega$$
+
+* Outcomes from the sample space, collected in a set
+* Congressional election example
+    * One incumbent
+        * $E = W$
+        * $F = N$
+    * Two incumbents
+        * $E = \{(W, N), (W, W) \}$
+        * $F = \{(N, N)\}$
+    * 435 incumbents
+        * Outcome of 2016 election - one event
+        * All outcomes where Dems retake control of the House - one event
+* Notation: $x$ is an *element* of a set $E$
+    $$x \in E$$
+    $$\{N, N\} \in E$$
+
+## Event operations {.scrollable}
+
+* Operations on sets to create new sets
+* $E = \{ (W,W), (W,N) \}$
+* $F  = \{ (N, N), (W,N) \}$
+* $\Omega = \{(W,W), (W,N), (N,W), (N,N) \}$
+
+1. Union: $\cup$
+    * All objects that appear in either set (OR)
+    * $E^{\text{new}} = E \cup F  = \{(W,W), (W,N), (N,N) \}$
+1. Intersection: $\cap$
+    * All objects that appear in both sets (AND)
+    * $E^{\text{new}} = E \cap F = \{(W,N)\}$
+1. Complement of set $E$: $E^{c}$
+    * All objects in $S$ that are not in $E$
+    * $E^{c} = \{(N, W) , (N, N) \}$
+    * $F^{c} = \{(N, W) , (W, W) \}$
+    * What is $\Omega^{c}$? - an **empty set** $\emptyset$
+    * Suppose $E = {W}$, $F = {N}$. Then  $E \cap F = \emptyset$
+
+## Probability
+
+* Probability is the chance of an event occurring
+* $P$ is a function
+* The domain contains all events $E$
+
+## Three axioms
+
+1. **Nonnegativity**: For all events $E$, $0 \leq P(E) \leq 1$
+1. **Normalization**: $P(S) = 1$
+1. **Additivity**: For all sequences of mutually exclusive events $E_{1}, E_{2}, \ldots,E_{N}$ (where $N$ can go to infinity):
+    $$P\left(\cup_{i=1}^{N} E_{i}  \right)  = \sum_{i=1}^{N} P(E_{i} )$$
+
+## Rolling the dice
+
+* Rolling a pair of 4-sided dice
+* Assume the dice are fair
+* Sixteen possible outcomes [pairs $(i,j)$ with $i,j = 1,2,3,4$] have the same probability of $1/16$
+
+    $$
+    \begin{aligned}
+    \Omega &= \{(1,1), (1,2), (1,3), (1,4), (2,1), (2,2), (2,3), (2,4), \\
+    &\quad (3,1), (3,2), (3,3), (3,4), (4,1), (4,2), (4,3), (4,4) \}
+    \end{aligned}
+    $$
+    
+    $$
+    \begin{aligned}
+    \Pr (\text{the sum of the rolls is even}) &= 8/16 = 1/2 \\
+    \Pr (\text{the sum of the rolls is odd}) &= 8/16 = 1/2 \\
+    \Pr (\text{the first roll is equal to the second}) &= 4/16 = 1/4 \\
+    \Pr (\text{the first roll is larger than the second}) &= 6/16 = 3/8 \\
+    \Pr (\text{at least one roll is equal to 4}) &= 7/16
+    \end{aligned}
+    $$
+
+## Romeo and Juliet
+
+> Romeo and Juliet have a date at a given time, and each will arrive at the meeting place with a delay between 0 and 1 hour, with all pairs of delays being equally likely. The first to arrive will wait for 15 minutes and will leave if the other has not yet arrived. What is the probability that they will meet?
+
+## Romeo and Juliet
+
+* $\Omega = \text{unit square}$, whose elements are the possible pairs of delays for the two of them
+* Probability of a subset of $\Omega$ is equal to its area
+* The event that Romeo and Juliet will arrive within 15 minutes of each other is 
+    $$M = \{ (x,y) \mid | x - y | \leq 1/4, 0 \leq x \leq 1, 0 \leq y \leq 1 \}$$
+
+## Romeo and Juliet
+
+```{r romeo-juliet}
+data_frame(x = seq(from = 0, to = 1, by = 0.001),
+           ylow = -.25 + x,
+           yhigh = .25 + x) %>%
+  ggplot(aes(x = x)) +
+  geom_line(aes(y = ylow)) +
+  geom_line(aes(y = yhigh)) +
+  geom_ribbon(aes(ymin = ylow, ymax = yhigh), alpha = .2) +
+  annotate(geom = "text", x = .5, y = .5, label = "M") +
+  scale_x_continuous(breaks = c(0, .25, 1)) +
+  scale_y_continuous(breaks = c(0, .25, 1)) +
+  coord_fixed(xlim = c(0, 1),
+              ylim = c(0, 1),
+              expand = FALSE) +
+  labs(x = "Romeo",
+       y = "Juliet") +
+  theme_classic(base_size = 18) +
+  theme(panel.border = element_rect(color = "black", fill = NA, size = 1))
+```
+
+## Conditional probability
+
+* Social scientists almost always examine **conditional** relationships
+    * Given opposite Party ID, probability of date
+    * Given low-interest rates probability of high inflation
+    * Given "economic anxiety" probability of voting for Trump
+* Intuition
+    * Some event has occurred: an outcome was realized
+    * And with the knowledge that this outcome has already happened 
+    * What is the probability that something in another set happens?
+
+## Conditional probability
+
+* Suppose we have two events, $E$ and $F$, and that $P(F)>0$. Then, 
+
+    $$
+    \begin{eqnarray}
+    P(E|F) & = & \frac{P(E\cap F ) } {P(F) }  
+    \end{eqnarray}
+    $$
+
+* $P(E \cap F)$: Both $E$ and $F$ must occur
+* $P(F)$ normalize: we know $P(F)$ already occurred
+
+## Elections
+
+* Example 1
+    * $F = \{\text{All Democrats Win} \}$
+    * $E = \{\text{Nancy Pelosi Wins (D-CA)} \}$
+    * If $F$ occurs then $E$ most occur, $P(E|F) = 1$
+* Example 2
+    * $F = \{\text{All Democrats Win} \}$
+    * $E = \{ \text{Louie Gohmert Wins (R-TX) }$
+    * $F \cap E = \emptyset \Rightarrow P(E|F) = \frac{P(F \cap E) }{P(F)} = \frac{P(\emptyset)}{P(F)} = 0$
+* Example 3: incumbency advantage
+    * $I = \{ \text{Candidate is an incumbent} \}$
+    * $D = \{ \text{Candidate Defeated} \}$
+    * $P(D|I)  = \frac{P(D \cap I)}{P(I) }$
+
+## Design teams
+
+A conservative design team, call it $C$, and an innovative design team, call it $N$, are asked to separately design a new product within a month. From past experience we know:
+
+a. The probability that team $C$ is successful is $2/3$.
+a. The probability that team $N$ is successful is $1/2$.
+a. The probability that at least one team is successful is $3/4$.
+
+* Assuming that exactly one successful design is produced, what is the probability that it was designed by team $N$?
+
+## Difference between $P(A|B)$ and $P(B|A)$
+
+$$
+\begin{eqnarray}
+P(A|B) & = & \frac{P(A\cap B)}{P(B)} \\
+P(B|A) & = & \frac{P(A \cap B) } {P(A)}
+\end{eqnarray}
+$$
+
+## Difference between $P(A|B)$ and $P(B|A)$
+
+$$
+\begin{eqnarray}
+P(\text{Attending a football game}| \text{Drunk}) & = & 0.01  \\
+P(\text{Drunk}| \text{Attending a football game}) & \approx & 1
+\end{eqnarray}
+$$
+    
+## Law of total probability
+
+* Suppose that we have a set of events $F_{1}, F_{2}, \ldots, F_{N}$ such that the events are mutually exclusive and together comprise the entire sample space $\cup_{i=1}^{N} F_{i} = \Omega$.
+* For any event $E$
+
+    $$
+    \begin{eqnarray}
+    P(E) & = & \sum_{i=1}^{N} P(E | F_{i} ) \times P(F_{i}) 
+    \end{eqnarray}
+    $$
+
+## Example: chess tournament
+
+> You enter a chess tournament where your probability of winning a game is $0.3$ against half the players (type 1), $0.4$ against a quarter of the players (type 2), and $0.5$ against the remaining quarter of the players (type 3). You play a game against a randomly chosen opponent. What is the probability of winning?
+
+## Bayes' Rule
+
+![[Modified Bayes' Theorem](https://xkcd.com/2059/)](https://imgs.xkcd.com/comics/modified_bayes_theorem.png)
+
+## Bayes' Rule
+
+* $P(B|A)$ may be easy to obtain
+* $P(A|B)$ may be harder to determine
+* Bayes' rule provides a method to move from $P(B|A)$ to $P(A|B)$
+
+## Bayes' Rule
+
+* For two events $A$ and $B$, 
+
+    $$
+    \begin{eqnarray}
+    P(A|B) & = & \frac{P(A)\times P(B|A)}{P(B)} 
+    \end{eqnarray}
+    $$
+    
+    $$
+    \begin{eqnarray}
+    P(A|B) & = & \frac{P(A \cap B) }{P(B) } \\
+    &  = & \frac{P(B|A)P(A) } {P(B) } 
+    \end{eqnarray}
+    $$
+
+## Chess tournament redux
+
+* Let $A_i$ be the event of playing with an opponent of type $i$. We have
+
+    $$\Pr (A_1) = 0.5, \quad \Pr (A_2) = 0.25, \quad \Pr (A_3) = 0.25$$
+* Let $B$ be the event of winning. We have
+
+    $$\Pr (B | A_1) = 0.3, \quad \Pr (B | A_2) = 0.4, \quad \Pr (B | A_3) = 0.5$$
+* Suppose that you win. What is the probability $\Pr (A_1 | B)$ that you had an opponent of type 1?
+
+## Identifying racial groups by name
+
+* $\Pr (\text{black}) = 0.126$
+* $\Pr (\text{not black}) = 1 - \Pr (\text{black}) = 0.874$
+* $\Pr (\text{Washington} | \text{black}) = 0.00378$
+* $\Pr (\text{Washington} | \text{not black}) = 0.000060615$
+* What is the probability of being black conditional on having the name "Washington"?
+
+## Identifying racial groups by name
+
+$$
+\begin{eqnarray}
+P(\text{black}|\text{Wash} ) & = & \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{Wash} ) } \\
+ & = & \frac{P(\text{black}) P(\text{Wash}| \text{black}) }{P(\text{black})P(\text{Wash}|\text{black}) + P(\text{nb})P(\text{Wash}| \text{nb}) } \\
+ & = & \frac{0.126 \times 0.00378}{0.126\times 0.00378 + 0.874 \times 0.000060616} \\
+ & \approx & 0.9  
+ \end{eqnarray}
+$$
+
+## False-positive puzzle
+
+> A test for a certain rare disease is assumed to be correct 95% of the time: if a person has the disease, the test results are positive with probability $0.95$, and if the person does not have the disease, the test results are negative with probability $0.95$. A random person drawn from a certain population has probability $0.001$ of having the disease. Gien that the person just tested positive, what is the probability of having the disease?
+
+## Independence of probabilities
+
+* Does one event provide information about another event?
+* Independence: Two events $E$ and $F$ are independent if 
+
+    $$
+    \begin{eqnarray}
+    P(E\cap F ) & = & P(E)P(F) 
+    \end{eqnarray}
+    $$
+
+* If $E$ and $F$ are not independent, we'll say they are **dependent** 
+* Independence is symetric: if $F$ is independent of $E$, then $E$ is indepenent of $F$
+
+## Independence of probabilities
+
+* Suppose $E$ and $F$ are independent. Then,
+
+    $$
+    \begin{eqnarray}
+    P(E|F ) & = & \frac{P(E \cap F) }{P(F) }  \\
+    & = & \frac{P(E)P(F)}{P(F)} \\
+    & = & P(E)  
+    \end{eqnarray}
+    $$
+
+* Conditioning on the event $F$ does not modify the probability of $E$.
+* No information about $E$ in $F$
+
+## Rolling a 4-sided die
+
+Consider an experiment involving two successive rolls of a 4-sided die in which all 16 possible outcomes are equally likely and have probability $1/16$.
+
+## Rolling a 4-sided die
+
+$$A_i = \{ \text{1st roll results in } i \}, \quad B_j = \{ \text{2nd roll results in } j \}$$
+
+$$
+\begin{aligned}
+\Pr (A_i \cap B_j) &= \Pr (\text{the outcome of the two rolls is } (i,j)) = \frac{1}{16} \\
+\Pr (A_i) &= \frac{\text{number of elements in } A_i}{\text{total number of possible outcomes}} = \frac{4}{16} \\
+\Pr (B_j) &= \frac{\text{number of elements in } B_j}{\text{total number of possible outcomes}} = \frac{4}{16}
+\end{aligned}
+$$
+
+## Rolling a 4-sided die
+
+$$A = \{ \text{1st roll is a 1} \}, \quad B = \{ \text{sum of the two rolls is a 5} \}$$
+
+$$\Pr (A \cap B) = \Pr (\text{the result of the two rolls is } (1,4)) = \frac{1}{16}$$
+
+$$\Pr (A) = \frac{\text{number of elements of } A}{\text{total number of possible outcomes}} = \frac{4}{16}$$
+
+$$\Pr (B) = \frac{\text{number of elements of } B}{\text{total number of possible outcomes}} = \frac{4}{16}$$
+
+## Rolling a 4-sided die
+
+$$A = \{ \text{maximum of the two rolls is 2} \}, \\ B = \{ \text{minimum of the two rolls is 2} \}$$
+
+$$\Pr (A \cap B) = \Pr (\text{the result of the two rolls is } (2,2)) = \frac{1}{16}$$
+
+$$
+\begin{aligned}
+\Pr (A) &= \frac{\text{number of elements in } A_i}{\text{total number of possible outcomes}} = \frac{3}{16} \\
+\Pr (B) &= \frac{\text{number of elements in } B_j}{\text{total number of possible outcomes}} = \frac{5}{16}
+\end{aligned}
+$$
+
+## Independence and causal inference
+
+* Selection and Observational Studies
+    * We often want to infer the effect of some treatment 
+        * Incumbency on vote return
+        * College education and job earnings
+    * Observational studies: observe what we see to make inference 
+    * Problem: units select into treatment
+        * Simple example: enroll in job training if I think it will help 
+        * P(job$|$training in study) $\neq$ P(job$|$forced training)
+    * Background characteristic: difference between treatment and control groups
+* Experiments (second greatest discovery of 20th century): make background characteristics and treatment status independent
+
+## Independence of a collection of events
+
+* We say that the events $A_1, A_2, \ldots, A_n$ are independent if
+
+    $$ \Pr \left( \bigcap_{i \in S} A_i \right) = \prod_{i \in S} \Pr (A_i),\quad \text{for every subset } S \text{ of } \{1,2,\ldots,n \}$$
+
+* For the case of three events, $A_1, A_2, A_3$, independence amounts to satisfying the four conditions
+
+    $$
+    \begin{aligned}
+    \Pr (A_1 \cap A_2) &= \Pr (A_1) \Pr (A_2) \\
+    \Pr (A_1 \cap A_3) &= \Pr (A_1) \Pr (A_3) \\
+    \Pr (A_2 \cap A_3) &= \Pr (A_2) \Pr (A_3) \\
+    \Pr (A_1 \cap A_2 \cap A_3) &= \Pr (A_1) \Pr (A_2) \Pr (A_3)
+    \end{aligned}
+    $$
+
+## Independent trials and the binomial probabilities
+
+* Bernoulli trial
+    * Heads or tails
+    * Success or fail
+    * Rains or does not rain
+* Sequences of Bernoulli trials
+
+## Independent trials and the binomial probabilities {.scrollable}
+
+* Experiment with $n$ trials
+* Probability of heads is $p$
+* Independent trials $A_1, A_2, \ldots, A_n$
+* $p(k) = \Pr(k \text{ heads come up in an } n \text{-toss sequence})$
+* The probability of any given sequence that contains $k$ heads is $p^k (1-p)^{n-k}$
+
+    $$p(k) = \binom{n}{k} p^k (1-p)^{n-k}$$
+
+    $$\binom{n}{k} = \text{number of distinct } n \text{-toss sequences that contain } k \text{ heads}$$
+
+    $$\binom{n}{k} = \frac{n!}{k! (n-k)!}, \quad k=0,1,\ldots,n$$
+
+* Binomial coefficients
+* Binomial probabilities
+
+## Reliability of an $k$-out-of-$n$ system
+
+> A system consists of $n$ identical components, each of which is operational with probability $p$, independent of other components. The system is operational if at least $k$ out of the $n$ components are operational. What is the probability that the system is operational?
+
+## Counting
+
+* Calculating total number of possible outcomes in a sample space
+* Finite number of equally likely outcomes
+
+    $$\Pr (A) = p \times (\text{number of elements of } A)$$
+
+## Counting principle
+
+* Consider a process that consists of $r$ stages. Suppose that:
+    a. There are $n_1$ possible results at the first stage.
+    a. For every possible result at the first stage, there are $n_2$ possible results at the second stage.
+    a. More generally, for any sequence of possible results at the first $i-1$ stages, there are $n_i$ possible results at the $i$th stage.
+* Then, the total number of possible results of the $r$-stage process is
+
+    $$n_1, n_2, \cdots, n_r$$
+
+## Telephone numbers
+
+> A local telephone number is a 7-digit sequence, but the first digit has to be different from 0 or 1. How many distinct telephone numbers are there?
+
+## Permutations
+
+* $n$ distinct objects
+* $k$ be some positive integer such that $k \leq n$
+* Count the number of different ways that we can pick $k$ out of these $n$ objects and arrange them in a sequence
+* **$k$-permutations**
+
+    $$
+    \begin{aligned}
+    n(n-1) \cdots (n-k-1) &= \frac{n(n-1) \cdots (n-k+1) (n-k) \cdots 2 \times 1}{(n-k) \cdots 2 \times 1} \\
+    &= \frac{n!}{(n-k)!}
+    \end{aligned}
+    $$
+
+## Examples of permutations
+
+* Count the number of words that consist of four distinct letters
+* A six-sided die is rolled three times independently. Which is more likely: a sum of 11 or a sum of 12?
+
+## Combinations
+
+* No ordering of the selected elements
+* 2-permutations of the letters $A, B, C, D$
+
+    $$AB, BA, AC, CA, AD, DA, BC, CB, BD, DB, CD, DC$$
+
+* Combinations of two out of these four letters are
+
+    $$AB, AC, AD, BC, BD, CD$$
+
+* Combinations are associated with $k!$ duplicate $k$-permutations
+* Number of possible combinations is equal to
+
+    $$\frac{n!}{k!(n-k)!}$$
+
+## Examples
+
+* Number of combinations of two out of the four letters $A, B, C, D$
+* Twenty distinct cars park in the same parking lot every day. Ten of these cars are US-made, while the other ten are foreign-made. The parking lot has exactly twenty spaces, all in a row, so the cars park side by side. However, the drivers have varying schedules, so the position any car might take on a certain day is random.
+    a. In how many different ways can the cars line up?
+
+    a. What is the probability that on a given day, the cars will park in such a way that they alternate (no two US-made cars are adjacent and no two foreign-made are adjacent?)
