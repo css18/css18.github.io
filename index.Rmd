@@ -9,7 +9,7 @@ set.seed(1234)
 
 * Instructor: [Benjamin Soltoff](http://www.bensoltoff.com), Lecturer in [Computational Social Science](http://macss.uchicago.edu)
 * Meeting day/time: TTh 2-3:20pm (Social Sciences Research Building 107)
-* Office hours: M 10-12pm (McGiffert House 209)
+* Office hours: M 10-12pm, Tu 9-10am (McGiffert House 209)
 * Prerequisites: MACS 33000 (Computational Mathematics and Statistics Camp)
 * Requirements: Bring your own laptop
 
