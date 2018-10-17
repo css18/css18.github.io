@@ -28,7 +28,7 @@ theme_set(theme_minimal())
 
 # Sample space
 
-The **sample space** as the set of all things that can occur. We will collect all distinct outcomes into the set $S$. Examples include:
+The **sample space** as the set of all things that can occur. We will collect all distinct outcomes into the set $\Omega$. Examples include:
 
 1. House of Representatives - elections every 2 years
     * One incumbent: $\Omega = \{W, N\}$
@@ -130,6 +130,10 @@ $$
 
 Romeo and Juliet have a date at a given time, and each will arrive at the meeting place with a delay between 0 and 1 hour, with all pairs of delays being equally likely. The first to arrive will wait for 15 minutes and will leave if the other has not yet arrived. What is the probability that they will meet?
 
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
 Let us use as the sample space the **unit square**, whose elements are the possible pairs of delays for the two of them. Our interpretation of "equally likely" pairs of delays is to let the probability of a subset of $\Omega$ be equal to its area. This probability law satisfies the three probability axioms. The event that Romeo and Juliet will meet is the shaded region in the figure below, and its probability is calculated to be $7/16$.
 
 ```{r romeo-juliet}
@@ -157,6 +161,9 @@ The event that Romeo and Juliet will arrive within 15 minutes of each other is
 $$M = \{ (x,y) \mid | x - y | \leq 1/4, 0 \leq x \leq 1, 0 \leq y \leq 1 \}$$.
 
 The area of $M$ is 1 minus the area of the two unshaded triangles, or $1 - (3/4) \times (3/4) = 7/16$. Thus the probability of meeting is $7/16$.
+
+  </p>
+</details>
 
 # Conditional probability
 
@@ -655,6 +662,10 @@ $$\frac{n!}{(n-k)!} = \frac{26!}{22!} = 26 \times 25 \times 24 \times 23 = 358,8
 
 A six-sided die is rolled three times independently. Which is more likely: a sum of 11 or a sum of 12?
 
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
 * A sum of 11 is obtained with the following 6 combinations:
 
     $$(6,4,1) (6,3,2) (5,5,1) (5,4,2) (5,3,3) (4,4,3)$$
@@ -673,6 +684,9 @@ while each combination of 3 numbers, two of which are equal, corresponds to 3 pe
 * Counting the number of permutations in the 6 combinations corresponding to a sum of 12, we obtain $6 + 6 + 3 + 3 + 6 + 1 = 25$ permutations.
 
 Since all permutations are equally likely, a sum of 11 is more likely than a sum of 12.
+
+  </p>
+</details>
 
 ## Combinations
 
@@ -701,16 +715,21 @@ $$\binom{n}{k} = \binom{4}{2} = \frac{4!}{2!2!} = 6$$
 Twenty distinct cars park in the same parking lot every day. Ten of these cars are US-made, while the other ten are foreign-made. The parking lot has exactly twenty spaces, all in a row, so the cars park side by side. However, the drivers have varying schedules, so the position any car might take on a certain day is random.
 
 a. In how many different ways can the cars line up?
-
-    Since the cars are all distinct, there are $n! = 20!$ ways to line them up.
-
 a. What is the probability that on a given day, the cars will park in such a way that they alternate (no two US-made cars are adjacent and no two foreign-made are adjacent?)
 
-    To find the probability that the cars will be parked so that they alternate, we count the number of "favorable" outcomes, and divide by the total number of possible outcomes found in part (a). We count in the following manner. We first arrange the US cars in an ordered sequence (permutation). We can do this in $10!$ ways, since there are $10$ distinct cars. Similarly, arrange the foreign cars in an ordered sequence, which can also be done in $10!$ ways. Finally, interleave the two sequences. This can be done in two different ways, since we can let the first car be either US-made or foreign. Thus, we have a total of $2 \times 10! \times 10!$ possibilities, and the desired probability is
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+a. Since the cars are all distinct, there are $n! = 20!$ ways to line them up.
+a. To find the probability that the cars will be parked so that they alternate, we count the number of "favorable" outcomes, and divide by the total number of possible outcomes found in part (a). We count in the following manner. We first arrange the US cars in an ordered sequence (permutation). We can do this in $10!$ ways, since there are $10$ distinct cars. Similarly, arrange the foreign cars in an ordered sequence, which can also be done in $10!$ ways. Finally, interleave the two sequences. This can be done in two different ways, since we can let the first car be either US-made or foreign. Thus, we have a total of $2 \times 10! \times 10!$ possibilities, and the desired probability is
     
     $$\frac{2 \times 10! \times 10!}{20!}$$
     
     Note that we could have solved the second part of the problem by neglecting the fact that the cars are distinct. Suppose the foreign cars are indistinguishable, and also that the US cars are indistinguishable. Out of the 20 available spaces, we need to choose 10 spaces in which to place the US cars, and thus there are $\binom{20}{10}$ possible outcomes. Out of these outcomes, there are only two in which the cars alternate, depending on whether we start with a US or a foreign car. Thus, the desired probability is $2 / \binom{20}{10}$, which coincides with our earlier answer.
+
+  </p>
+</details>
 
 # Acknowledgements {.toc-ignore}
 
