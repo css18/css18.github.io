@@ -1,0 +1,31 @@
+---
+title: "Functions and iterative operations"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm006 - October 18, 2018
+
+## Overview
+
+* Define functions and their purpose
+* Analyze a user-written function and explain how it works
+* Demonstrate conditional execution
+* Demonstrate iterative operations using loops and `map()` functions
+
+## Before class
+
+* Read chapters 19, 21 from [R for Data Science](http://r4ds.had.co.nz/)
+
+## Slides and class materials
+
+* [Slides](extras/cm006_slides.html)
+* [Sample space and probability](probability.html)
+* [Functions in R](https://cfss.uchicago.edu/program_functions.html)
+* [Iteration](https://cfss.uchicago.edu/program_iteration.html)
+
+## Additional resources
+
