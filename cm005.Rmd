@@ -26,6 +26,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Slides and class materials
 
 * [Slides](extras/cm005_slides.html)
+* [Sample space and probability](probability.html)
 
 ## Additional resources
 
