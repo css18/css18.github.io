@@ -23,9 +23,11 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Slides and class materials
 
 * [Slides](extras/cm006_slides.html)
-* [Sample space and probability](probability.html)
 * [Functions in R](https://cfss.uchicago.edu/program_functions.html)
 * [Iteration](https://cfss.uchicago.edu/program_iteration.html)
 
 ## Additional resources
 
+## What you need to do
+
+* Complete [Homework 03: Probability](hw03-probability.html)
