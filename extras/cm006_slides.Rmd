@@ -1,0 +1,197 @@
+---
+title: "Functions and iterative operations"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 18))
+```
+
+## Functions
+
+* Easy to reuse
+* Self-documenting
+* Easy-ier to debug
+* [If you have copied and pasted a block of code more than twice, convert it to a function.](http://r4ds.had.co.nz/functions.html#when-should-you-write-a-function)
+
+## Function components
+
+* Name
+* Arguments
+* Body
+
+## Rescale function
+
+```{r, collapse = TRUE}
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+rescale01(c(0, 5, 10))
+rescale01(c(-10, 0, 10))
+rescale01(c(1, 2, 3, NA, 5))
+```
+
+* Name
+* Arguments
+* Body
+
+## What is that?
+
+```{r}
+pythagorean <- function(a, b){
+  hypotenuse <- sqrt(a^2 + b^2)
+  return(hypotenuse)
+}
+```
+
+* Name
+* Arguments
+* Body
+
+## How to use a function {.scrollable}
+
+```{r, error = TRUE}
+# print the output of the function
+pythagorean(a = 3, b = 4)
+
+# save the output as a new object
+(tri_c <- pythagorean(a = 3, b = 4))
+
+# what happens to the hypotenuse from inside the function?
+pythagorean(a = 3, b = 4)
+hypotenuse
+```
+
+## Iteration
+
+```{r df-rnorm}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+```
+
+```{r median-per-column, collapse = TRUE}
+median(df$a)
+median(df$b)
+median(df$c)
+median(df$d)
+```
+
+## Iteration with `for` loop
+
+```{r for-loop}
+output <- vector(mode = "double", length = ncol(df))
+for (i in seq_along(df)) {
+  output[[i]] <- median(df[[i]])
+}
+output
+```
+
+## Output {.scrollable}
+
+```r
+output <- vector(mode = "double", length = ncol(df))
+```
+
+```{r vector}
+vector(mode = "double", length = ncol(df))
+vector(mode = "logical", length = ncol(df))
+vector(mode = "character", length = ncol(df))
+vector(mode = "list", length = ncol(df))
+```
+
+## Sequence
+
+```r
+i in seq_along(df)
+```
+
+```{r seq-along}
+seq_along(df)
+```
+
+## Body
+
+```r
+output[[i]] <- median(df[[i]])
+```
+
+## Preallocation {.scrollable}
+
+```{r preallocate, message = FALSE}
+x <- rnorm(1000, mean = 0, sd = 1)
+str(x)
+
+# load microbenchmark library to time code
+library(microbenchmark)
+
+microbenchmark(
+  # don't preallocate
+  `No preallocation` = {
+    output <- vector("numeric", 0)
+    
+    for (i in seq_along(x)) {
+      output <- c(output, x[[i]] + 1)
+    }
+  },
+  # preallocate
+  `Preallocation` = {
+    output <- vector("numeric", length(x))
+    
+    for (i in seq_along(x)) {
+      output[[i]] <- x[[i]] + 1
+    }
+  }) %>%
+  autoplot +
+  scale_y_log10(breaks = c(2, 4, 8, 16, 32)) +
+  labs(y = "Time [milliseconds]")
+```
+
+## Map functions
+
+* Why `for` loops are good
+* Why `map()` functions may be better
+* Types of `map()` functions
+    * `map()` makes a list
+    * `map_lgl()` makes a logical vector
+    * `map_int()` makes an integer vector
+    * `map_dbl()` makes a double vector
+    * `map_chr()` makes a character vector
+
+## Map functions
+
+```{r}
+map_dbl(df, mean)
+map_dbl(df, median)
+map_dbl(df, sd)
+```
+
+## Map functions
+
+```{r}
+map_dbl(df, mean, na.rm = TRUE)
+```
+
+## Map functions
+
+```{r}
+df %>%
+  map_dbl(mean, na.rm = TRUE)
+```
