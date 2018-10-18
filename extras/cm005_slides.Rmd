@@ -326,7 +326,7 @@ $$
 
 ## Rolling a 4-sided die
 
-Consider an experiment involving two successive rolls of a 4-sided die in which all 16 possible outcomes are equally likely and have probability $1/16$.
+> Consider an experiment involving two successive rolls of a 4-sided die in which all 16 possible outcomes are equally likely and have probability $1/16$
 
 ## Rolling a 4-sided die
 
