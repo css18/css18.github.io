@@ -21,6 +21,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Before class
 
 * Read [chapters 2-3 (Random Variables and Expectation) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+    * Focus primarily on content related to **discrete** random variables - we will cover continuous variables next week
 
 ## Slides and class materials
 
