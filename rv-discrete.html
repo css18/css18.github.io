@@ -454,17 +454,17 @@ pmf <span class="op">%&gt;%</span>
        <span class="dt">y =</span> <span class="st">&quot;Probability&quot;</span>)</code></pre></div>
 <p><img src="rv-discrete_files/figure-html/pmf-1.png" width="672" /></p>
 <ul>
-<li><p>Probability Mass Function: For a discrete random variable <span class="math inline">\(X\)</span>, define the probability mass function <span class="math inline">\(p(x)\)</span> as</p>
+<li><p>Probability Mass Function: For a discrete random variable <span class="math inline">\(X\)</span>, define the probability mass function <span class="math inline">\(p_X(x)\)</span> as</p>
 <span class="math display">\[
 \begin{eqnarray}
-p(x) &amp; = &amp; P(X = x) 
+p_X(x) &amp; = &amp; P(X = x) 
 \end{eqnarray} 
 \]</span></li>
 <li>Use upper-case letters to denote random variables, use lower-case letters to denote real numbers such as the numerical values of a random variable</li>
 <li><p>Note that</p>
 <p><span class="math display">\[\sum_x p_{X}(x) = 1\]</span></p>
 <ul>
-<li><span class="math inline">\(x\)</span> ranges over all possible values of #X#</li>
+<li><span class="math inline">\(x\)</span> ranges over all possible values of <span class="math inline">\(X\)</span></li>
 <li>Makes sense - probability must sum to 1</li>
 </ul></li>
 <li><p>Can also add probabilities for smaller sets <span class="math inline">\(S\)</span> of possible values of <span class="math inline">\(XS\)</span></p>
@@ -603,12 +603,19 @@ p_X(k) &amp; = &amp; (1 - p)^{k-1}p, \quad k = 1, 2, \ldots
 <ul>
 <li><span class="math inline">\((1 - p)^{k-1}p\)</span> is the probability of the sequence consisting of <span class="math inline">\(k-1\)</span> successive trials followed by a head. This is a valid PMF because</li>
 </ul>
-<p><span class="math display">\[\sum_{k=1}^{\infty} p_X(k) = \sum_{k=1}^{\infty} (1 - p)^{k-1}p = p \sum_{k=1}^{\infty} (1 - p)^{k-1} = p \times \frac{1}{1 - (1-p)} = 1\]</span></p></li>
+<p><span class="math display">\[
+\begin{align}
+\sum_{k=1}^{\infty} p_X(k) &amp;= \sum_{k=1}^{\infty} (1 - p)^{k-1}p \\
+&amp;= p \sum_{k=1}^{\infty} (1 - p)^{k-1} \\&amp;
+= p \times \frac{1}{1 - (1-p)} \\
+&amp;= 1
+\end{align}
+\]</span></p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">geometric_plot &lt;-<span class="st"> </span><span class="cf">function</span>(p){
   <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">20</span>,
              <span class="dt">p =</span> <span class="kw">dgeom</span>(<span class="dt">x =</span> x, <span class="dt">prob =</span> p)) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)) <span class="op">%&gt;%</span>
 <span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, p)) <span class="op">+</span>
 <span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
 <span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Geometric PMF&quot;</span>,
@@ -642,19 +649,19 @@ p_X(k) &amp; = &amp; (1 - p)^{k-1}p, \quad k = 1, 2, \ldots
 <li>Number of people waiting for license</li>
 </ul></li>
 <li><p>Generally referred to as <strong>event counts</strong></p></li>
-<li><p>Suppose <span class="math inline">\(X\)</span> is a random variable that takes on values <span class="math inline">\(X \in \{0, 1, 2, \ldots, \}\)</span> and that <span class="math inline">\(P(X = k) = p(k)\)</span> is,</p>
+<li><p>Suppose <span class="math inline">\(X\)</span> is a random variable that takes on values <span class="math inline">\(X \in \{0, 1, 2, \ldots, \}\)</span> and that <span class="math inline">\(\Pr(X = k) = p_X(k)\)</span> is,</p>
 <p><span class="math display">\[
 \begin{eqnarray}
-p(k) &amp; = &amp; e^{-\lambda} \frac{\lambda^{k}}{k!}, \quad k = 0,1,2,\ldots 
+p_X(k) &amp; = &amp; e^{-\lambda} \frac{\lambda^{k}}{k!}, \quad k = 0,1,2,\ldots 
 \end{eqnarray}
 \]</span></p>
+<p>for <span class="math inline">\(k \in \{0, 1, \ldots, \}\)</span> and <span class="math inline">\(0\)</span> otherwise.</p>
 <p>for <span class="math inline">\(k \in \{0, 1, \ldots, \}\)</span> and <span class="math inline">\(0\)</span> otherwise. Then we will say that <span class="math inline">\(X\)</span> follows a <strong>Poisson</strong> distribution with <strong>rate</strong> parameter <span class="math inline">\(\lambda\)</span></p>
-<span class="math display">\[
+<p><span class="math display">\[
 \begin{eqnarray}
 X &amp; \sim &amp; \text{Poisson}(\lambda) \nonumber 
 \end{eqnarray}
-\]</span></li>
-<li><p>Not enough time for the proof here (find it online), but <span class="math inline">\(E(X) = var(X) = \lambda\)</span></p></li>
+\]</span></p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">poisson_plot &lt;-<span class="st"> </span><span class="cf">function</span>(lambda, <span class="dt">max_n =</span> <span class="dv">10</span>){
   <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span>max_n,
@@ -677,20 +684,17 @@ X &amp; \sim &amp; \text{Poisson}(\lambda) \nonumber
 <h3>Example</h3>
 <ul>
 <li>Suppose the number of threats a president makes in a term is given by <span class="math inline">\(X \sim \text{Poisson}(5)\)</span></li>
-<li><p>What is the probability the president will make ten or more threats?</p>
+<li><p>What is the probability the president will make ten threats?</p>
 <p><span class="math display">\[
 \begin{eqnarray}
-P(X \geq 10) &amp; = &amp; e^{-\lambda} \sum_{k=10}^{\infty} \frac{5^{k}}{k!} \\
-&amp; = &amp; 1 - P(X&lt; 10 )
+P(X = 10) &amp; = &amp; e^{-\lambda} \frac{5^{10}}{10!}
 \end{eqnarray}
 \]</span></p></li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">50</span>,
            <span class="dt">prob =</span> <span class="kw">dpois</span>(n, <span class="dv">5</span>)) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ten =</span> n <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, prob, <span class="dt">fill =</span> ten)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, prob)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
-<span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>, <span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of threats&quot;</span>,
        <span class="dt">y =</span> <span class="st">&quot;Probability&quot;</span>)</code></pre></div>
 <p><img src="rv-discrete_files/figure-html/poisson-president-1.png" width="672" /></p>
@@ -725,7 +729,7 @@ P(X \geq 10) &amp; = &amp; e^{-\lambda} \sum_{k=10}^{\infty} \frac{5^{k}}{k!} \\
 where <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are scalars</li>
 <li>It could be a logarithmic transformation <span class="math inline">\(g(X) = \log(X)\)</span></li>
 <li>If <span class="math inline">\(Y = g(X)\)</span> is a function of a random variable <span class="math inline">\(X\)</span>, then <span class="math inline">\(Y\)</span> is also a random variable</li>
-<li><p>All outcomes in the sample space defined with a numerical value <span class="math inline">\(x\)</span> for <span class="math inline">\(X\)</span> also have a numberical value <span class="math inline">\(y = g(x)\)</span> for <span class="math inline">\(Y\)</span></p></li>
+<li><p>All outcomes in the sample space defined with a numerical value <span class="math inline">\(x\)</span> for <span class="math inline">\(X\)</span> also have a numerical value <span class="math inline">\(y = g(x)\)</span> for <span class="math inline">\(Y\)</span></p></li>
 </ul>
 </div>
 <div id="expectation-mean-and-variance" class="section level1">
@@ -945,10 +949,11 @@ E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) +
 ##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
 ##  base       * 3.5.1   2018-07-05 local                               
 ##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
-##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  bindrcpp   * 0.2.2   2018-03-29 CRAN (R 3.5.0)                      
 ##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
 ##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
 ##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  codetools    0.2-15  2016-10-05 CRAN (R 3.5.1)                      
 ##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
 ##  compiler     3.5.1   2018-07-05 local                               
 ##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
@@ -970,6 +975,7 @@ E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) +
 ##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
 ##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
 ##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  labeling     0.3     2014-08-23 CRAN (R 3.5.0)                      
 ##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
 ##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
 ##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      

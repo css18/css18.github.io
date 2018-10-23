@@ -1,42 +1,39 @@
 ---
 title: "Discrete random variables"
-output:
-  html_document:
-    toc: true
-    toc_float: true
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(cache = TRUE)
-```
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
 
-```{r packages, cache = FALSE, message = FALSE}
 library(tidyverse)
-library(broom)
 library(patchwork)
 
 options(digits = 3)
 set.seed(1234)
-theme_set(theme_minimal())
+theme_set(theme_minimal(base_size = 18))
 ```
 
 $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}$$
 
-# Basic concepts
+## Basic concepts
 
-* Random variable - real-valued function of the outcome of an experiment
-* Function of a random variables - defines another random variable
-* Associated each random variable with "averages" of interest, such as the mean or the variance
-* A random variable can be conditioned on an event or on another random variable
-* Independence of a random variable from an event or from another random variable
+* Random variable
+* Function of a random variables
+* Averages of interest
+* Conditioning
+* Independence
 
-# Random variable
+## Random variable
 
 * A random process or variable with a numerical outcome
-* More formally, it is a random variable $X$ that is a function of the sample space
-    * Number of incumbents who win
-    * An indicator whether a country defaults on a loan (1 if a default, 0 otherwise)
-    * Number of casualties in a war (rather than all possible outcomes)
+* A random variable $X$ that is a function of the sample space
     
     $$
     \begin{eqnarray}
@@ -44,7 +41,11 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
     \end{eqnarray}
     $$
 
-## Examples
+* Number of incumbents who win
+* An indicator whether a country defaults on a loan (1 if a default, 0 otherwise)
+* Number of casualties in a war (rather than all possible outcomes)
+
+## Examples of random variables {.scrollable}
 
 * Treatment assignment:
     * Suppose we have $3$ units, flipping fair coin ($\frac{1}{2}$) to assign each unit
@@ -72,6 +73,9 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
         X((T, T, T)) & = & 3 
         \end{eqnarray}
         $$
+
+## Examples of random variables
+
 * $X$ = Number of Calls into congressional office in some period $p$
     * $X(c) = c$
 * Outcome of Election
@@ -80,19 +84,19 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
     * Define $X = 0$ if $v<0.50$
     * For example, if $v = 0.48$, then $X(v) = 0$
 * An indicator whether a country defaults on a loan (1 if a default, 0 otherwise)
-* Not all are experimental - most are observational
-    
+
 ## Discrete random variables
 
 * A random variable with a finite or countably infinite range
-* A random variable with an uncountably infinite number of values is continuous
+* A random variable with an uncountably infinite number of values
 
-# Probability mass functions
+## Probability mass functions
 
 * Probability of the values that it can take
 * Probability mass function (PMF)
 
-* Go back to our experiment example -- probability comes from probability of outcomes
+## Probability mass functions
+
 * $P(C, T, C) = P(C)P(T)P(C) = \frac{1}{2}\frac{1}{2}\frac{1}{2} = \frac{1}{8}$
 * This applies to all outcomes
 
@@ -106,6 +110,8 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
     $$
 * $p(X = a) = 0$, for all $a \notin (0, 1, 2, 3)$
 
+## Probability mass functions
+
 ```{r pmf}
 pmf <- data_frame(x = 0:3,
            y = c(1/8, 3/8, 3/8, 1/8))
@@ -118,20 +124,22 @@ pmf %>%
        y = "Probability")
 ```
 
+## Probability mass functions
+
 * Probability Mass Function: For a discrete random variable $X$, define the probability mass function $p_X(x)$ as
 
     $$
     \begin{eqnarray}
-    p_X(x) & = & P(X = x) 
+    p(x) & = & P(X = x) 
     \end{eqnarray} 
     $$
-* Use upper-case letters to denote random variables, use lower-case letters to denote real numbers such as the numerical values of a random variable
+* Upper vs. lower-case letters
 * Note that
 
     $$\sum_x p_{X}(x) = 1$$
-    
-    * $x$ ranges over all possible values of $X$
-    * Makes sense - probability must sum to 1
+
+## Probability mass functions
+
 * Can also add probabilities for smaller sets $S$ of possible values of $XS$
 
     $$\Pr(X \in S) = \sum_{x \in S} p_X (x)$$
@@ -139,14 +147,13 @@ pmf %>%
 
     $$\Pr (X > 0) = \sum_{x=1}^2 p_X (x) = \frac{1}{2} + \frac{1}{4} = \frac{3}{4}$$
 
-* To calculate the PMF of a random variable $X$
-    * For each possible value $x$ of $X$
-        1. Collect all possible outcomes that give rise to the event $\{ X=x \}$
-        1. Add their probabilities to obtain $p_X (x)$
+## Calculate the PMF of a random variable $X$
 
-# Famous discrete random variables
+* For each possible value $x$ of $X$
+    1. Collect all possible outcomes that give rise to the event $\{ X=x \}$
+    1. Add their probabilities to obtain $p_X (x)$
 
-## Bernoulli
+## Bernoulli random variable
 
 * Suppose $X$ is a random variable, with $X \in \{0, 1\}$ and $P(X = 1) = \pi$.  Then we will say that $X$ is **Bernoulli** random variable,
 
@@ -158,7 +165,6 @@ pmf %>%
 
     for $k \in \{0,1\}$ and $p(k) = 0$ otherwise.
     
-    * $\pi$ does not refer to $3.14159$ in this instance, it is a variable
 * We will (equivalently) say that 
 
     $$
@@ -166,6 +172,8 @@ pmf %>%
     Y & \sim & \text{Bernoulli}(\pi) \nonumber 
     \end{eqnarray}
     $$
+
+## Bernoulli random variable
 
 * Suppose we flip a fair coin and $Y = 1$ if the outcome is Heads.
 
@@ -176,6 +184,8 @@ pmf %>%
     p(0) & = & (1/2)^{0} (1- 1/2)^{1 - 0} = (1- 1/2) \nonumber 
     \end{eqnarray}
     $$
+
+## Bernoulli random variable
 
 ```{r bernouli}
 bernouli_plot <- function(p){
@@ -194,11 +204,7 @@ bernouli_plot(.5) +
   bernouli_plot(.3)
 ```
 
-* Other examples
-    * Person is healthy or sick
-    * Person votes or does not vote
-
-## Binomial
+## Binomial random variable
 
 * A model to count the number of successes across $N$ trials
 * Suppose $X$ is a random variable that counts the number of successes in $N$ independent and identically distributed Bernoulli trials.  Then $X$ is a **Binomial** random variable, 
@@ -217,7 +223,7 @@ bernouli_plot(.5) +
     \end{eqnarray}
     $$
 
-### Example
+## Binomial random variable {.scrollable}
 
 ```{r binomial}
 binomial_plot <- function(n, p){
@@ -237,9 +243,11 @@ binomial_plot(100, .2)
 binomial_plot(100, .8)
 ```
 
-* Recall our experiment example:
-    * $P(T) = P(C) = 1/2$
-    * $Z =$ number of units assigned to treatment
+## Binomial random variable
+
+* Recall our experiment example
+* $P(T) = P(C) = 1/2$
+* $Z =$ number of units assigned to treatment
 
     $$
     \begin{eqnarray}
@@ -251,17 +259,17 @@ binomial_plot(100, .8)
     \end{eqnarray}
     $$
 
-## Geometric
+## Geometric random variable {.scrollable}
 
 * A model to count the number of trials of a Bernouli outcome before success occurs the first time
-* Suppose $X$ is a random variable that counts the number of tosses needed for a head to come up the first time. Its PMF is 
+* Suppose $X$ is a random variable that counts the number of tosses needed for a head to come up the first time. Its PMF is
 
     $$
     \begin{eqnarray}
     p_X(k) & = & (1 - p)^{k-1}p, \quad k = 1, 2, \ldots
     \end{eqnarray}
     $$
-    * $(1 - p)^{k-1}p$ is the probability of the sequence consisting of $k-1$ successive trials followed by a head. This is a valid PMF because
+* $(1 - p)^{k-1}p$ is the probability of the sequence consisting of $k-1$ successive trials followed by a head. This is a valid PMF because
     
     $$
     \begin{align}
@@ -271,7 +279,9 @@ binomial_plot(100, .8)
     &= 1
     \end{align}
     $$
-    
+
+## Geometric random variable {.scrollable}
+
 ```{r geometric}
 geometric_plot <- function(p){
   data_frame(x = 0:20,
@@ -290,11 +300,7 @@ geometric_plot(.7)
 geometric_plot(.2)
 ```
 
-* Examples
-    * Number of attempts before passing a test
-    * Finding a missing item in a search
-
-## Poisson
+## Poisson random variable
 
 * Often interested in counting number of events that occur:
     * Number of wars started
@@ -302,6 +308,8 @@ geometric_plot(.2)
     * Number of bribes offered
     * Number of people waiting for license
 * Generally referred to as **event counts**
+
+## Poisson random variable
 
 * Suppose $X$ is a random variable that takes on values $X \in \{0, 1, 2, \ldots, \}$ and that $\Pr(X = k) = p_X(k)$ is,
 
@@ -312,14 +320,15 @@ geometric_plot(.2)
     $$
     
     for $k \in \{0, 1, \ldots, \}$ and $0$ otherwise.
-    
-    for $k \in \{0, 1, \ldots, \}$ and $0$ otherwise. Then we will say that $X$ follows a **Poisson** distribution with **rate** parameter $\lambda$
+* $X$ follows a **Poisson** distribution with **rate** parameter $\lambda$
     
     $$
     \begin{eqnarray}
     X & \sim & \text{Poisson}(\lambda) \nonumber 
     \end{eqnarray}
     $$
+
+## Poisson random variable {.scrollable}
 
 ```{r poisson}
 poisson_plot <- function(lambda, max_n = 10){
@@ -338,16 +347,18 @@ poisson_plot(5.5)
 poisson_plot(78, max_n = 150)
 ```
 
-### Example
+## Poisson random variable
 
 * Suppose the number of threats a president makes in a term is given by $X \sim \text{Poisson}(5)$
-* What is the probability the president will make ten threats?
+* What is the probability the president will make ten or more threats?
 
     $$
     \begin{eqnarray}
     P(X = 10) & = & e^{-\lambda} \frac{5^{10}}{10!}
     \end{eqnarray}
     $$
+
+## Poisson random variable
 
 ```{r poisson-president}
 data_frame(n = 1:50,
@@ -358,7 +369,7 @@ data_frame(n = 1:50,
        y = "Probability")
 ```
 
-### Approximating a binomial random variable
+## Approximating a binomial random variable
 
 * The Poisson PMF with parameter $\lambda$ is a good approximation for a binomial PMF with parameters $n$ and $p$
     
@@ -366,53 +377,39 @@ data_frame(n = 1:50,
     
     * Provided $\lambda = np$, $n$ is very large, and $p$ is very small
 * Sometimes using the Poisson PMF results in simpler models and easier calculations
-* Example
-    * $n = 100$ and $p = 0.01$
-    * Using the binomial PMF
-    
-        $$\frac{100!}{95! 5!} \times 0.01^5 (1 - 0.01)^{95} = 0.00290$$
-    
-    * Using the Poisson PMF with $\lambda = np = 100 \times 0.01 = 1$
-    
-        $$e^{-1} \frac{1}{5!} = 0.00306$$
 
-# Functions of random variables
+## Approximating a binomial random variable
+
+* $n = 100$ and $p = 0.01$
+* Using the binomial PMF
+
+    $$\frac{100!}{95! 5!} \times 0.01^5 (1 - 0.01)^{95} = 0.00290$$
+
+* Using the Poisson PMF with $\lambda = np = 100 \times 0.01 = 1$
+
+    $$e^{-1} \frac{1}{5!} = 0.00306$$
+
+## Functions of random variables
 
 * Given a random variable $X$, you may wish to create a new random variable $Y$ using transformations of $X$
-* This could be a linear function of the form
-
-    $$Y = g(X) = aX + b$$
-    
-    where $a$ and $b$ are scalars
-* It could be a logarithmic transformation $g(X) = \log(X)$
+* Linear transformation $Y = g(X) = aX + b$
+* Logarithmic transformation $g(X) = \log(X)$
 * If $Y = g(X)$ is a function of a random variable $X$, then $Y$ is also a random variable
 * All outcomes in the sample space defined with a numerical value $x$ for $X$ also have a numerical value $y = g(x)$ for $Y$
 
-# Expectation, mean, and variance
+## Expectation, mean, and variance
 
 * PMF of a random variable $X$ provides several numbers, the probabilities of all possible values of $X$
 * Often desirable to summarize this information into a single representative number
 * **Expectation** of $X$ - weighted average of the possible values of $X$
 
-### Motivation
+## Motivation
 
-Consider spinning a wheel of fortune many times. At each spin, one of the numbers $m_1, m_2, \ldots, m_n$ comes up with corresponding probability $p_1, p_2, \ldots, p_n$, and this is your monetary reward from that spin. What is the amount of money that you "expect" to get "per spin"? The terms "expect" and "per spin" are a little ambiguous, but here is a reasonable interpretation.
-
-Suppose you spin the wheel $k$ times, and that $k_i$ is the number of times that the outcome is $m_i$. Then, the total amount received is $m_1 k_1 + m_2 k_2 + \ldots + m_n k_n$. The amount received per spin is a simple average:
-
-$$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k}$$
-
-If the number of spins $k$ is very large and we interpret probabilities as relative frequencies, we could anticipate that $m_i$ comes up a fraction of times roughly equal to $p_i$:
-
-$$\frac{k_i}{k} \approx p_i, i = 1, \ldots,n$$
-
-Thus, the amount of money you "expect" to receive is
-
-$$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \ldots + m_np_n$$
+> Consider spinning a wheel of fortune many times. At each spin, one of the numbers $m_1, m_2, \ldots, m_n$ comes up with corresponding probability $p_1, p_2, \ldots, p_n$, and this is your monetary reward from that spin. What is the amount of money that you expect to get per spin?
 
 ## Expectation
 
-* Define **expected value** (known as **expectation** or the **mean**) of a random variable $X$, with PMF $p_X$ as
+* **Expected value** (known as **expectation** or the **mean**) of a random variable $X$, with PMF $p_X$ is
 
     $$
     \begin{eqnarray}
@@ -422,9 +419,7 @@ $$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \
     
     where $\sum_{x:p(x)>0}$ is all values of $X$ with probability greater than 0
     
-* In words: for all values of $x$ with $p(x)$ greater than zero, take the weighted average of the values
-
-### Example of expected value
+## Example of expected value {.scrollable}
 
 * Suppose $X$ is number of units assigned to treatment, in one of our previous example.
 
@@ -451,17 +446,13 @@ $$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \
 * Essentially a weighted average, or the average outcome (value in the middle of the range)
 * Gives us a measure of **central tendency**
 
-## Variance, moments, and the expected value rule
+## Moments
 
-* Other quantities we care about include variance and moments
-
-### Moments
-
-* 1st moment: $\E[X^1] = \E[X]$ - that is, the mean
+* 1st moment: $\E[X^1] = \E[X]$
 * 2nd moment: $\E[X^2]$
 * $n$th moment: $\E[X^n]$
 
-### Variance
+## Variance
 
 * $\Var(X)$
 * Defined as the expected value of the random variable $(X - \E[X])^2$
@@ -475,17 +466,15 @@ $$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \
     * Since $(X - \E[X])^2$ can only take non-negative values, variance is always non-negative
 * Measure of **dispersion** of $X$ around its mean
 * We will define the standard deviation of $X$, $\sigma_X = \sqrt{\Var(X)}$
-    * Standard deviation is easier to interpret sometimes since it is in the same units as $X$
 
-#### Calculating variance of a random variable
+## Calculating variance of a random variable
 
 * We could generate the PMF of the random variable $(X - \E[X])^2$, then calculate the expectation of this function
-    * It is just a linear function
-* Instead, we can take a shortcut
-* **Expected value rule for functions of random variables** - let $X$ be a random variable with PMF $p_X$, and let $g(X)$ be a function of $X$. Then, the expected value of the random variable $g(X)$ is given by
+* Expected value rule for functions of random variables
+* Let $X$ be a random variable with PMF $p_X$, and let $g(X)$ be a function of $X$. Then, the expected value of the random variable $g(X)$ is given by
 
     $$\E[g(X)] = \sum_{x} g(x) p_X(x)$$
-* This allows us to rewrite our variance formula:
+* Rewrite our variance formula:
 
     $$
     \begin{align}
@@ -494,11 +483,7 @@ $$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \
     \end{align}
     $$
     
-    * Just need the first and second moments to calculate variance
-
-## Practice calculating expectation and variance
-
-### Bernoulli variable
+## Bernoulli variable {.scrollable}
 
 * Suppose $Y \sim \text{Bernoulli}(\pi)$
 
@@ -526,7 +511,7 @@ $$M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \
     \end{eqnarray}
     $$
 
-### Binomial
+## Binomial
 
 $$Z = \sum_{i=1}^{N} Y_{i} \text{ where } Y_{i} \sim \text{Bernoulli}(\pi)$$
 
@@ -546,10 +531,10 @@ $$
 * View the expected reward of a decision as its average payoff over a large number of trials
 * Choose a decision with maximum expected reward
 
-### Example: going to war
+## Example: going to war {.scrollable}
 
-* Suppose country $1$ is engaged in a conflict and can either win or lose. 
-* Define $Y = 1$ if the country wins and $Y = 0$ otherwise.
+* Suppose country $1$ is engaged in a conflict and can either win or lose
+* Define $Y = 1$ if the country wins and $Y = 0$ otherwise
 * Then,
 
     $$
@@ -558,9 +543,9 @@ $$
     \end{eqnarray}
     $$
 
-* Suppose country $1$ is deciding whether to fight a war.
-* Engaging in the war will cost the country $c$.
-* If they win, country $1$ receives $B$.
+* Suppose country $1$ is deciding whether to fight a war
+* Engaging in the war will cost the country $c$
+* If they win, country $1$ receives $B$
 * What is $1$'s expected utility from fighting a war?
 
     $$
@@ -572,15 +557,4 @@ $$
     \end{eqnarray}
     $$
     
-* Based on your beliefs about the appropriate values for $B, \pi, c$, you can decide whether to engage in the war
-    * If expected utility is greater than 0, you should decide to go to war
-    * If expected utility is less than 0, you should decide not to go to war
-
-# Acknowledgements {.toc-ignore}
-
-* Material drawn from **Introduction to Probability** (2nd edition) by Bertsekas and Tsitsiklis
-
-# Session Info {.toc-ignore}
-
-```{r child='_sessioninfo.Rmd'}
-```
+* Deciding whether to go to war
