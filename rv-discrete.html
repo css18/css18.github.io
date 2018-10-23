@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Discrete random variables</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Discrete random variables</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}\]</span></p>
+<div id="basic-concepts" class="section level1">
+<h1>Basic concepts</h1>
+<ul>
+<li>Random variable - real-valued function of the outcome of an experiment</li>
+<li>Function of a random variables - defines another random variable</li>
+<li>Associated each random variable with “averages” of interest, such as the mean or the variance</li>
+<li>A random variable can be conditioned on an event or on another random variable</li>
+<li>Independence of a random variable from an event or from another random variable</li>
+</ul>
+</div>
+<div id="random-variable" class="section level1">
+<h1>Random variable</h1>
+<ul>
+<li>A random process or variable with a numerical outcome</li>
+<li>More formally, it is a random variable <span class="math inline">\(X\)</span> that is a function of the sample space
+<ul>
+<li>Number of incumbents who win</li>
+<li>An indicator whether a country defaults on a loan (1 if a default, 0 otherwise)</li>
+<li>Number of casualties in a war (rather than all possible outcomes)</li>
+</ul>
+<span class="math display">\[
+\begin{eqnarray}
+X:\text{Sample Space} \rightarrow \mathcal{R}
+\end{eqnarray}
+\]</span></li>
+</ul>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<ul>
+<li>Treatment assignment:
+<ul>
+<li>Suppose we have <span class="math inline">\(3\)</span> units, flipping fair coin (<span class="math inline">\(\frac{1}{2}\)</span>) to assign each unit</li>
+<li>Assign to <span class="math inline">\(T=\)</span>Treatment or <span class="math inline">\(C=\)</span>control</li>
+<li><span class="math inline">\(X\)</span> = Number of units received treatment</li>
+<li><p>Defining the function</p>
+<span class="math display">\[
+\begin{equation}
+X  = \left \{ \begin{array} {ll}
+0  \text{  if  } (C, C, C)  \\
+1 \text{  if  } (T, C, C) \text{ or } (C, T, C) \text{ or } (C, C, T) \\
+2 \text{ if  }  (T, T, C) \text{ or } (T, C, T) \text{ or } (C, T, T) \\
+3 \text{ if } (T, T, T) 
+\end{array} \right.
+\end{equation}
+\]</span></li>
+<li><p>In other words:</p>
+<span class="math display">\[
+\begin{eqnarray}
+X( (C, C, C) )  &amp; =  &amp; 0 \\
+X( (T, C, C)) &amp; = &amp;  1 \\
+X((T, C, T)) &amp; = &amp; 2 \\
+X((T, T, T)) &amp; = &amp; 3 
+\end{eqnarray}
+\]</span></li>
+</ul></li>
+<li><span class="math inline">\(X\)</span> = Number of Calls into congressional office in some period <span class="math inline">\(p\)</span>
+<ul>
+<li><span class="math inline">\(X(c) = c\)</span></li>
+</ul></li>
+<li>Outcome of Election
+<ul>
+<li>Define <span class="math inline">\(v\)</span> as the proportion of vote the candidate receives</li>
+<li>Define <span class="math inline">\(X = 1\)</span> if <span class="math inline">\(v&gt;0.50\)</span></li>
+<li>Define <span class="math inline">\(X = 0\)</span> if <span class="math inline">\(v&lt;0.50\)</span></li>
+<li>For example, if <span class="math inline">\(v = 0.48\)</span>, then <span class="math inline">\(X(v) = 0\)</span></li>
+</ul></li>
+<li>An indicator whether a country defaults on a loan (1 if a default, 0 otherwise)</li>
+<li>Not all are experimental - most are observational</li>
+</ul>
+</div>
+<div id="discrete-random-variables" class="section level2">
+<h2>Discrete random variables</h2>
+<ul>
+<li>A random variable with a finite or countably infinite range</li>
+<li>A random variable with an uncountably infinite number of values is continuous</li>
+</ul>
+</div>
+</div>
+<div id="probability-mass-functions" class="section level1">
+<h1>Probability mass functions</h1>
+<ul>
+<li>Probability of the values that it can take</li>
+<li><p>Probability mass function (PMF)</p></li>
+<li>Go back to our experiment example – probability comes from probability of outcomes</li>
+<li><span class="math inline">\(P(C, T, C) = P(C)P(T)P(C) = \frac{1}{2}\frac{1}{2}\frac{1}{2} = \frac{1}{8}\)</span></li>
+<li><p>This applies to all outcomes</p>
+<span class="math display">\[
+\begin{eqnarray}
+p(X = 0) &amp; = &amp; P(C, C, C) = \frac{1}{8}\\
+p(X = 1) &amp; = &amp; P(T, C, C) + P(C, T, C) + P(C, C, T) = \frac{3}{8} \\
+p(X = 2) &amp; = &amp; P(T, T, C)  + P(T, C, T) + P(C, T, T) = \frac{3}{8} \\
+p(X = 3) &amp; = &amp; P(T, T, T) = \frac{1}{8}
+\end{eqnarray}
+\]</span></li>
+<li><p><span class="math inline">\(p(X = a) = 0\)</span>, for all <span class="math inline">\(a \notin (0, 1, 2, 3)\)</span></p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pmf &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">3</span>,
+           <span class="dt">y =</span> <span class="kw">c</span>(<span class="dv">1</span><span class="op">/</span><span class="dv">8</span>, <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dv">3</span><span class="op">/</span><span class="dv">8</span>, <span class="dv">1</span><span class="op">/</span><span class="dv">8</span>))
+
+pmf <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Probability Mass Function&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Number of treated&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Probability&quot;</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/pmf-1.png" width="672" /></p>
+<ul>
+<li><p>Probability Mass Function: For a discrete random variable <span class="math inline">\(X\)</span>, define the probability mass function <span class="math inline">\(p(x)\)</span> as</p>
+<span class="math display">\[
+\begin{eqnarray}
+p(x) &amp; = &amp; P(X = x) 
+\end{eqnarray} 
+\]</span></li>
+<li>Use upper-case letters to denote random variables, use lower-case letters to denote real numbers such as the numerical values of a random variable</li>
+<li><p>Note that</p>
+<p><span class="math display">\[\sum_x p_{X}(x) = 1\]</span></p>
+<ul>
+<li><span class="math inline">\(x\)</span> ranges over all possible values of #X#</li>
+<li>Makes sense - probability must sum to 1</li>
+</ul></li>
+<li><p>Can also add probabilities for smaller sets <span class="math inline">\(S\)</span> of possible values of <span class="math inline">\(XS\)</span></p>
+<span class="math display">\[\Pr(X \in S) = \sum_{x \in S} p_X (x)\]</span></li>
+<li><p>For example, if <span class="math inline">\(X\)</span> is the number of heads obtained in two independent tosses of a fair coin, the probability of at least one head is</p>
+<p><span class="math display">\[\Pr (X &gt; 0) = \sum_{x=1}^2 p_X (x) = \frac{1}{2} + \frac{1}{4} = \frac{3}{4}\]</span></p></li>
+<li>To calculate the PMF of a random variable <span class="math inline">\(X\)</span>
+<ul>
+<li>For each possible value <span class="math inline">\(x\)</span> of <span class="math inline">\(X\)</span>
+<ol style="list-style-type: decimal">
+<li>Collect all possible outcomes that give rise to the event <span class="math inline">\(\{ X=x \}\)</span></li>
+<li>Add their probabilities to obtain <span class="math inline">\(p_X (x)\)</span></li>
+</ol></li>
+</ul></li>
+</ul>
+</div>
+<div id="famous-discrete-random-variables" class="section level1">
+<h1>Famous discrete random variables</h1>
+<div id="bernoulli" class="section level2">
+<h2>Bernoulli</h2>
+<ul>
+<li><p>Suppose <span class="math inline">\(X\)</span> is a random variable, with <span class="math inline">\(X \in \{0, 1\}\)</span> and <span class="math inline">\(P(X = 1) = \pi\)</span>. Then we will say that <span class="math inline">\(X\)</span> is <strong>Bernoulli</strong> random variable,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+p_X(k) &amp; = &amp; \pi^{k} (1- \pi)^{1 - k} \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>for <span class="math inline">\(k \in \{0,1\}\)</span> and <span class="math inline">\(p(k) = 0\)</span> otherwise.</p>
+<ul>
+<li><span class="math inline">\(\pi\)</span> does not refer to <span class="math inline">\(3.14159\)</span> in this instance, it is a variable</li>
+</ul></li>
+<li><p>We will (equivalently) say that</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Y &amp; \sim &amp; \text{Bernoulli}(\pi) \nonumber 
+\end{eqnarray}
+\]</span></p></li>
+<li><p>Suppose we flip a fair coin and <span class="math inline">\(Y = 1\)</span> if the outcome is Heads.</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Y &amp; \sim &amp; \text{Bernoulli}(1/2) \nonumber \\
+p(1) &amp; = &amp; (1/2)^{1} (1- 1/2)^{ 1- 1} = 1/2 \nonumber \\
+p(0) &amp; = &amp; (1/2)^{0} (1- 1/2)^{1 - 0} = (1- 1/2) \nonumber 
+\end{eqnarray}
+\]</span></p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bernouli_plot &lt;-<span class="st"> </span><span class="cf">function</span>(p){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>,
+             <span class="dt">p =</span> <span class="kw">dbinom</span>(<span class="dt">x =</span> x, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> p)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, p)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Bernouli PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(pi <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k)))
+}
+<span class="kw">bernouli_plot</span>(.<span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">bernouli_plot</span>(.<span class="dv">7</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">bernouli_plot</span>(.<span class="dv">3</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/bernouli-1.png" width="672" /></p>
+<ul>
+<li>Other examples
+<ul>
+<li>Person is healthy or sick</li>
+<li>Person votes or does not vote</li>
+</ul></li>
+</ul>
+</div>
+<div id="binomial" class="section level2">
+<h2>Binomial</h2>
+<ul>
+<li>A model to count the number of successes across <span class="math inline">\(N\)</span> trials</li>
+<li><p>Suppose <span class="math inline">\(X\)</span> is a random variable that counts the number of successes in <span class="math inline">\(N\)</span> independent and identically distributed Bernoulli trials. Then <span class="math inline">\(X\)</span> is a <strong>Binomial</strong> random variable,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+p_X(k) &amp; = &amp; {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k} \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>for <span class="math inline">\(k \in \{0, 1, 2, \ldots, N\}\)</span> and <span class="math inline">\(p(k) = 0\)</span> otherwise, and <span class="math inline">\(\binom{N}{k} = \frac{N!}{(N-k)! k!}\)</span>. Equivalently,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Y &amp; \sim &amp; \text{Binomial}(N, \pi) \nonumber 
+\end{eqnarray}
+\]</span></p></li>
+</ul>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">binomial_plot &lt;-<span class="st"> </span><span class="cf">function</span>(n, p){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span>n,
+             <span class="dt">p =</span> <span class="kw">dbinom</span>(<span class="dt">x =</span> x, <span class="dt">size =</span> n, <span class="dt">prob =</span> p)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, p)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Binomial PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(n <span class="op">==</span><span class="st"> </span>.(n) <span class="op">~</span><span class="st"> </span>p <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k)))
+}
+<span class="kw">binomial_plot</span>(<span class="dv">10</span>, .<span class="dv">5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">binomial_plot</span>(<span class="dv">10</span>, .<span class="dv">3</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">binomial_plot</span>(<span class="dv">100</span>, .<span class="dv">2</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-3.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">binomial_plot</span>(<span class="dv">100</span>, .<span class="dv">8</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-4.png" width="672" /></p>
+<ul>
+<li>Recall our experiment example:
+<ul>
+<li><span class="math inline">\(P(T) = P(C) = 1/2\)</span></li>
+<li><span class="math inline">\(Z =\)</span> number of units assigned to treatment</li>
+</ul>
+<span class="math display">\[
+\begin{eqnarray}
+Z &amp; \sim &amp;  \text{Binomial}(1/2)\\
+p(0) &amp; = &amp; {{3}\choose{0}} (1/2)^{0} (1- 1/2)^{3-0} = 1 \times \frac{1}{8}\\
+p(1) &amp;  = &amp; {{3}\choose{1}} (1/2)^{1} (1 - 1/2)^{2} = 3 \times \frac{1}{8} \\
+p(2) &amp; = &amp; {{3}\choose{2}} (1/2)^{2} (1- 1/2)^1 = 3 \times \frac{1}{8} \\
+p(3) &amp; = &amp; {{3}\choose{3}} (1/2)^{3} (1 - 1/2)^{0} = 1 \times \frac{1}{8}
+\end{eqnarray}
+\]</span></li>
+</ul>
+</div>
+</div>
+<div id="geometric" class="section level2">
+<h2>Geometric</h2>
+<ul>
+<li>A model to count the number of trials of a Bernouli outcome before success occurs the first time</li>
+<li><p>Suppose <span class="math inline">\(X\)</span> is a random variable that counts the number of tosses needed for a head to come up the first time. Its PMF is</p>
+<span class="math display">\[
+\begin{eqnarray}
+p_X(k) &amp; = &amp; (1 - p)^{k-1}p, \quad k = 1, 2, \ldots
+\end{eqnarray}
+\]</span>
+<ul>
+<li><span class="math inline">\((1 - p)^{k-1}p\)</span> is the probability of the sequence consisting of <span class="math inline">\(k-1\)</span> successive trials followed by a head. This is a valid PMF because</li>
+</ul>
+<p><span class="math display">\[\sum_{k=1}^{\infty} p_X(k) = \sum_{k=1}^{\infty} (1 - p)^{k-1}p = p \sum_{k=1}^{\infty} (1 - p)^{k-1} = p \times \frac{1}{1 - (1-p)} = 1\]</span></p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">geometric_plot &lt;-<span class="st"> </span><span class="cf">function</span>(p){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">20</span>,
+             <span class="dt">p =</span> <span class="kw">dgeom</span>(<span class="dt">x =</span> x, <span class="dt">prob =</span> p)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, p)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Geometric PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(p <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k)))
+}
+
+<span class="kw">geometric_plot</span>(.<span class="dv">5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/geometric-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">geometric_plot</span>(.<span class="dv">7</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/geometric-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">geometric_plot</span>(.<span class="dv">2</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/geometric-3.png" width="672" /></p>
+<ul>
+<li>Examples
+<ul>
+<li>Number of attempts before passing a test</li>
+<li>Finding a missing item in a search</li>
+</ul></li>
+</ul>
+</div>
+<div id="poisson" class="section level2">
+<h2>Poisson</h2>
+<ul>
+<li>Often interested in counting number of events that occur:
+<ul>
+<li>Number of wars started</li>
+<li>Number of speeches made</li>
+<li>Number of bribes offered</li>
+<li>Number of people waiting for license</li>
+</ul></li>
+<li><p>Generally referred to as <strong>event counts</strong></p></li>
+<li><p>Suppose <span class="math inline">\(X\)</span> is a random variable that takes on values <span class="math inline">\(X \in \{0, 1, 2, \ldots, \}\)</span> and that <span class="math inline">\(P(X = k) = p(k)\)</span> is,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+p(k) &amp; = &amp; e^{-\lambda} \frac{\lambda^{k}}{k!}, \quad k = 0,1,2,\ldots 
+\end{eqnarray}
+\]</span></p>
+<p>for <span class="math inline">\(k \in \{0, 1, \ldots, \}\)</span> and <span class="math inline">\(0\)</span> otherwise. Then we will say that <span class="math inline">\(X\)</span> follows a <strong>Poisson</strong> distribution with <strong>rate</strong> parameter <span class="math inline">\(\lambda\)</span></p>
+<span class="math display">\[
+\begin{eqnarray}
+X &amp; \sim &amp; \text{Poisson}(\lambda) \nonumber 
+\end{eqnarray}
+\]</span></li>
+<li><p>Not enough time for the proof here (find it online), but <span class="math inline">\(E(X) = var(X) = \lambda\)</span></p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">poisson_plot &lt;-<span class="st"> </span><span class="cf">function</span>(lambda, <span class="dt">max_n =</span> <span class="dv">10</span>){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span>max_n,
+             <span class="dt">p =</span> <span class="kw">dpois</span>(<span class="dt">x =</span> x, <span class="dt">lambda =</span> lambda)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, p)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Poisson PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(lambda <span class="op">==</span><span class="st"> </span>.(lambda)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k)))
+}
+<span class="kw">poisson_plot</span>(<span class="dv">2</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">poisson_plot</span>(<span class="fl">5.5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">poisson_plot</span>(<span class="dv">78</span>, <span class="dt">max_n =</span> <span class="dv">150</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-3.png" width="672" /></p>
+<div id="example-1" class="section level3">
+<h3>Example</h3>
+<ul>
+<li>Suppose the number of threats a president makes in a term is given by <span class="math inline">\(X \sim \text{Poisson}(5)\)</span></li>
+<li><p>What is the probability the president will make ten or more threats?</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+P(X \geq 10) &amp; = &amp; e^{-\lambda} \sum_{k=10}^{\infty} \frac{5^{k}}{k!} \\
+&amp; = &amp; 1 - P(X&lt; 10 )
+\end{eqnarray}
+\]</span></p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">50</span>,
+           <span class="dt">prob =</span> <span class="kw">dpois</span>(n, <span class="dv">5</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">ten =</span> n <span class="op">&gt;</span><span class="st"> </span><span class="dv">10</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(n, prob, <span class="dt">fill =</span> ten)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>, <span class="dt">guide =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Number of threats&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Probability&quot;</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-president-1.png" width="672" /></p>
+</div>
+<div id="approximating-a-binomial-random-variable" class="section level3">
+<h3>Approximating a binomial random variable</h3>
+<ul>
+<li><p>The Poisson PMF with parameter <span class="math inline">\(\lambda\)</span> is a good approximation for a binomial PMF with parameters <span class="math inline">\(n\)</span> and <span class="math inline">\(p\)</span></p>
+<p><span class="math display">\[e^{-\lambda} \frac{\lambda^{k}}{k!} \approx {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k}, \quad \text{if } k \ll n\]</span></p>
+<ul>
+<li>Provided <span class="math inline">\(\lambda = np\)</span>, <span class="math inline">\(n\)</span> is very large, and <span class="math inline">\(p\)</span> is very small</li>
+</ul></li>
+<li>Sometimes using the Poisson PMF results in simpler models and easier calculations</li>
+<li>Example
+<ul>
+<li><span class="math inline">\(n = 100\)</span> and <span class="math inline">\(p = 0.01\)</span></li>
+<li><p>Using the binomial PMF</p>
+<p><span class="math display">\[\frac{100!}{95! 5!} \times 0.01^5 (1 - 0.01)^{95} = 0.00290\]</span></p></li>
+<li><p>Using the Poisson PMF with <span class="math inline">\(\lambda = np = 100 \times 0.01 = 1\)</span></p>
+<p><span class="math display">\[e^{-1} \frac{1}{5!} = 0.00306\]</span></p></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="functions-of-random-variables" class="section level1">
+<h1>Functions of random variables</h1>
+<ul>
+<li>Given a random variable <span class="math inline">\(X\)</span>, you may wish to create a new random variable <span class="math inline">\(Y\)</span> using transformations of <span class="math inline">\(X\)</span></li>
+<li><p>This could be a linear function of the form</p>
+<p><span class="math display">\[Y = g(X) = aX + b\]</span></p>
+where <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> are scalars</li>
+<li>It could be a logarithmic transformation <span class="math inline">\(g(X) = \log(X)\)</span></li>
+<li>If <span class="math inline">\(Y = g(X)\)</span> is a function of a random variable <span class="math inline">\(X\)</span>, then <span class="math inline">\(Y\)</span> is also a random variable</li>
+<li><p>All outcomes in the sample space defined with a numerical value <span class="math inline">\(x\)</span> for <span class="math inline">\(X\)</span> also have a numberical value <span class="math inline">\(y = g(x)\)</span> for <span class="math inline">\(Y\)</span></p></li>
+</ul>
+</div>
+<div id="expectation-mean-and-variance" class="section level1">
+<h1>Expectation, mean, and variance</h1>
+<ul>
+<li>PMF of a random variable <span class="math inline">\(X\)</span> provides several numbers, the probabilities of all possible values of <span class="math inline">\(X\)</span></li>
+<li>Often desirable to summarize this information into a single representative number</li>
+<li><strong>Expectation</strong> of <span class="math inline">\(X\)</span> - weighted average of the possible values of <span class="math inline">\(X\)</span></li>
+</ul>
+<div id="motivation" class="section level3">
+<h3>Motivation</h3>
+<p>Consider spinning a wheel of fortune many times. At each spin, one of the numbers <span class="math inline">\(m_1, m_2, \ldots, m_n\)</span> comes up with corresponding probability <span class="math inline">\(p_1, p_2, \ldots, p_n\)</span>, and this is your monetary reward from that spin. What is the amount of money that you “expect” to get “per spin”? The terms “expect” and “per spin” are a little ambiguous, but here is a reasonable interpretation.</p>
+<p>Suppose you spin the wheel <span class="math inline">\(k\)</span> times, and that <span class="math inline">\(k_i\)</span> is the number of times that the outcome is <span class="math inline">\(m_i\)</span>. Then, the total amount received is <span class="math inline">\(m_1 k_1 + m_2 k_2 + \ldots + m_n k_n\)</span>. The amount received per spin is a simple average:</p>
+<p><span class="math display">\[M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k}\]</span></p>
+<p>If the number of spins <span class="math inline">\(k\)</span> is very large and we interpret probabilities as relative frequencies, we could anticipate that <span class="math inline">\(m_i\)</span> comes up a fraction of times roughly equal to <span class="math inline">\(p_i\)</span>:</p>
+<p><span class="math display">\[\frac{k_i}{k} \approx p_i, i = 1, \ldots,n\]</span></p>
+<p>Thus, the amount of money you “expect” to receive is</p>
+<p><span class="math display">\[M = \frac{m_1 k_1 + m_2 k_2 + \ldots + m_n k_n}{k} \approx m_1p_1 + m_2p_2 + \ldots + m_np_n\]</span></p>
+</div>
+<div id="expectation" class="section level2">
+<h2>Expectation</h2>
+<ul>
+<li><p>Define <strong>expected value</strong> (known as <strong>expectation</strong> or the <strong>mean</strong>) of a random variable <span class="math inline">\(X\)</span>, with PMF <span class="math inline">\(p_X\)</span> as</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\E[X] &amp;  = &amp; \sum_{x:p(x)&gt;0} x p(x) 
+\end{eqnarray}
+\]</span></p>
+<p>where <span class="math inline">\(\sum_{x:p(x)&gt;0}\)</span> is all values of <span class="math inline">\(X\)</span> with probability greater than 0</p></li>
+<li><p>In words: for all values of <span class="math inline">\(x\)</span> with <span class="math inline">\(p(x)\)</span> greater than zero, take the weighted average of the values</p></li>
+</ul>
+<div id="example-of-expected-value" class="section level3">
+<h3>Example of expected value</h3>
+<ul>
+<li><p>Suppose <span class="math inline">\(X\)</span> is number of units assigned to treatment, in one of our previous example.</p>
+<p><span class="math display">\[
+\begin{equation}
+X  = \left \{ \begin{array} {ll}
+0  \text{  if  } (C, C, C)  \\
+1 \text{  if  } (T, C, C) \text{ or } (C, T, C) \text{ or } (C, C, T) \\
+2 \text{ if  }  (T, T, C) \text{ or } (T, C, T) \text{ or } (C, T, T) \\
+3 \text{ if } (T, T, T) 
+\end{array} \right.
+\end{equation}
+\]</span></p></li>
+<li><p>What is <span class="math inline">\(E[X]\)</span>?</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\E[X]  &amp; = &amp; 0\times \frac{1}{8} + 1 \times \frac{3}{8} + 2 \times \frac{3}{8} + 3 \times \frac{1}{8} \\
+&amp; = &amp; 1.5 
+\end{eqnarray}
+\]</span></p></li>
+<li>Essentially a weighted average, or the average outcome (value in the middle of the range)</li>
+<li><p>Gives us a measure of <strong>central tendency</strong></p></li>
+</ul>
+</div>
+</div>
+<div id="variance-moments-and-the-expected-value-rule" class="section level2">
+<h2>Variance, moments, and the expected value rule</h2>
+<ul>
+<li>Other quantities we care about include variance and moments</li>
+</ul>
+<div id="moments" class="section level3">
+<h3>Moments</h3>
+<ul>
+<li>1st moment: <span class="math inline">\(\E[X^1] = \E[X]\)</span> - that is, the mean</li>
+<li>2nd moment: <span class="math inline">\(\E[X^2]\)</span></li>
+<li><span class="math inline">\(n\)</span>th moment: <span class="math inline">\(\E[X^n]\)</span></li>
+</ul>
+</div>
+<div id="variance" class="section level3">
+<h3>Variance</h3>
+<ul>
+<li><span class="math inline">\(\Var(X)\)</span></li>
+<li><p>Defined as the expected value of the random variable <span class="math inline">\((X - \E[X])^2\)</span></p>
+<p><span class="math display">\[
+\begin{align}
+\Var(X) &amp;= \E[(X - \E[X])^2]
+\end{align}
+\]</span></p>
+<ul>
+<li>Since <span class="math inline">\((X - \E[X])^2\)</span> can only take non-negative values, variance is always non-negative</li>
+</ul></li>
+<li>Measure of <strong>dispersion</strong> of <span class="math inline">\(X\)</span> around its mean</li>
+<li>We will define the standard deviation of <span class="math inline">\(X\)</span>, <span class="math inline">\(\sigma_X = \sqrt{\Var(X)}\)</span>
+<ul>
+<li>Standard deviation is easier to interpret sometimes since it is in the same units as <span class="math inline">\(X\)</span></li>
+</ul></li>
+</ul>
+<div id="calculating-variance-of-a-random-variable" class="section level4">
+<h4>Calculating variance of a random variable</h4>
+<ul>
+<li>We could generate the PMF of the random variable <span class="math inline">\((X - \E[X])^2\)</span>, then calculate the expectation of this function
+<ul>
+<li>It is just a linear function</li>
+</ul></li>
+<li>Instead, we can take a shortcut</li>
+<li><p><strong>Expected value rule for functions of random variables</strong> - let <span class="math inline">\(X\)</span> be a random variable with PMF <span class="math inline">\(p_X\)</span>, and let <span class="math inline">\(g(X)\)</span> be a function of <span class="math inline">\(X\)</span>. Then, the expected value of the random variable <span class="math inline">\(g(X)\)</span> is given by</p>
+<span class="math display">\[\E[g(X)] = \sum_{x} g(x) p_X(x)\]</span></li>
+<li><p>This allows us to rewrite our variance formula:</p>
+<p><span class="math display">\[
+\begin{align}
+\Var(X) &amp;= \E[(X - \E[X])^2] \\
+\Var(X) &amp;= \E[X^2] - \E[X]^2
+\end{align}
+\]</span></p>
+<ul>
+<li>Just need the first and second moments to calculate variance</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="practice-calculating-expectation-and-variance" class="section level2">
+<h2>Practice calculating expectation and variance</h2>
+<div id="bernoulli-variable" class="section level3">
+<h3>Bernoulli variable</h3>
+<ul>
+<li><p>Suppose <span class="math inline">\(Y \sim \text{Bernoulli}(\pi)\)</span></p>
+<p><span class="math display">\[
+\begin{eqnarray} 
+E[Y] &amp; = &amp; 1 \times P(Y = 1) + 0 \times P(Y = 0) \nonumber \\
+&amp; = &amp; \pi + 0 (1 - \pi) \nonumber  = \pi \\
+\text{var}(Y) &amp; = &amp; E[Y^2] - E[Y]^2 \nonumber  \\
+E[Y^2] &amp; = &amp; 1^{2} P(Y = 1) + 0^{2} P(Y = 0) \nonumber \\
+&amp; = &amp; \pi \nonumber \\ 
+\text{var}(Y) &amp; = &amp; \pi - \pi^{2} \nonumber \\
+&amp; = &amp; \pi(1 - \pi ) \nonumber
+\end{eqnarray}
+\]</span></p></li>
+<li><span class="math inline">\(E[Y] = \pi\)</span></li>
+<li>Var<span class="math inline">\((Y) = \pi(1- \pi)\)</span></li>
+<li><p>What is the maximum variance?</p>
+<p><span class="math display">\[
+\begin{eqnarray} 
+\text{var}(Y) &amp; = &amp; \pi - \pi^{2} \nonumber \\
+&amp; = &amp; 0.5(1 - 0.5 ) \\
+&amp; = &amp; 0.25
+\end{eqnarray}
+\]</span></p></li>
+</ul>
+</div>
+<div id="binomial-1" class="section level3">
+<h3>Binomial</h3>
+<p><span class="math display">\[Z = \sum_{i=1}^{N} Y_{i} \text{ where } Y_{i} \sim \text{Bernoulli}(\pi)\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+E[Z] &amp; = &amp; E[Y_{1} + Y_{2} + Y_{3} + \ldots + Y_{N} ] \\
+&amp; = &amp; \sum_{i=1}^{N} E[Y_{i} ] \\
+&amp; = &amp; N \pi \\
+\text{var}(Z) &amp; = &amp; \sum_{i=1}^{N} \text{var}(Y_{i}) \\
+&amp; = &amp; N \pi (1-\pi)
+ \end{eqnarray}
+\]</span></p>
+</div>
+</div>
+<div id="decision-making-using-expected-values" class="section level2">
+<h2>Decision making using expected values</h2>
+<ul>
+<li>Optimizes the choice between several candidate decisions that result in random rewards</li>
+<li>View the expected reward of a decision as its average payoff over a large number of trials</li>
+<li>Choose a decision with maximum expected reward</li>
+</ul>
+<div id="example-going-to-war" class="section level3">
+<h3>Example: going to war</h3>
+<ul>
+<li>Suppose country <span class="math inline">\(1\)</span> is engaged in a conflict and can either win or lose.</li>
+<li>Define <span class="math inline">\(Y = 1\)</span> if the country wins and <span class="math inline">\(Y = 0\)</span> otherwise.</li>
+<li><p>Then,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Y &amp;\sim &amp; \text{Bernoulli}(\pi)
+\end{eqnarray}
+\]</span></p></li>
+<li>Suppose country <span class="math inline">\(1\)</span> is deciding whether to fight a war.</li>
+<li>Engaging in the war will cost the country <span class="math inline">\(c\)</span>.</li>
+<li>If they win, country <span class="math inline">\(1\)</span> receives <span class="math inline">\(B\)</span>.</li>
+<li><p>What is <span class="math inline">\(1\)</span>’s expected utility from fighting a war?</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) + (\text{Utility}| \text{lose})\times P(\text{lose}) \\
+&amp;= &amp; (B - c) P(Y = 1) + (- c) P(Y = 0 ) \\
+&amp; = &amp; B \times p(Y = 1)  - c(P(Y = 1)  + P(Y = 0)) \\
+&amp; = &amp; B \times \pi - c 
+\end{eqnarray}
+\]</span></p></li>
+<li>Based on your beliefs about the appropriate values for <span class="math inline">\(B, \pi, c\)</span>, you can decide whether to engage in the war
+<ul>
+<li>If expected utility is greater than 0, you should decide to go to war</li>
+<li>If expected utility is less than 0, you should decide not to go to war</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <strong>Introduction to Probability</strong> (2nd edition) by Bertsekas and Tsitsiklis</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-10-23</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.15  2018-01-28 CRAN (R 3.5.0)                      
+##  dplyr      * 0.7.6   2018-06-29 cran (@0.7.6)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.0.0   2018-07-03 CRAN (R 3.5.0)                      
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr       0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.2.2   2017-06-17 CRAN (R 3.5.0)                      
+##  Rcpp         0.12.18 2018-07-23 CRAN (R 3.5.0)                      
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.2.1   2018-05-30 CRAN (R 3.5.0)                      
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.4   2018-02-26 CRAN (R 3.5.0)                      
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
