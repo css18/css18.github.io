@@ -1,0 +1,27 @@
+---
+title: "Discrete random variables in R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm008 - October 25, 2018
+
+## Overview
+
+* Identify functions in R used to work with random variables
+* Estimate probability of events using probability mass functions (PMFs) and cumulative mass functions (CMFs)
+
+## Before class
+
+## Slides and class materials
+
+* [Slides](extras/cm008_slides.html)
+* [Discrete random variables](rv-discrete.html)
+
+## Additional resources
+
+## What you need to do
+
