@@ -925,6 +925,133 @@ E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) +
 </div>
 </div>
 </div>
+<div id="cumulative-distribution-function" class="section level1">
+<h1>Cumulative distribution function</h1>
+<p>The <strong>cumulative distribution function</strong> (CDF) defines the the cumulative probability <span class="math inline">\(F_X(x)\)</span> up to the value of <span class="math inline">\(x\)</span>. For a discrete random variable <span class="math inline">\(X\)</span>, we define the CDF <span class="math inline">\(F_X\)</span> which provides the probability <span class="math inline">\(\Pr (X \leq x)\)</span>. For every <span class="math inline">\(x\)</span></p>
+<p><span class="math display">\[F_X(x) = \Pr (X \leq x) = \sum_{k \leq x} p_X(k)\]</span></p>
+<p>Any random variable associated with a given probability model has a CDF. Basic properties of CDFs for discrete random variables are:</p>
+<ul>
+<li><span class="math inline">\(F_X\)</span> is monotonically nodecreasing – if <span class="math inline">\(x \leq y\)</span>, then <span class="math inline">\(F_X(x) \leq F_X(y)\)</span></li>
+<li><span class="math inline">\(F_X(x)\)</span> tends to <span class="math inline">\(0\)</span> as <span class="math inline">\(x \rightarrow -\infty\)</span>, and to <span class="math inline">\(1\)</span> as <span class="math inline">\(x \rightarrow \infty\)</span></li>
+<li><span class="math inline">\(F_X(x)\)</span> is a piecewise constant function of <span class="math inline">\(x\)</span></li>
+<li><p>If <span class="math inline">\(X\)</span> is discrete and takes integer values, the PMF and the CDF can be obtained from each other by summing or differencing:</p>
+<p><span class="math display">\[F_X(k) = \sum_{i = -\infty}^k p_X(i),\]</span> <span class="math display">\[p_X(k) = \Pr (X \leq k) - \Pr (X \leq k-1) = F_X(k) - F_X(k-1)\]</span></p>
+<p>for all integers <span class="math inline">\(k\)</span></p></li>
+</ul>
+<div id="common-cdfs" class="section level2">
+<h2>Common CDFs</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bernouli_cdf_plot &lt;-<span class="st"> </span><span class="cf">function</span>(p){
+  df &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">1</span>,
+                   <span class="dt">pmf =</span> <span class="kw">dbinom</span>(<span class="dt">x =</span> x, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> p),
+                   <span class="dt">cdf =</span> <span class="kw">pbinom</span>(<span class="dt">q =</span> x, <span class="dt">size =</span> <span class="dv">1</span>, <span class="dt">prob =</span> p)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> <span class="kw">factor</span>(x))
+  
+  <span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, pmf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Bernouli PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(pi <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k))) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, cdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Bernouli CDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(pi <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(F[X] (k)))
+}
+
+<span class="kw">bernouli_cdf_plot</span>(.<span class="dv">5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/bernoulli-cdf-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">bernouli_cdf_plot</span>(.<span class="dv">7</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/bernoulli-cdf-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">bernouli_cdf_plot</span>(.<span class="dv">3</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/bernoulli-cdf-3.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">binomial_cdf_plot &lt;-<span class="st"> </span><span class="cf">function</span>(n, p){
+  df &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span>n,
+                   <span class="dt">pmf =</span> <span class="kw">dbinom</span>(<span class="dt">x =</span> x, <span class="dt">size =</span> n, <span class="dt">prob =</span> p),
+                   <span class="dt">cdf =</span> <span class="kw">pbinom</span>(<span class="dt">q =</span> x, <span class="dt">size =</span> n, <span class="dt">prob =</span> p))
+  
+  <span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, pmf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Binomial PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(n <span class="op">==</span><span class="st"> </span>.(n) <span class="op">~</span><span class="st"> </span>p <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k))) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, cdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Binomial CDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(n <span class="op">==</span><span class="st"> </span>.(n) <span class="op">~</span><span class="st"> </span>p <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(F[X] (k)))
+}
+
+<span class="kw">binomial_cdf_plot</span>(<span class="dv">10</span>, .<span class="dv">5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-cdf-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">binomial_cdf_plot</span>(<span class="dv">10</span>, .<span class="dv">3</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-cdf-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">binomial_cdf_plot</span>(<span class="dv">100</span>, .<span class="dv">2</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-cdf-3.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">binomial_cdf_plot</span>(<span class="dv">100</span>, .<span class="dv">8</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binomial-cdf-4.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">geometric_cdf_plot &lt;-<span class="st"> </span><span class="cf">function</span>(p){
+  df &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span><span class="dv">20</span>,
+                   <span class="dt">pmf =</span> <span class="kw">dgeom</span>(<span class="dt">x =</span> x, <span class="dt">prob =</span> p),
+                   <span class="dt">cdf =</span> <span class="kw">pgeom</span>(<span class="dt">q =</span> x, <span class="dt">prob =</span> p)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">x =</span> x <span class="op">+</span><span class="st"> </span><span class="dv">1</span>)
+  
+  <span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, pmf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Geometric PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(p <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k))) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, cdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Geometric CDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(p <span class="op">==</span><span class="st"> </span>.(p)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(F[X] (k)))
+}
+
+<span class="kw">geometric_cdf_plot</span>(.<span class="dv">5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/geometric-cdf-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">geometric_cdf_plot</span>(.<span class="dv">7</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/geometric-cdf-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">geometric_cdf_plot</span>(.<span class="dv">2</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/geometric-cdf-3.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">poisson_cdf_plot &lt;-<span class="st"> </span><span class="cf">function</span>(lambda, <span class="dt">max_n =</span> <span class="dv">10</span>){
+  df &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">0</span><span class="op">:</span>max_n,
+                   <span class="dt">pmf =</span> <span class="kw">dpois</span>(<span class="dt">x =</span> x, <span class="dt">lambda =</span> lambda),
+                   <span class="dt">cdf =</span> <span class="kw">ppois</span>(<span class="dt">q =</span> x, <span class="dt">lambda =</span> lambda))
+  
+  <span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, pmf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Poisson PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(lambda <span class="op">==</span><span class="st"> </span>.(lambda)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(P[X] (k))) <span class="op">+</span>
+<span class="st">    </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(x, cdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_col</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Poisson CDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(lambda <span class="op">==</span><span class="st"> </span>.(lambda)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(F[X] (k)))
+}
+
+<span class="kw">poisson_cdf_plot</span>(<span class="dv">2</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-cdf-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">poisson_cdf_plot</span>(<span class="fl">5.5</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-cdf-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">poisson_cdf_plot</span>(<span class="dv">78</span>, <span class="dt">max_n =</span> <span class="dv">150</span>)</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/poisson-cdf-3.png" width="672" /></p>
+</div>
+</div>
+<div id="conditioning" class="section level1">
+<h1>Conditioning</h1>
+</div>
+<div id="independence" class="section level1">
+<h1>Independence</h1>
+</div>
 <div id="acknowledgements" class="section level1 toc-ignore">
 <h1>Acknowledgements</h1>
 <ul>
@@ -942,7 +1069,7 @@ E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) +
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       America/Chicago             
-##  date     2018-10-23</code></pre>
+##  date     2018-10-25</code></pre>
 <pre><code>## Packages -----------------------------------------------------------------</code></pre>
 <pre><code>##  package    * version date       source                              
 ##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
