@@ -1,0 +1,54 @@
+---
+title: "Homework 04: Discrete random variables"
+output: html_document
+---
+
+# Overview
+
+Due before class on October 30th.
+
+# Fork the `hw04` repository
+
+Go [here](https://github.com/css18/hw04) to fork the repo for homework 04.
+
+# Exercises on discrete random variables (10 points)
+
+Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate $\LaTeX$ mathematical notation.
+
+1. You go to a party with 500 guests. What is the probability that exactly one other guest has the same birthday as you? Calculate this exactly and also approximately by using the Poisson PMF. Show your mathematical work to support your answer, and use an appropriate function in R to precisely calculate the two values. (For simplicity, exclude birthdays on February 29.)
+1. You drive to work 5 days a week for a full year (50 weeks), and with probability $p=0.02$ you get a traffic ticket on any given day, independent of other days. Let $X$ be the total number of tickets you get in the year.
+    a. What is the probability that the number of tickets you get is exactly equal to the expected value of $X$?
+    a. Calculate approximately the probability in (a) using a Poisson approximation.
+1. At a certain university, half the students enrolled in a statistics class take the course on a pass-fail basis; the other half take it for a normal grade of $A, \ldots, F$.
+    a. If 20 students are selected at random, what is the probability that 12 (of the 20) are taking the course pass-fail?
+    a. What is the probability that no more than 5 students are taking the course for a normal grade of $A, \ldots, F$?
+    a. What is the expected number who are taking the course on a pass-fail basis? Calculate this result analytically and via simulation. For your simulation, generate 10000 samples of 20 observations from a binomial distribution with parameters $n = 20$ and $p = 0.5$ and calculate the average value of each sample. Graph the distribution of this sample statistic and calculate the overall average of sample means. Confirm your simulation results match your analytical solution.
+1. A family has 5 natural children and has adopted 2 girls. Each natural child has equal probability of being a girl or a boy, independent of the other children. Find the PMF of the number of girls out of the 7 children. Graphically visualize this PMF using a bar chart in R.
+1. A city's temperature is modeled as a random variable with mean and standard deviation equal to 10 degrees Celsius. A day is described as "normal" if the temperature during that day ranges within one standard deviation from the mean. What would be the temperature range for a normal day if temperature were expressed in degrees Fahrenheit? Solve this problem either analytically or computationally, your choice.
+1. Answer the following questions using R.
+    a. In 10 trials, what is the probability of 8 or fewer successes when the probability
+of success is 0.70? That is, what is $\Pr (x \leq 8 | n = 10, p = 0.70)$?
+    a. In 10 trials, what is the probability of at least 6 successes when the probability of success is 0.40? That is, what is $\Pr (x \geq 6 | n = 10, p = 0.40)$?
+    a. In 10 trials, what is the probability of at least 8 successes when the probability of success is 0.60? That is, what is $\Pr (x \geq 8 | n = 10, p = 0.60)$?
+1. Let $x$ be a Poisson distributed random variable. Answer the following questions using R.
+    a. When the expected value of the Poisson probability distribution is 1, what is
+the probability that $x$ will be less than or equal to 2?
+    a. When the expected value of the Poisson probability distribution is 2, what is the probability that $x$ will be less than or equal to 2?
+    a. When the expected value of the Poisson probability distribution is 3, what is the probability that $x$ will be less than or equal to 2?
+    a. When the expected value of the Poisson probability distribution is 1, what is
+the probability that $x$ will be 2 or greater?
+    a. When the expected value of the Poisson probability distribution is 1, what is the probability that $x$ will be greater than 2?
+    a. When the expected value of the Poisson probability distribution is 1, what is the probability that $x$ will be greater than 1 but less than or equal to 3?
+1. In the U.S., the non-infectious disease known as Kawasaki Syndrome strikes children who are five years and under at the rate of approximately 15 per 100,000. The population of one of the U.S. states, Texas, is about 27,000,000, and of this roughly 8% consists of children of age 5 years and under.
+    a. What is the expected number of cases of Kawasaki Syndrome among children five years and under in the state of Texas?
+    a. What is the probability of 300 or fewer with this disease? 310? 320? 330? Use your answer from part (a) as an estimate of the expected value. (Non-contagious diseases like Kawasaki can be modeled by the Poisson.)
+    a. Draw a graph of the estimated Poisson PMF.
+    a. Would you use the Poisson probability function to model the incidence of influenza during the November-to-March period?
+1. ["The Unbirthday Song"](https://www.youtube.com/watch?v=RdsZT7WKjW8) from "Alice in Wonderland" can be sung to an individual on any day it is not that person's birthday with $p = 364 / 365$. You decide to sing this song to $N$ random people until you encounter someone who's birthday is today. At this point your singing streak ends. Calculate the probability your streak ends on any given $n$ person from 1 to 3000 and graph this PMF. How many random people $N$ can you expect to be able to sing this song to on any given day before it became more likely than not that you would encounter someone whose birthday it is? (For simplicity, exclude birthdays on February 29.) Hint: use the [geometric distribution](https://en.wikipedia.org/wiki/Geometric_distribution).
+1. Suppose we select a random sample of 5 balls from an urn containing 4 red, 3 white, and 2 blue balls. What is the probability that we draw 2 blue and at least 1 red ball? Use R to find the solution. Hint: use the [hypergeometric distribution](https://en.wikipedia.org/wiki/Hypergeometric_distribution).
+
+# Submit the assignment
+
+Your assignment should be submitted as an R Markdown document rendered as an HTML document. **Don't know what an R Markdown document is? [Read this!](http://rmarkdown.rstudio.com/lesson-1.html) Or [this!](http://r4ds.had.co.nz/r-markdown.html)** I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.
+
+Follow instructions on [homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow). As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.
