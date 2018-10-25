@@ -16,8 +16,6 @@ knitr::opts_chunk$set(cache=TRUE)
 * Identify discrete random variable distributions relevant to social science
 * Review measures of central tendency and dispersion
 * Define expected value and variance
-* Estimate probability of events using probability mass functions (PMFs) and cumulative mass functions (CMFs)
-* Identify functions in R used to work with random variables
 
 ## Before class
 
@@ -27,6 +25,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Slides and class materials
 
 * [Slides](extras/cm007_slides.html)
+* [Discrete random variables](rv-discrete.html)
 
 ## Additional resources
 
