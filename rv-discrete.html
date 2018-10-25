@@ -1052,6 +1052,562 @@ E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) +
 <div id="independence" class="section level1">
 <h1>Independence</h1>
 </div>
+<div id="functions-for-working-with-probabilities" class="section level1">
+<h1>Functions for working with probabilities</h1>
+<p>Most common probability distributions have a core set of functions in R that you can use to calculate probabilities, cumulative probabilities, and generate simulated random variables. They follow a common naming scheme:</p>
+<ul>
+<li><code>d*()</code> - density function, calculates exact probability for a given <span class="math inline">\(x\)</span></li>
+<li><code>p*()</code> - distribution function, calculates cumulative probability for a given <span class="math inline">\(\Pr(X \leq x)\)</span></li>
+<li><code>r*()</code> - random data generation, generates <span class="math inline">\(n\)</span> values from a specified probability distribution with known parameters</li>
+</ul>
+<div id="binomial-2" class="section level2">
+<h2>Binomial</h2>
+<table style="width:76%;">
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this binomial probability</th>
+<th>Use this R command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = a)\)</span></td>
+<td><code>dbinom(x = a, size = n, prob = p)</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq a)\)</span></td>
+<td><code>pbinom(q = a, size = n, prob = p)</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; a)\)</span></td>
+<td><code>pbinom(q = a - 1, size = n, prob = p)</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq a) = 1 - \Pr(x \leq a) = 1 - \Pr (x \leq a-1)\)</span></td>
+<td><code>1 - pbinom(q = a - 1, size = n, prob = p)</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; a) = 1 - \Pr(x \leq a)\)</span></td>
+<td><code>1 - pbinom(q = a, size = n, prob = p)</code></td>
+</tr>
+</tbody>
+</table>
+<div id="calculating-probabilities" class="section level3">
+<h3>Calculating probabilities</h3>
+<p><span class="math display">\[
+\begin{eqnarray}
+p_X(k) &amp; = &amp; {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k}
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(N = 10, k = 5, \pi = .5\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N &lt;-<span class="st"> </span><span class="dv">10</span>
+k &lt;-<span class="st"> </span><span class="dv">5</span>
+prob &lt;-<span class="st"> </span>.<span class="dv">5</span></code></pre></div>
+<table>
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this binomial probability</th>
+<th>Use this R command</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = 5)\)</span></td>
+<td><code>dbinom(x = k, size = N, prob = prob)</code></td>
+<td>0.246</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq 5)\)</span></td>
+<td><code>pbinom(q = k, size = N, prob = prob)</code></td>
+<td>0.623</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; 5)\)</span></td>
+<td><code>pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.377</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq 5) = 1 - \Pr(x \leq 5) = 1 - \Pr (x \leq 5-1)\)</span></td>
+<td><code>1 - pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.623</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; 5) = 1 - \Pr(x \leq 5)\)</span></td>
+<td><code>1 - pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.623</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(N = 20, k = 5, \pi = .4\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N &lt;-<span class="st"> </span><span class="dv">20</span>
+k &lt;-<span class="st"> </span><span class="dv">5</span>
+prob &lt;-<span class="st"> </span>.<span class="dv">4</span></code></pre></div>
+<table>
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this binomial probability</th>
+<th>Use this R command</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = 5)\)</span></td>
+<td><code>dbinom(x = k, size = N, prob = prob)</code></td>
+<td>0.075</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq 5)\)</span></td>
+<td><code>pbinom(q = k, size = N, prob = prob)</code></td>
+<td>0.126</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; 5)\)</span></td>
+<td><code>pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.051</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq 5) = 1 - \Pr(x \leq 5) = 1 - \Pr (x \leq 5-1)\)</span></td>
+<td><code>1 - pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.949</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; 5) = 1 - \Pr(x \leq 5)\)</span></td>
+<td><code>1 - pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.949</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(N = 1, k = 1, \pi = .4\)</span> (i.e. a Bernoulli random variable)</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N &lt;-<span class="st"> </span><span class="dv">1</span>
+k &lt;-<span class="st"> </span><span class="dv">1</span>
+prob &lt;-<span class="st"> </span>.<span class="dv">4</span></code></pre></div>
+<table>
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+<col width="23%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this Bernoulli probability</th>
+<th>Use this R command</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = 1)\)</span></td>
+<td><code>dbinom(x = k, size = N, prob = prob)</code></td>
+<td>0.4</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq 1)\)</span></td>
+<td><code>pbinom(q = k, size = N, prob = prob)</code></td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; 1)\)</span></td>
+<td><code>pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.6</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq 1) = 1 - \Pr(x \leq 1) = 1 - \Pr (x \leq 1-1)\)</span></td>
+<td><code>1 - pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.4</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; 1) = 1 - \Pr(x \leq 1)\)</span></td>
+<td><code>1 - pbinom(q = k - 1, size = N, prob = prob)</code></td>
+<td>0.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="simulating-random-variables" class="section level3">
+<h3>Simulating random variables</h3>
+<ul>
+<li><span class="math inline">\(N = 10, \pi = .5\)</span></li>
+<li>Simulate 1000 observations</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co"># store in a vector</span>
+<span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">prob =</span> .<span class="dv">5</span>)</code></pre></div>
+<pre><code>##    [1]  3  5  5  6  7  6  1  4  6  5  6  5  4  7  4  7  4  4  4  4  4  4  3
+##   [24]  2  4  6  5  7  7  2  5  4  4  5  4  6  4  4  9  6  5  6  4  5  4  5
+##   [47]  6  5  4  6  3  4  6  5  3  5  5  6  4  7  7  2  4  2  4  6  4  5  2
+##   [70]  5  3  7  2  6  3  5  5  3  4  6  7  5  3  5  4  7  5  4  3  7  3  7
+##   [93]  3  3  3  5  4  2  4  6  2  5  4  4  3  4  3  3  5  2  6  3  8  3  4
+##  [116]  7  8  4  3  6  6  7  9  7  5  4  4  5  5  4  8  6  3  5  7  5  7  5
+##  [139]  6  7  5  8  4  5  4  6  6  5  8  5  5  4  3  7  4  8  5  9  4  5  5
+##  [162]  5  5  4  3  6  5  3  6  4  6  5  6  5  4  6  5  5  3  4  5  4  5  3
+##  [185]  8  2  7  6  4  6  6  9  3  7  6  6  7  6  8  6  6  5  4  6  5  6  4
+##  [208]  5  4  8  5  4  4  6  5  7  6  6  5  7  5  2  4  4  3  5  6  4  5  5
+##  [231]  6  5  3  6  5  4  6  4  5  9  5  4  4  6  8  5  6  5  8  6  5  5  4
+##  [254]  4  3  5  4  1  5  5  7  2  5  4  3  3  6  2  2  6  4  6  4  6  2  5
+##  [277]  6  5  4  4  4  5  7  6  6  4  5  4  6  6  6  5  8  4  5  6  6  3  6
+##  [300]  4  4  8  5  5  8  5  4  9  5  6  7  6  5  5  3  4  4  5  4  7  4  7
+##  [323]  5  3  4  4  5  4  6  7  6  7  8  4  5  5  4  2  7  5  8  4  5  8  4
+##  [346]  4  2  6  7  2  4  6  3  6  9  7  5  6  5  6  1  5  5  4  7  8  6  4
+##  [369]  6  6  8  4  7  5  4  5  6  3  5  6  4  4  1  3  4  3  6  4  8  8  6
+##  [392]  6  6  6  3  7  5  5  2  4  6  5  6  6  5  4  6  3  5  5  6  6  8  4
+##  [415]  7  5  5  6  3  5  6  7  4  3  7  4  2  5  4  4  6  6  5  7  4  6  5
+##  [438]  7  6  5  6  7  6  5  8  5  7  6  5  2  4  6  9  8  6  6  4  5  5  2
+##  [461]  4  7  5  5  4  4  5  5  6  5  3  4  0  8  5  8  5  5  6  3  5  5  6
+##  [484]  4  3  3  6  6  6  3  5  6  7  4  6  4  5  3  5  5  6  6  7  2  6  7
+##  [507]  6  7  3  6  4  8  7  5  3  6  5  3  6  4  7  4  4  7  5  6  2  2  6
+##  [530]  4  4  6  5  6  3  9  6  6  6  5  5  5  8  4  6  5  7  7  8  7  4  4
+##  [553]  6  3  7  8  5  2  6  7  3  9  6  7  4  7  6  5  4  3  6  6  4  6  5
+##  [576]  5  3  5  5  6  7  2  5  4  2  4  4  8  8  5  8  7  3  5  4  6  6  6
+##  [599]  6  3  4  4  3  5  5  5  7  4  5  5  4  6  4  3  8  5  4  6  6  5  7
+##  [622]  2  6  6  4  7  5  8  4  5  7  5  5  5  7  7  4  7  4  4  5  4  5  7
+##  [645]  4  4  3  7  5  6  4  6  7  5  3  5  7  2  4  7  5  8  6  2  4  5  6
+##  [668]  4  5  6  3  7  5  4  8  7  5  7  4  8  5  3  6  4  7  4  7  2  5  5
+##  [691]  7  5  4  5  1  3  4  5  4  6  1  5  6  5  4  3  5  6  3  5  6  8  8
+##  [714]  3  4  4  5  4  8  3  6  3  8  1  5  8  5  4  4  8  7  2  3  5  5  6
+##  [737]  5  6  8  7  4  3  3  4  5  0  5  6  4  6  5  6  5  7  4  7  6  7  4
+##  [760]  5  2  6  1  5  4  5  7  5  6  4  7  7  7  3  6  5  3  4  5  4  7  3
+##  [783]  0  4  4  6  7  2  6  3  6  3  6  5  6  4  5  6  4  7  3  7  5  4  4
+##  [806]  5  4  5  6  5  5  4  7  6  3  4  4  6  5  5  3  4  5  5  4  6  2  5
+##  [829]  5  5  4  6  7  7  4  6  6  4  5  6  3  5  6  4  5  7  5  7  6  6  5
+##  [852]  8  7  4  5  6  3  2  6  8  3  5  2  5  4  7  4  8  4  5  8  7  8  4
+##  [875]  6  4  3  3  5  5  6  4  5  5  5  7  4  2  3  2  7  6  5  5  4  4  6
+##  [898]  6  8  7  6  5  7  5  7  2  4  4  6  4  4  5  3  4  3  3  5  8  8  6
+##  [921]  5  5  4  4  5  4  6  5  3  3  3  9  2  5  3  5  4  5  5  5  7  5  6
+##  [944]  6  5  5  4  3  5  4  6  8  4  6  7  2  7  5  3  6  4  5  7  6  2  3
+##  [967]  6  4  5  4 10  6  1  6  4  6  6  4  8  5  6  7  3  6  8  4  2  8  3
+##  [990]  4  5  6  8  3  6  1  6  4  8  4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># store in a data frame</span>
+<span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">prob =</span> .<span class="dv">5</span>))</code></pre></div>
+<pre><code>## # A tibble: 1,000 x 1
+##        x
+##    &lt;int&gt;
+##  1     7
+##  2     5
+##  3     3
+##  4     4
+##  5     6
+##  6     5
+##  7     5
+##  8     3
+##  9     8
+## 10     8
+## # ... with 990 more rows</code></pre>
+<p>Each simulation is a new draw from the same underlying probability distribution. The individual draws will not be identical:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rerun</span>(<span class="dt">.n =</span> <span class="dv">10</span>, <span class="kw">rbinom</span>(<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">prob =</span> .<span class="dv">5</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_cols</span>()</code></pre></div>
+<pre><code>## # A tibble: 10 x 10
+##       V1    V2    V3    V4    V5    V6    V7    V8    V9   V10
+##    &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt; &lt;int&gt;
+##  1     3     2     7     5     5     4     7     4     5     7
+##  2     4     7     7     5     5     5     5     3     2     6
+##  3     5     6     7     4     4     7     3     7     3     6
+##  4     5     4     2     5     8     5     4     4     5     3
+##  5     3     5     3     1     5     6     3     5     4     5
+##  6     6     4     7     5     8     7     8     6     5     4
+##  7     6     4     4     5     4     5     4     4     6     2
+##  8     2     6     4     4     4     5     4     6     1     7
+##  9     6     6     5     3     4     3     3     6     8     4
+## 10     4     4     3     5     5     5     2     4     4     5</code></pre>
+<p>But (given a large enough sample size), they will be from the same underlying distribution:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rerun</span>(<span class="dt">.n =</span> <span class="dv">9</span>, <span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">prob =</span> .<span class="dv">5</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_cols</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(var, value) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(value)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_bar</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>var) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Simulated draws from a Binomial PMF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">expression</span>(n <span class="op">==</span><span class="st"> </span><span class="dv">10</span> <span class="op">~</span><span class="st"> </span>pi <span class="op">==</span><span class="st"> </span>.<span class="dv">5</span>),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(p[X] (k)))</code></pre></div>
+<p><img src="rv-discrete_files/figure-html/binom-sim-rerun-large-1.png" width="672" /></p>
+<p><strong>Setting the seed</strong> (<code>set.seed()</code>) of your random number generator ensures consistent output from any <code>r*()</code> function. For example:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># draw #1</span>
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">rbinom</span>(<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">prob =</span> .<span class="dv">5</span>)</code></pre></div>
+<pre><code>##  [1] 3 5 5 6 7 6 1 4 6 5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># draw #2</span>
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">rbinom</span>(<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">10</span>, <span class="dt">prob =</span> .<span class="dv">5</span>)</code></pre></div>
+<pre><code>##  [1] 3 5 5 6 7 6 1 4 6 5</code></pre>
+</div>
+</div>
+<div id="poisson-1" class="section level2">
+<h2>Poisson</h2>
+<table style="width:76%;">
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this Poisson probability</th>
+<th>Use this R command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = a)\)</span></td>
+<td><code>dpois(x = a, lambda = p)</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq a)\)</span></td>
+<td><code>ppois(q = a, lambda = p)</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; a)\)</span></td>
+<td><code>ppois(q = a - 1, lambda = p)</code></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq a) = 1 - \Pr(x \leq a) = 1 - \Pr (x \leq a-1)\)</span></td>
+<td><code>1 - ppois(q = a - 1, lambda = p)</code></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; a) = 1 - \Pr(x \leq a)\)</span></td>
+<td><code>1 - ppois(q = a, lambda = p)</code></td>
+</tr>
+</tbody>
+</table>
+<div id="examples-1" class="section level3">
+<h3>Examples</h3>
+<ul>
+<li><span class="math inline">\(N = 3, \lambda = 5\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N &lt;-<span class="st"> </span><span class="dv">3</span>
+lambda &lt;-<span class="st"> </span><span class="dv">5</span></code></pre></div>
+<table style="width:89%;">
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this Poisson probability</th>
+<th>Use this R command</th>
+<th>Results</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = 3)\)</span></td>
+<td><code>dpois(x = N, lambda = lambda)</code></td>
+<td>0.14</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq 3)\)</span></td>
+<td><code>ppois(q = N, lambda = lambda)</code></td>
+<td>0.265</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; 3)\)</span></td>
+<td><code>ppois(q = N - 1, lambda = lambda)</code></td>
+<td>0.125</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq 3) = 1 - \Pr(x \leq 3) = 1 - \Pr (x \leq 3-1)\)</span></td>
+<td><code>1 - ppois(q = N - 1, lambda = lambda)</code></td>
+<td>0.875</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; 3) = 1 - \Pr(x \leq 3)\)</span></td>
+<td><code>1 - ppois(q = N, lambda = lambda)</code></td>
+<td>0.735</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><span class="math inline">\(N = 12, \lambda = 17.3\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">N &lt;-<span class="st"> </span><span class="dv">12</span>
+lambda &lt;-<span class="st"> </span><span class="fl">17.3</span></code></pre></div>
+<table style="width:89%;">
+<colgroup>
+<col width="48%" />
+<col width="27%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>To find this Poisson probability</th>
+<th>Use this R command</th>
+<th>Results</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x = 3)\)</span></td>
+<td><code>dpois(x = N, lambda = lambda)</code></td>
+<td>0.046</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \leq 3)\)</span></td>
+<td><code>ppois(q = N, lambda = lambda)</code></td>
+<td>0.121</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &lt; 3)\)</span></td>
+<td><code>ppois(q = N - 1, lambda = lambda)</code></td>
+<td>0.075</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\Pr(x \geq 3) = 1 - \Pr(x \leq 3) = 1 - \Pr (x \leq 3-1)\)</span></td>
+<td><code>1 - ppois(q = N - 1, lambda = lambda)</code></td>
+<td>0.925</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(\Pr(x &gt; 3) = 1 - \Pr(x \leq 3)\)</span></td>
+<td><code>1 - ppois(q = N, lambda = lambda)</code></td>
+<td>0.879</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="simulating-random-variables-1" class="section level3">
+<h3>Simulating random variables</h3>
+<ul>
+<li><span class="math inline">\(N = 12, \lambda = 17.3\)</span></li>
+<li>Simulate 1000 observations</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co"># store in a vector</span>
+(X &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">1000</span>, <span class="dt">lambda =</span> <span class="fl">17.3</span>))</code></pre></div>
+<pre><code>##    [1] 12 18 18 14 19 14 21 14 15 10 17 21 16 15 20 14 17 15 17 17 20 15 13
+##   [24] 20 21 31 24 11 23 12 22 15 13 12 15 20 17 13 13 25 20 27 17 14 15 12
+##   [47] 16 18 21 26 17 18 17 18 14 14 29 17 18 14 16 20 20 19 15 17 15 18 24
+##   [70] 21 15 27 22 21 19 18 17 20 19 16 26 14 17 18 17 16 14 17 15 20 12 13
+##   [93] 17 16 14 17 18 20 18 14 14 17 29 15 17 17 15 23 19 16 19 18 24 18 19
+##  [116] 18 15 16 16 27 20 19 16 13 15 21 13 16 18 19 24 17 15 16 14 15 19 10
+##  [139] 12 23 19 20 17 15 19 21 25 22 15 11 15 12 19 26 19 19 13 17 15 20 18
+##  [162] 20 18 20 24 21 17 12 22 12 10 14 16 14 23 18 22 17 17 18  9 29 20 14
+##  [185] 10 16 13 16 18 14 16 17 19 17 19 12 19 13 22 18 18 18 19 21 19 20 12
+##  [208] 24 18 20 11 21 15 20 10 14 20 27 18 17 18 14 21 25 14 13 17 18 13 21
+##  [231] 21 18 10 13 16 16 21 27 24 24 12 19 19 12 13 16 13 14 11 15 17 10 15
+##  [254] 23 18 18 17 21 21 15 17 15 22 20 19 16 17  9 18 21 15 14 12 14 16 13
+##  [277] 12 21 22 17 22 14 11 15 18 16 12 10 25 12 16 25 21 25 17 16 15  7 18
+##  [300] 17 26 14 28 20 21 22 23 18 18 18 18 18 15 21 18 11 15 26 22 19 19 17
+##  [323] 13 22 14 13 16 13 12 20 16 15 14 16 16 20 23 19 13 12 13 17 20 17 23
+##  [346] 17 12 24 16 16 23 26 17 22 15 12 18 14 18 13  8 18 15 18 21 16 16 22
+##  [369] 14 14 16 24 17 13 14 11 27 18 17 17 18 18 20 17 12 19 15 10 12 16 20
+##  [392] 11 18 30 26 14 20 11 14 12 18 22 24 21 12 16 12 16 10 15 17 12 25 15
+##  [415] 15 20 23 14 22 23 16 22 17 14 22 14 17 18 18 20 16 24 19 12 14 15 16
+##  [438] 28 15 17 14 12 18 19 19 11  9 14 16 15  5 15 14 21 16 11 23 13 13 13
+##  [461] 18 21 16 14 14 11 15 12 19 18 16 19 14 14 16 15 15 19 21 17 15 18 15
+##  [484] 13 15 10 21 20 13 23 12 13 17 19 17 11 13 18 13 25 13 15 24 13 16 17
+##  [507] 22 16 22 17 18 18 18 18 19 19 21 21 17 12 22 23 19 18 21 12 19 16 18
+##  [530] 21 16 16 19 12 19 16 26 13 15 18 15 19 18 16 19 12 14 19 24 22 27 18
+##  [553] 18 21 23 24 14 13 20 21 19 23 16 12 25 13 26 15 16 17 20 13 17 24 25
+##  [576] 15 14 19 16 12 22 21 22 15 14 23 16 17 18 20 16 27 13 20 12 17 17 20
+##  [599] 16 17 22 17 14 19 19 14 12 14 14 16 20 18 21 28 12 14 18 16 11 18 28
+##  [622] 19 23 21 17 15 22 15 19 24 16 18 20 12 13 15 19 22 16 12 16 17 17 14
+##  [645] 21 12 13 23 13 16 15 24 23 14 14 13 21 26 18 14 12 17 15 14 11 19 19
+##  [668] 14 16 19 10 18 13 17 15 14 15 17 13 16 20 18 17  9 20 15 16 18 10 18
+##  [691] 20 19 14 15 15 21 24 21  9 17 17 21 20 16 16 11 20 17 17 23 20 31 11
+##  [714] 21 19 17 16 15 18 14 15 14 25  9 15 15 14 18 14 17 12 11 26 23 23 20
+##  [737] 15 19 12 19 17 18 20 13 12 13 18 23 21 17 20 16 21 22 12 16 18 16 24
+##  [760]  9 27 16 23 20 24 27 18 13 16 21 20 18 17 19 21 22 14 19 18 17 21 16
+##  [783] 18 13 17 18 26 19 20 15 13 10  9  9 13 14 15 23 12 15 17 15 16 15 17
+##  [806] 13 25 15 15 16 21 18 18 17 14 14 25 14 14 12 16 22 17 10 16 23 21 18
+##  [829] 19 17 17  9 17 13 16 20 17 19 15 15 19 18 18 19 16 13 22 18 17 13 16
+##  [852] 14 20 18 14 17 19 33 18 23 17 19 16 26 22 16 16 17 17 14 20 11 20 20
+##  [875] 14 14 16 13 16 23 21 18 19 25 17 17 23 19  7 13 17 16 20 13 18 19 23
+##  [898] 18 20 22 15 20 18 24 17 29 18 16 17 29 13 13 17 13 18 17 20 24 21 14
+##  [921] 18 19 17 14 15 17 26 24 12 17 16 16 21 12 17 13 19 12 19 25 12 22  7
+##  [944] 14 14 14 17 13 18 13 16 14 22 18 11 27 20 10 23 20 14 17 19 13 17 22
+##  [967] 17 23 13 23 19 22 21 14 13 17 13 21 17 14 21 20 25 22 19 26 19 16 15
+##  [990] 16 18 11 10 19 15 17 28 14 21 23</code></pre>
+<p>What is the expected value of <span class="math inline">\(X\)</span>? Its variance?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(X)</code></pre></div>
+<pre><code>## [1] 17.4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">var</span>(X)</code></pre></div>
+<pre><code>## [1] 17</code></pre>
+</div>
+</div>
+<div id="practice-with-probability-distributions-in-r" class="section level2">
+<h2>Practice with probability distributions in R</h2>
+<div id="lincoln-tunnel" class="section level3">
+<h3>Lincoln Tunnel</h3>
+<p>If 85% of vehicles arriving at the Lincoln Tunnel (connecting New Jersey and New York City) have either New York or New Jersey license plates, what is the probability that, of the next 20 vehicles, 2 or fewer (that is, 0, 1, or 2) will bear license plates from states other than New Jersey or New York?</p>
+<details> <summary>Click for the solution</summary>
+<p>
+<p>Set this up as a binomial distribution:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+p_X(k) &amp; = &amp; {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k}
+\end{eqnarray}
+\]</span></p>
+<p>where <span class="math inline">\(N = 20\)</span> and <span class="math inline">\(p=0.15\)</span>. We need to calculate the probability that 0, 1, or 2 of the next cars will bear license plates from states other than New Jersey or New York. One way to state the problem is:</p>
+<p><span class="math display">\[
+\sum_{k = 0}^2 {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k} = \sum_{k = 0}^2 {{20}\choose{k}} 0.15^{k} (1- 0.15)^{20-k}
+\]</span></p>
+<p>In R, that is</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dbinom</span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="fl">0.15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">dbinom</span>(<span class="dv">1</span>, <span class="dv">20</span>, <span class="fl">0.15</span>) <span class="op">+</span><span class="st"> </span><span class="kw">dbinom</span>(<span class="dv">2</span>, <span class="dv">20</span>, <span class="fl">0.15</span>)</code></pre></div>
+<pre><code>## [1] 0.405</code></pre>
+<p>Alternatively, we can frame this in terms of the CDF and we want to know</p>
+<p><span class="math display">\[F_X(x) = \Pr (X \leq 2) = \sum_{k \leq 2} p_X(k)\]</span></p>
+<p>In R, we use the <code>pbinom()</code> function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">pbinom</span>(<span class="dv">2</span>, <span class="dv">20</span>, <span class="fl">0.15</span>)</code></pre></div>
+<pre><code>## [1] 0.405</code></pre>
+</p>
+<p></details></p>
+</div>
+<div id="booking-travel" class="section level3">
+<h3>Booking travel</h3>
+<p>Book4Less.com is an online travel website that offers competitive prices on airline and hotel bookings. During a typical weekday, the website averages 10 visits per minute.</p>
+<ol style="list-style-type: decimal">
+<li><p>What is the probability that there will be at least 7 but no more than 12 visits in the next minute?</p>
+<details> <summary>Click for the solution</summary>
+<p></li>
+</ol>
+<p><span class="math display">\[\sum_{k = 7}^{12} e^{-10} \frac{10^{k}}{k!}\]</span></p>
+<p><span class="math display">\[F_X(x) = \Pr (7 \leq x \leq 12) = \sum_{k = 7}^{12} e^{-10} \frac{10^{k}}{k!}\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dpois</span>(<span class="dv">7</span><span class="op">:</span><span class="dv">12</span>, <span class="dv">10</span>)</code></pre></div>
+<pre><code>## [1] 0.0901 0.1126 0.1251 0.1251 0.1137 0.0948</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">dpois</span>(<span class="dv">7</span><span class="op">:</span><span class="dv">12</span>, <span class="dv">10</span>))</code></pre></div>
+<pre><code>## [1] 0.661</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ppois</span>(<span class="dv">12</span>, <span class="dv">10</span>) <span class="op">-</span><span class="st"> </span><span class="kw">ppois</span>(<span class="dv">6</span>, <span class="dv">10</span>)</code></pre></div>
+<pre><code>## [1] 0.661</code></pre>
+<pre><code>  &lt;/p&gt;
+&lt;/details&gt;</code></pre>
+<ol style="list-style-type: decimal">
+<li><p>What is the probability there will be more than 12 visits in the next minute?</p>
+<details> <summary>Click for the solution</summary>
+<p></li>
+</ol>
+<p><span class="math display">\[\sum_{k = 13}^{\infty} e^{-10} \frac{10^{k}}{k!}\]</span></p>
+<p><span class="math display">\[F_X(x) = \Pr (x &gt; 12) = \sum_{k = 13}^{\infty} e^{-10} \frac{10^{k}}{k!}\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum</span>(<span class="kw">dpois</span>(<span class="dv">13</span><span class="op">:</span><span class="dv">50</span>, <span class="dv">10</span>))</code></pre></div>
+<pre><code>## [1] 0.208</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">ppois</span>(<span class="dv">12</span>, <span class="dv">10</span>)</code></pre></div>
+<pre><code>## [1] 0.208</code></pre>
+<pre><code>  &lt;/p&gt;
+&lt;/details&gt;</code></pre>
+</div>
+</div>
+</div>
 <div id="acknowledgements" class="section level1 toc-ignore">
 <h1>Acknowledgements</h1>
 <ul>
@@ -1102,7 +1658,6 @@ E[U(\text{war})] &amp; = &amp; (\text{Utility}|\text{win})\times P(\text{win}) +
 ##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
 ##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
 ##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
-##  labeling     0.3     2014-08-23 CRAN (R 3.5.0)                      
 ##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
 ##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
 ##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      

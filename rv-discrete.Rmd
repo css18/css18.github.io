@@ -705,6 +705,275 @@ poisson_cdf_plot(78, max_n = 150)
 # Independence
 
 
+# Functions for working with probabilities
+
+Most common probability distributions have a core set of functions in R that you can use to calculate probabilities, cumulative probabilities, and generate simulated random variables. They follow a common naming scheme:
+
+* `d*()` - density function, calculates exact probability for a given $x$
+* `p*()` - distribution function, calculates cumulative probability for a given $\Pr(X \leq x)$
+* `r*()` - random data generation, generates $n$ values from a specified probability distribution with known parameters
+
+## Binomial
+
+To find this binomial probability | Use this R command
+----------------------------------|-------------------
+$\Pr(x = a)$ | `dbinom(x = a, size = n, prob = p)`
+$\Pr(x \leq a)$ | `pbinom(q = a, size = n, prob = p)`
+$\Pr(x < a)$ | `pbinom(q = a - 1, size = n, prob = p)`
+$\Pr(x \geq a) = 1 - \Pr(x \leq a) = 1 - \Pr (x \leq a-1)$ | `1 - pbinom(q = a - 1, size = n, prob = p)`
+$\Pr(x > a) = 1 - \Pr(x \leq a)$ | `1 - pbinom(q = a, size = n, prob = p)`
+
+### Calculating probabilities
+
+$$
+\begin{eqnarray}
+p_X(k) & = & {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k}
+\end{eqnarray}
+$$
+
+* $N = 10, k = 5, \pi = .5$
+
+```{r binom-ex1}
+N <- 10
+k <- 5
+prob <- .5
+```
+
+To find this binomial probability | Use this R command| Result
+----------------------------------|-------------------|----------------
+$\Pr(x = 5)$ | `dbinom(x = k, size = N, prob = prob)` | `r dbinom(x = k, size = N, prob = prob)`
+$\Pr(x \leq 5)$ | `pbinom(q = k, size = N, prob = prob)` | `r pbinom(q = k, size = N, prob = prob)`
+$\Pr(x < 5)$ | `pbinom(q = k - 1, size = N, prob = prob)` | `r pbinom(q = k - 1, size = N, prob = prob)`
+$\Pr(x \geq 5) = 1 - \Pr(x \leq 5) = 1 - \Pr (x \leq 5-1)$ | `1 - pbinom(q = k - 1, size = N, prob = prob)` | `r 1 - pbinom(q = k - 1, size = N, prob = prob)`
+$\Pr(x > 5) = 1 - \Pr(x \leq 5)$ | `1 - pbinom(q = k - 1, size = N, prob = prob)` | `r 1 - pbinom(q = k - 1, size = N, prob = prob)`
+
+* $N = 20, k = 5, \pi = .4$
+
+```{r binom-ex2}
+N <- 20
+k <- 5
+prob <- .4
+```
+
+To find this binomial probability | Use this R command| Result
+----------------------------------|-------------------|----------------
+$\Pr(x = 5)$ | `dbinom(x = k, size = N, prob = prob)` | `r dbinom(x = k, size = N, prob = prob)`
+$\Pr(x \leq 5)$ | `pbinom(q = k, size = N, prob = prob)` | `r pbinom(q = k, size = N, prob = prob)`
+$\Pr(x < 5)$ | `pbinom(q = k - 1, size = N, prob = prob)` | `r pbinom(q = k - 1, size = N, prob = prob)`
+$\Pr(x \geq 5) = 1 - \Pr(x \leq 5) = 1 - \Pr (x \leq 5-1)$ | `1 - pbinom(q = k - 1, size = N, prob = prob)` | `r 1 - pbinom(q = k - 1, size = N, prob = prob)`
+$\Pr(x > 5) = 1 - \Pr(x \leq 5)$ | `1 - pbinom(q = k - 1, size = N, prob = prob)` | `r 1 - pbinom(q = k - 1, size = N, prob = prob)`
+
+* $N = 1, k = 1, \pi = .4$ (i.e. a Bernoulli random variable)
+
+```{r binom-ex3}
+N <- 1
+k <- 1
+prob <- .4
+```
+
+To find this Bernoulli probability | Use this R command| Result
+----------------------------------|-------------------|----------------
+$\Pr(x = 1)$ | `dbinom(x = k, size = N, prob = prob)` | `r dbinom(x = k, size = N, prob = prob)`
+$\Pr(x \leq 1)$ | `pbinom(q = k, size = N, prob = prob)` | `r pbinom(q = k, size = N, prob = prob)`
+$\Pr(x < 1)$ | `pbinom(q = k - 1, size = N, prob = prob)` | `r pbinom(q = k - 1, size = N, prob = prob)`
+$\Pr(x \geq 1) = 1 - \Pr(x \leq 1) = 1 - \Pr (x \leq 1-1)$ | `1 - pbinom(q = k - 1, size = N, prob = prob)` | `r 1 - pbinom(q = k - 1, size = N, prob = prob)`
+$\Pr(x > 1) = 1 - \Pr(x \leq 1)$ | `1 - pbinom(q = k - 1, size = N, prob = prob)` | `r 1 - pbinom(q = k - 1, size = N, prob = prob)`
+
+### Simulating random variables
+
+* $N = 10, \pi = .5$
+* Simulate 1000 observations
+
+```{r binomial-sim}
+set.seed(1234)
+
+# store in a vector
+rbinom(1000, size = 10, prob = .5)
+
+# store in a data frame
+data_frame(x = rbinom(1000, size = 10, prob = .5))
+```
+
+Each simulation is a new draw from the same underlying probability distribution. The individual draws will not be identical:
+
+```{r binom-sim-rerun}
+rerun(.n = 10, rbinom(10, size = 10, prob = .5)) %>%
+  bind_cols()
+```
+
+But (given a large enough sample size), they will be from the same underlying distribution:
+
+```{r binom-sim-rerun-large}
+rerun(.n = 9, rbinom(1000, size = 10, prob = .5)) %>%
+  bind_cols() %>%
+  gather(var, value) %>%
+  ggplot(aes(value)) +
+  geom_bar() +
+  facet_wrap(~var) +
+    labs(title = "Simulated draws from a Binomial PMF",
+         subtitle = expression(n == 10 ~ pi == .5),
+         x = expression(x),
+         y = expression(p[X] (k)))
+```
+
+**Setting the seed** (`set.seed()`) of your random number generator ensures consistent output from any `r*()` function. For example:
+
+```{r set-seed}
+# draw #1
+set.seed(1234)
+rbinom(10, size = 10, prob = .5)
+
+# draw #2
+set.seed(1234)
+rbinom(10, size = 10, prob = .5)
+```
+
+## Poisson
+
+To find this Poisson probability | Use this R command
+----------------------------------|-------------------
+$\Pr(x = a)$ | `dpois(x = a, lambda = p)`
+$\Pr(x \leq a)$ | `ppois(q = a, lambda = p)`
+$\Pr(x < a)$ | `ppois(q = a - 1, lambda = p)`
+$\Pr(x \geq a) = 1 - \Pr(x \leq a) = 1 - \Pr (x \leq a-1)$ | `1 - ppois(q = a - 1, lambda = p)`
+$\Pr(x > a) = 1 - \Pr(x \leq a)$ | `1 - ppois(q = a, lambda = p)`
+
+### Examples
+
+* $N = 3, \lambda = 5$
+
+```{r poisson-ex1}
+N <- 3
+lambda <- 5
+```
+
+To find this Poisson probability | Use this R command | Results
+----------------------------------|-------------------|--------
+$\Pr(x = 3)$ | `dpois(x = N, lambda = lambda)` | `r dpois(x = N, lambda = lambda)`
+$\Pr(x \leq 3)$ | `ppois(q = N, lambda = lambda)` | `r ppois(q = N, lambda = lambda)`
+$\Pr(x < 3)$ | `ppois(q = N - 1, lambda = lambda)` | `r ppois(q = N - 1, lambda = lambda)`
+$\Pr(x \geq 3) = 1 - \Pr(x \leq 3) = 1 - \Pr (x \leq 3-1)$ | `1 - ppois(q = N - 1, lambda = lambda)` | `r 1 - ppois(q = N - 1, lambda = lambda)`
+$\Pr(x > 3) = 1 - \Pr(x \leq 3)$ | `1 - ppois(q = N, lambda = lambda)` | `r 1 - ppois(q = N, lambda = lambda)`
+
+* $N = 12, \lambda = 17.3$
+
+```{r poisson-ex2}
+N <- 12
+lambda <- 17.3
+```
+
+To find this Poisson probability | Use this R command | Results
+----------------------------------|-------------------|--------
+$\Pr(x = 3)$ | `dpois(x = N, lambda = lambda)` | `r dpois(x = N, lambda = lambda)`
+$\Pr(x \leq 3)$ | `ppois(q = N, lambda = lambda)` | `r ppois(q = N, lambda = lambda)`
+$\Pr(x < 3)$ | `ppois(q = N - 1, lambda = lambda)` | `r ppois(q = N - 1, lambda = lambda)`
+$\Pr(x \geq 3) = 1 - \Pr(x \leq 3) = 1 - \Pr (x \leq 3-1)$ | `1 - ppois(q = N - 1, lambda = lambda)` | `r 1 - ppois(q = N - 1, lambda = lambda)`
+$\Pr(x > 3) = 1 - \Pr(x \leq 3)$ | `1 - ppois(q = N, lambda = lambda)` | `r 1 - ppois(q = N, lambda = lambda)`
+
+### Simulating random variables
+
+* $N = 12, \lambda = 17.3$
+* Simulate 1000 observations
+
+```{r poisson-sim}
+set.seed(1234)
+
+# store in a vector
+(X <- rpois(1000, lambda = 17.3))
+```
+
+What is the expected value of $X$? Its variance?
+
+```{r poisson-exp-val}
+mean(X)
+var(X)
+```
+
+## Practice with probability distributions in R
+
+### Lincoln Tunnel
+
+If 85% of vehicles arriving at the Lincoln Tunnel (connecting New Jersey and New York City) have either New York or New Jersey license plates, what is the probability that, of the next 20 vehicles, 2 or fewer (that is, 0, 1, or 2) will bear license plates from states other than New Jersey or New York?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+Set this up as a binomial distribution:
+
+$$
+\begin{eqnarray}
+p_X(k) & = & {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k}
+\end{eqnarray}
+$$
+
+where $N = 20$ and $p=0.15$. We need to calculate the probability that 0, 1, or 2 of the next cars will bear license plates from states other than New Jersey or New York. One way to state the problem is:
+
+$$
+\sum_{k = 0}^2 {{N}\choose{k}}\pi^{k} (1- \pi)^{n-k} = \sum_{k = 0}^2 {{20}\choose{k}} 0.15^{k} (1- 0.15)^{20-k}
+$$
+
+In R, that is
+
+```{r}
+dbinom(0, 20, 0.15) + dbinom(1, 20, 0.15) + dbinom(2, 20, 0.15)
+```
+
+Alternatively, we can frame this in terms of the CDF and we want to know
+
+$$F_X(x) = \Pr (X \leq 2) = \sum_{k \leq 2} p_X(k)$$
+
+In R, we use the `pbinom()` function:
+
+```{r}
+pbinom(2, 20, 0.15)
+```
+
+  </p>
+</details>
+
+### Booking travel
+
+Book4Less.com is an online travel website that offers competitive prices on airline and hotel bookings. During a typical weekday, the website averages 10 visits per minute.
+
+1. What is the probability that there will be at least 7 but no more than 12 visits in the next minute?
+
+    <details> 
+      <summary>Click for the solution</summary>
+      <p>
+
+$$\sum_{k = 7}^{12} e^{-10} \frac{10^{k}}{k!}$$
+
+$$F_X(x) = \Pr (7 \leq x \leq 12) = \sum_{k = 7}^{12} e^{-10} \frac{10^{k}}{k!}$$
+
+```{r}
+dpois(7:12, 10)
+sum(dpois(7:12, 10))
+ppois(12, 10) - ppois(6, 10)
+```
+    
+      </p>
+    </details>
+
+1. What is the probability there will be more than 12 visits in the next minute?
+
+    <details> 
+      <summary>Click for the solution</summary>
+      <p>
+
+$$\sum_{k = 13}^{\infty} e^{-10} \frac{10^{k}}{k!}$$
+
+$$F_X(x) = \Pr (x > 12) = \sum_{k = 13}^{\infty} e^{-10} \frac{10^{k}}{k!}$$
+
+```{r}
+sum(dpois(13:50, 10))
+1 - ppois(12, 10)
+```
+    
+      </p>
+    </details>
+
+
 # Acknowledgements {.toc-ignore}
 
 * Material drawn from **Introduction to Probability** (2nd edition) by Bertsekas and Tsitsiklis
