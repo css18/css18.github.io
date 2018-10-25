@@ -699,12 +699,6 @@ poisson_cdf_plot(5.5)
 poisson_cdf_plot(78, max_n = 150)
 ```
 
-# Conditioning
-
-
-# Independence
-
-
 # Functions for working with probabilities
 
 Most common probability distributions have a core set of functions in R that you can use to calculate probabilities, cumulative probabilities, and generate simulated random variables. They follow a common naming scheme:
