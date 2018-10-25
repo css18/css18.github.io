@@ -558,3 +558,135 @@ $$
     $$
     
 * Deciding whether to go to war
+
+## Cumulative distribution function
+
+* Defines the the cumulative probability $F_X(x)$ up to the value of $x$
+* For a discrete random variable $X$, $F_X$ provides the probability $\Pr (X \leq x)$. For every $x$
+
+    $$F_X(x) = \Pr (X \leq x) = \sum_{k \leq x} p_X(k)$$
+
+* All PMFs have a CDF
+
+## Cumulative distribution function
+
+* $F_X$ is monotonically nodecreasing -- if $x \leq y$, then $F_X(x) \leq F_X(y)$
+* $F_X(x)$ tends to $0$ as $x \rightarrow -\infty$, and to $1$ as $x \rightarrow \infty$
+* $F_X(x)$ is a piecewise constant function of $x$
+* If $X$ is discrete and takes integer values, the PMF and the CDF can be obtained from each other by summing or differencing:
+
+    $$F_X(k) = \sum_{i = -\infty}^k p_X(i),$$
+    $$p_X(k) = \Pr (X \leq k) - \Pr (X \leq k-1) = F_X(k) - F_X(k-1)$$
+    
+    for all integers $k$
+    
+## Bernoulli CDF {.scrollable}
+
+```{r bernoulli-cdf}
+bernouli_cdf_plot <- function(p){
+  df <- data_frame(x = 0:1,
+                   pmf = dbinom(x = x, size = 1, prob = p),
+                   cdf = pbinom(q = x, size = 1, prob = p)) %>%
+    mutate(x = factor(x))
+  
+  ggplot(df, aes(x, pmf)) +
+    geom_col() +
+    labs(title = "Bernouli PMF",
+         subtitle = bquote(pi == .(p)),
+         x = expression(x),
+         y = expression(P[X] (k))) +
+    ggplot(df, aes(x, cdf)) +
+    geom_col() +
+    labs(title = "Bernouli CDF",
+         subtitle = bquote(pi == .(p)),
+         x = expression(x),
+         y = expression(F[X] (k)))
+}
+
+bernouli_cdf_plot(.5)
+bernouli_cdf_plot(.7)
+bernouli_cdf_plot(.3)
+```
+
+## Binomial CDF {.scrollable}
+
+```{r binomial-cdf}
+binomial_cdf_plot <- function(n, p){
+  df <- data_frame(x = 0:n,
+                   pmf = dbinom(x = x, size = n, prob = p),
+                   cdf = pbinom(q = x, size = n, prob = p))
+  
+  ggplot(df, aes(x, pmf)) +
+    geom_col() +
+    labs(title = "Binomial PMF",
+         subtitle = bquote(n == .(n) ~ p == .(p)),
+         x = expression(x),
+         y = expression(P[X] (k))) +
+    ggplot(df, aes(x, cdf)) +
+    geom_col() +
+    labs(title = "Binomial CDF",
+         subtitle = bquote(n == .(n) ~ p == .(p)),
+         x = expression(x),
+         y = expression(F[X] (k)))
+}
+
+binomial_cdf_plot(10, .5)
+binomial_cdf_plot(10, .3)
+binomial_cdf_plot(100, .2)
+binomial_cdf_plot(100, .8)
+```
+
+## Geometric CDF {.scrollable}
+
+```{r geometric-cdf}
+geometric_cdf_plot <- function(p){
+  df <- data_frame(x = 0:20,
+                   pmf = dgeom(x = x, prob = p),
+                   cdf = pgeom(q = x, prob = p)) %>%
+    mutate(x = x + 1)
+  
+  ggplot(df, aes(x, pmf)) +
+    geom_col() +
+    labs(title = "Geometric PMF",
+         subtitle = bquote(p == .(p)),
+         x = expression(x),
+         y = expression(P[X] (k))) +
+    ggplot(df, aes(x, cdf)) +
+    geom_col() +
+    labs(title = "Geometric CDF",
+         subtitle = bquote(p == .(p)),
+         x = expression(x),
+         y = expression(F[X] (k)))
+}
+
+geometric_cdf_plot(.5)
+geometric_cdf_plot(.7)
+geometric_cdf_plot(.2)
+```
+
+## Poisson CDF {.scrollable}
+
+```{r poisson-cdf}
+poisson_cdf_plot <- function(lambda, max_n = 10){
+  df <- data_frame(x = 0:max_n,
+                   pmf = dpois(x = x, lambda = lambda),
+                   cdf = ppois(q = x, lambda = lambda))
+  
+  ggplot(df, aes(x, pmf)) +
+    geom_col() +
+    labs(title = "Poisson PMF",
+         subtitle = bquote(lambda == .(lambda)),
+         x = expression(x),
+         y = expression(P[X] (k))) +
+    ggplot(df, aes(x, cdf)) +
+    geom_col() +
+    labs(title = "Poisson CDF",
+         subtitle = bquote(lambda == .(lambda)),
+         x = expression(x),
+         y = expression(F[X] (k)))
+}
+
+poisson_cdf_plot(2)
+poisson_cdf_plot(5.5)
+poisson_cdf_plot(78, max_n = 150)
+```

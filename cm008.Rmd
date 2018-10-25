@@ -12,7 +12,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ## Overview
 
 * Identify functions in R used to work with random variables
-* Estimate probability of events using probability mass functions (PMFs) and cumulative mass functions (CMFs)
+* Estimate probability of events using probability mass functions (PMFs) and cumulative distribution functions (CDFs)
 
 ## Before class
 

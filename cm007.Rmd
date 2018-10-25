@@ -16,6 +16,7 @@ knitr::opts_chunk$set(cache=TRUE)
 * Identify discrete random variable distributions relevant to social science
 * Review measures of central tendency and dispersion
 * Define expected value and variance
+* Define cumulative distribution functions (CDFs) for discrete random variables
 
 ## Before class
 
