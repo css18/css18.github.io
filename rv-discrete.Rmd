@@ -930,11 +930,11 @@ pbinom(2, 20, 0.15)
 
 Book4Less.com is an online travel website that offers competitive prices on airline and hotel bookings. During a typical weekday, the website averages 10 visits per minute.
 
-1. What is the probability that there will be at least 7 but no more than 12 visits in the next minute?
+##### What is the probability that there will be at least 7 but no more than 12 visits in the next minute?
 
-    <details> 
-      <summary>Click for the solution</summary>
-      <p>
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
 
 $$\sum_{k = 7}^{12} e^{-10} \frac{10^{k}}{k!}$$
 
@@ -945,15 +945,15 @@ dpois(7:12, 10)
 sum(dpois(7:12, 10))
 ppois(12, 10) - ppois(6, 10)
 ```
-    
-      </p>
-    </details>
 
-1. What is the probability there will be more than 12 visits in the next minute?
+  </p>
+</details>
 
-    <details> 
-      <summary>Click for the solution</summary>
-      <p>
+##### What is the probability there will be more than 12 visits in the next minute?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
 
 $$\sum_{k = 13}^{\infty} e^{-10} \frac{10^{k}}{k!}$$
 
@@ -963,10 +963,9 @@ $$F_X(x) = \Pr (x > 12) = \sum_{k = 13}^{\infty} e^{-10} \frac{10^{k}}{k!}$$
 sum(dpois(13:50, 10))
 1 - ppois(12, 10)
 ```
-    
-      </p>
-    </details>
 
+  </p>
+</details>
 
 # Acknowledgements {.toc-ignore}
 
