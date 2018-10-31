@@ -15,11 +15,13 @@ Go [here](https://github.com/css18/hw05) to fork the repo for homework 05.
 
 Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate $\LaTeX$ mathematical notation.
 
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\sd}{\mathrm{sd}} \newcommand{\Cov}{\mathrm{Cov}}$$
+
 1. A recent college graduate is moving to Houston, Texas to take a new job, and is looking to purchase a home. Since Houston comprises a relatively large metropolitan area of about 7 million people, there are a lot of homes from which to choose. When searching for properties on the real estate websites, it is possible to select the price range of housing in which one is most interested. Suppose the potential buyer specifies a price range of \$200,000 to \$250,000, and the result of the search returns thousands of homes with prices distributed uniformly throughout that range.
-    a. Analytically identify $E(X)$ and $\sigma$ of the probability density function associated with this random variable.
+    a. Analytically identify $\E[X]$ and $\sigma$ of the probability density function associated with this random variable.
     a.  If the buyer ultimately selects a home from this initial list of possibilities, what is the probability she will have to pay more than \$235,000? Use R to find the solution.
 1. Use R to generate 10,000 uniformly-distributed data values with a lower bound of $-10$, an upper bound of $15$. List the first 5 data values.
-    a. Analytically calculate $E(X)$ and $\sigma$.
+    a. Analytically calculate $\E[X]$ and $\sigma$.
     a. Use R to find the mean and standard deviation of the (uniform) data.
     a. Do your answers to the previous question diverge from the analytical solution? Why or why not?
 1. Let $X$ be uniformly distributed in the unit interval $[0,1]$. Consider the random variable $Y = g(X)$, where
