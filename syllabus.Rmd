@@ -47,3 +47,4 @@ cdat %>%
 * [Homework 01/02: Wrangling and exploring data](hw02-wrangle-explore-data.html)
 * [Homework 03: Probability](hw03-probability.html)
 * [Homework 04: Discrete random variables](hw04-rv-discrete.html)
+* [Homework 05: Continuous random variables](hw05-rv-continuous.html)

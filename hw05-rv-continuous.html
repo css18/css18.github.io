@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework 05: Continuous random variables</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework 05: Continuous random variables</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Due before class on November 6th.</p>
+</div>
+<div id="fork-the-hw05-repository" class="section level1">
+<h1>Fork the <code>hw05</code> repository</h1>
+<p>Go <a href="https://github.com/css18/hw05">here</a> to fork the repo for homework 05.</p>
+</div>
+<div id="exercises-on-continuous-random-variables-10-points" class="section level1">
+<h1>Exercises on continuous random variables (10 points)</h1>
+<p>Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate <span class="math inline">\(\LaTeX\)</span> mathematical notation.</p>
+<ol style="list-style-type: decimal">
+<li>A recent college graduate is moving to Houston, Texas to take a new job, and is looking to purchase a home. Since Houston comprises a relatively large metropolitan area of about 7 million people, there are a lot of homes from which to choose. When searching for properties on the real estate websites, it is possible to select the price range of housing in which one is most interested. Suppose the potential buyer specifies a price range of $200,000 to $250,000, and the result of the search returns thousands of homes with prices distributed uniformly throughout that range.
+<ol style="list-style-type: lower-alpha">
+<li>Analytically identify <span class="math inline">\(E(X)\)</span> and <span class="math inline">\(\sigma\)</span> of the probability density function associated with this random variable.</li>
+<li>If the buyer ultimately selects a home from this initial list of possibilities, what is the probability she will have to pay more than $235,000? Use R to find the solution.</li>
+</ol></li>
+<li>Use R to generate 10,000 uniformly-distributed data values with a lower bound of <span class="math inline">\(-10\)</span>, an upper bound of <span class="math inline">\(15\)</span>. List the first 5 data values.
+<ol style="list-style-type: lower-alpha">
+<li>Analytically calculate <span class="math inline">\(E(X)\)</span> and <span class="math inline">\(\sigma\)</span>.</li>
+<li>Use R to find the mean and standard deviation of the (uniform) data.</li>
+<li>Do your answers to the previous question diverge from the analytical solution? Why or why not?</li>
+</ol></li>
+<li><p>Let <span class="math inline">\(X\)</span> be uniformly distributed in the unit interval <span class="math inline">\([0,1]\)</span>. Consider the random variable <span class="math inline">\(Y = g(X)\)</span>, where <span class="math display">\[g(x) = \left\{
+    \begin{array}{ll}
+        1 &amp; \quad \text{if } x \leq 1/3 \\
+        2 &amp; \quad \text{if } x &gt; 1/3
+    \end{array}
+\right.\]</span></p>
+Find the expected value of <span class="math inline">\(Y\)</span> by first calculating its probability mass function (PMF). Verify the result using the expected value rule.</li>
+<li>Calamity Jane goes to the bank to make a withdrawal, and is equally likely to find 0 or 1 customers ahead of her. The service time of the customer ahead, if present, is exponentially distributed with parameter <span class="math inline">\(\lambda\)</span>. What is the CDF of Jane’s waiting time?</li>
+<li>Let <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> be normal random variables with means 0 and 1, respectively, and variances 1 and 4, respectively.
+<ol style="list-style-type: lower-alpha">
+<li>Find <span class="math inline">\(\Pr(X \leq 1.5)\)</span> and <span class="math inline">\(\Pr(X \leq -1)\)</span>.</li>
+<li>Find the PDF of <span class="math inline">\((Y - 1) / 2\)</span>.</li>
+<li>Find <span class="math inline">\(\Pr(-1 \leq Y \leq 1)\)</span>.</li>
+</ol></li>
+<li><p>Let <span class="math inline">\(X\)</span> be a random variable with PDF <span class="math display">\[
+f_X(x) = \left\{
+    \begin{array}{ll}
+        \dfrac{x}{4} &amp; \quad \text{if } 1 &lt; x \leq 3 \\
+        0 &amp; \quad \text{otherwise}
+    \end{array}
+\right.
+\]</span></p>
+<p>and let <span class="math inline">\(A\)</span> be the event <span class="math inline">\(\{ X \geq 2 \}\)</span>.</p>
+<ol style="list-style-type: lower-alpha">
+<li>Find <span class="math inline">\(\E[X]\)</span>, <span class="math inline">\(\Pr (A)\)</span>, <span class="math inline">\(f_{X|A}(x)\)</span>, and <span class="math inline">\(\E [X | A]\)</span>.</li>
+<li>Let <span class="math inline">\(Y = X^2\)</span>. Find <span class="math inline">\(\E[Y]\)</span> and <span class="math inline">\(\Var (Y)\)</span>.</li>
+</ol></li>
+<li>Simulating fake data
+<ol style="list-style-type: lower-alpha">
+<li>Generate 1000 independent random draws <span class="math inline">\(X_j\)</span> from a uniform distribution on the unit interval <span class="math inline">\([0,1]\)</span>. Briefly describe (graphically and in words) the resulting “data”, and compare them to the theoretical distribution of values from that distribution.</li>
+<li>Repeat (a) 1000 times, saving each set of draws. You should wind up with 1,000,000 random <span class="math inline">\(U(0,1)\)</span> draws <span class="math inline">\(U_{ij}\)</span>, organized into 1000 objects/variables (here, indexed by <span class="math inline">\(i\)</span>), each of length 1000 (indexed by <span class="math inline">\(j\)</span>).</li>
+<li>For each of the 1000 <span class="math inline">\(U_i\)</span> objects, create a new object <span class="math inline">\(V_i\)</span> by adding the integer corresponding to the order of the observation to the value of <span class="math inline">\(U_{ij}\)</span>. That is, to the value of the first observation, add 1, to the second, add 2, etc., finishing by adding 1000 to the last listed observation in each object. <strong>Be sure to retain the uniform variates as well.</strong></li>
+<li>Generate an object containing the sums of the values of the observations in each of the 1000 <span class="math inline">\(V\)</span>s (that is, one where the <span class="math inline">\(i\)</span>th entry is <span class="math inline">\(A_i = \sum_{j=1}^{1000} V_{ij}\)</span>). Plot and describe the distribution of the resulting variable <span class="math inline">\(A\)</span>.</li>
+<li>Next, create a second object containing the sums of the <span class="math inline">\(j\)</span>th observations across each of the 1000 <span class="math inline">\(V\)</span>s. That is, create an object of length 1000 where the <span class="math inline">\(j\)</span>th entry is <span class="math inline">\(S_j = \sum_{i=1}^{1000} V_{ij}\)</span>. Describe (graphically and in words) the distribution of the resulting variable <span class="math inline">\(S\)</span>.</li>
+</ol></li>
+<li>A <a href="https://en.wikipedia.org/wiki/Gumbel_distribution"><strong>Gumbel distribution</strong></a> (here denoted <span class="math inline">\(\zeta(\alpha, \beta)\)</span>) is a two-parameter (<span class="math inline">\(\alpha \in \Re, \beta &gt; 0\)</span>) distribution with PDF <span class="math inline">\(f_X(x) = \frac{1}{\beta} e^{-(z + e^{-z})}\)</span> where <span class="math inline">\(z = \frac{x - \alpha}{\beta}\)</span> and CDF <span class="math inline">\(F_X(x) = e^{-e^{- \frac{z - \alpha}{\beta}}}\)</span>. It is related to the standard normal distribution <span class="math inline">\(U\)</span> by <span class="math inline">\(X = \alpha - \beta \log[-\log(U)]\)</span>.
+<ol style="list-style-type: lower-alpha">
+<li>Transform your 1000 bundles of 1000 random <span class="math inline">\(U(0,1)\)</span> draws into 1000 bundles of 1000 draws <span class="math inline">\(G_{ij}\)</span> from a Gumbel <span class="math inline">\((1,2)\)</span> distribution.</li>
+<li>Plot the empirical variances of <span class="math inline">\(G\)</span>, and discuss how they compare to the theoretical variance of a <span class="math inline">\(\zeta(1,2)\)</span> distribution.</li>
+<li>Plot the density of the values of the 75th percentiles from those 1000 bundles of Gumbel variates.</li>
+</ol></li>
+</ol>
+</div>
+<div id="submit-the-assignment" class="section level1">
+<h1>Submit the assignment</h1>
+<p>Your assignment should be submitted as an R Markdown document rendered as an HTML/PDF document. <strong>Don’t know what an R Markdown document is? <a href="http://rmarkdown.rstudio.com/lesson-1.html">Read this!</a> Or <a href="http://r4ds.had.co.nz/r-markdown.html">this!</a></strong> I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.</p>
+<p>Follow instructions on <a href="https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow">homework workflow</a>. As part of the pull request, you’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.</p>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
