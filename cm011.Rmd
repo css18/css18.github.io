@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-# cm010 - November 1, 2018
+# cm011 - November 6, 2018
 
 ## Overview
 
@@ -25,7 +25,7 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## Slides and class materials
 
-* [Slides](extras/cm010_slides.html)
+* [Slides](extras/cm011_slides.html)
 * [Continuous random variables](rv-continuous.html)
 
 ## Additional resources
