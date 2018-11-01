@@ -1,0 +1,476 @@
+---
+title: "Continuous random variables"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r packages, cache = FALSE, message = FALSE}
+library(tidyverse)
+library(broom)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal())
+```
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}$$
+
+# Continuous random variables
+
+* Random variables that are not discrete
+    * Approval ratings
+    * GDP
+    * Wait time between wars: $X(t) = t$ for all $t$
+    * Proportion of vote received: $X(v) = v$ for all $v$
+* Many analogues to discrete probability distributions
+* We need calculus to answer questions about probability
+
+# Probability density function
+
+```{r pdf}
+norm_pdf <- data_frame(x = seq(-3, 3, by = .05),
+           y = dnorm(x = x, mean = 1, sd = 2),
+           fill = x >= .5 & x <= 2)
+
+ggplot(norm_pdf) +
+  geom_line(aes(x, y)) +
+  geom_ribbon(data = filter(norm_pdf, fill),
+              aes(x = x,
+                  ymin = 0, ymax = y),
+              fill = "blue") +
+  labs(x = expression(x),
+       y = expression(f(x)))
+```
+
+* What is the area under the curve under $f(x)$ between $.5$ and $2$?
+
+    $$\int_{1/2}^{2} f(x)dx = F(2) - F(1/2)$$
+
+## Definition
+
+$X$ is a continuous random variable if there exists a nonnegative function defined for all $x \in \Re$ having the property for any (measurable) set of real numbers $B$,
+
+$$
+\begin{eqnarray}
+\Pr(X \in B) & = & \int_{B} f_X(x)dx
+\end{eqnarray}
+$$
+
+* Non-negative meaning $f(x)$ is never negative
+* $\Pr(X \in B)$: probability that $X$ is is an element of $B$
+* We'll call $f(\cdot)$ the **probability density function** (PDF) for $X$
+
+The probability that the value of $X$ falls within an interval is
+
+$$\Pr (a \leq X \leq b) = \int_a^b f_X(x) dx$$
+
+and can be interpreted as the area under the graph of the PDF. For any single value $a$, we have $\Pr (X = a) = \int_a^a f_X(x) dx = 0$. Note that to qualify as a PDF, a function $f_X$ must be nonnegative, i.e. $f_X(x) \geq 0$ for every $x$, and must also have the normalization property
+
+$$\int_{-\infty}^{\infty} f_X(x) dx = \Pr (-\infty \leq X \leq \infty) = 1$$
+
+## Example: Uniform Random Variable
+
+$X \sim \text{Uniform}(0,1)$
+
+$$
+f_X(x) = \left\{
+    \begin{array}{ll}
+        c & \quad \text{if } 0 \leq x \leq 1 \\
+        0 & \quad \text{otherwise}
+    \end{array}
+\right.
+$$
+
+for some constant $c$. The constant can be determined from the normalization property
+
+$$1 = \int_{-\infty}^{\infty} f_X(x)dx = \int_0^1 c dx = c \int_0^1 dx = c$$
+
+so that $c=1$. 
+
+```{r unif}
+data_frame(x = seq(-.5, 1.5, by = .01),
+           y = dunif(x)) %>%
+  ggplot(aes(x, y)) +
+  geom_step() +
+  labs(x = expression(x),
+       y = expression(f[X](x)))
+```
+
+$$
+\begin{eqnarray}
+\Pr(X \in [0.2, 0.5]) & = & \int_{0.2}^{0.5} 1 dx \nonumber \\
+& = & X |^{0.5}_{0.2} \nonumber \\
+& = & 0.5  - 0.2  \nonumber \\
+& = & 0.3\nonumber 
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\Pr(X \in [0, 1] ) & = & \int_{0}^{1} 1 dx \nonumber \\
+& = & X |^{1}_{0} \nonumber \\
+& = & 1 - 0 \nonumber \\
+& = & 1 \nonumber 
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\Pr(X \in [0.5, 0.5]) & = & \int_{0.5}^{0.5} 1dx \nonumber \\
+& = & X|^{0.5}_{0.5} \nonumber \\
+& = & 0.5 - 0.5 \nonumber \\
+& = & 0 \nonumber 
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\Pr(X \in \{[0, 0.2]\cup[0.5, 1]\}) & = & \int_{0}^{0.2} 1dx + \int_{0.5}^{1} 1dx \nonumber \\
+ & = & X_{0}^{0.2} + X_{0.5}^{1} \nonumber \\
+ & = & 0.2 - 0 + 1 - 0.5 \nonumber \\
+ & = & 0.7 \nonumber 
+ \end{eqnarray}
+$$
+
+More generally, the PDF of a **uniform** random variable has the form
+
+$$
+f_X(x) = \left\{
+    \begin{array}{ll}
+        \frac{1}{b-a} & \quad \text{if } a \leq x \leq b \\
+        0 & \quad \text{otherwise}
+    \end{array}
+\right.
+$$
+
+* To summarize 
+    * $\Pr(X = a) = 0$
+    * $\Pr(X \in (-\infty, \infty) ) = 1$ 
+    * If $F$ is antiderivative of $f$, then $\Pr(X \in [c,d]) = F(d) - F(c)$ (Fundamental theorem of calculus)
+
+## Expectation
+
+The **expected value** of a continuous random variable $X$ is defined as
+
+$$\E[X] = \int_{-\infty}^{\infty} x f_X(x) dx$$
+
+This is similar to the discrete case except instead of a summation operation, we use integration to calculate the expected value. If $X$ is a continuous random variable with a given PDF, any real-valued function $Y = g(X)$ is also a random variable. The mean of $g(X)$ satisfies the **expected value rule**:
+
+$$\E[g(X)] = \int_{-\infty}^{\infty} g(x) f_X(x) dx$$
+
+* The **$n$th moment** is defined as $\E[X^n]$, the expected value of the random variable $X^n$
+* The **variance**, denoted by $\Var(X)$ is defined as the expected value of the random variable $(X - \E[X])^2 = \E[X^2] - (\E[X])^2$
+
+### Example: uniform random variable
+
+Consider a uniform PDF over an interval $[a,b]$:
+
+$$
+\begin{align}
+\E[X] = \int_{-\infty}^{\infty} x f_X(x) dx &= \int_a^b x \times \frac{1}{b-a} dx \\
+&= \frac{1}{b-a} \times \frac{1}{2}x^2 \Big|_a^b \\
+&= \frac{1}{b-a} \times \frac{b^2 - a^2}{2} \\
+&= \frac{a+b}{2}
+\end{align}
+$$
+
+To obtain the variance, we first calculate the second moment. We have
+
+$$
+\begin{align}
+\E[X^2] = \int_a^b x^2 \times \frac{1}{b-a} dx &= \frac{1}{b-a} \int_a^b x^2 dx \\
+&= \frac{1}{b-a} \times \frac{1}{3}x^3 \Big|_a^b \\
+&= \frac{b^3 - a^3}{3(b-a)} \\
+&= \frac{a^2 + ab + b^2}{3}
+\end{align}
+$$
+
+Thus, the variance is
+
+$$
+\begin{align}
+\Var(X) = \E[X^2] - (\E[X])^2 = \frac{a^2 + ab + b^2}{3} - \left( \frac{a+b}{2} \right)^2 = \frac{(b-a)^2}{12}
+\end{align}
+$$
+
+## Exponential random variable
+
+An **exponential** random variable has a PDF of the form
+
+$$
+f_X(x) = \left\{
+    \begin{array}{ll}
+        \lambda e^{-\lambda x} & \quad \text{if } x \geq 0 \\
+        0 & \quad \text{otherwise}
+    \end{array}
+\right.
+$$
+
+where $\lambda$ is a positive parameter characterizing the PDF.
+
+```{r exp-rv}
+exp_pdf <- function(rate){
+  data_frame(x = seq(0, 20, by = .05),
+           pmf = dexp(x = x, rate = rate)) %>%
+  ggplot(aes(x, pmf)) +
+  geom_line() +
+  labs(title = "Exponential PDF",
+       subtitle = bquote(lambda == .(rate)),
+       x = expression(x),
+       y = expression(f[X] (x)))
+}
+
+exp_pdf(1) +
+  exp_pdf(3) +
+  exp_pdf(7)
+```
+
+$$\E[X] = \frac{1}{\lambda}, \quad \Var(X) = \frac{1}{\lambda^2}$$
+
+# Cumulative distribution function
+
+* Probability density function ($f$) characterizes distribution of continuous random variable.
+* Equivalently, cumulative distribution function characterizes continuous random variables
+* For a continuous random variable $X$ define its **cumulative distribution function** (CDF) $F_X(x)$ as, 
+
+    $$
+    \begin{eqnarray} 
+    F_X(x) & = & P(X \leq x) = \int_{-\infty} ^{x} f_X(t) dt
+    \end{eqnarray}
+    $$
+
+## Example: uniform distribution
+
+* Suppose $X \sim Uniform(0,1)$, then
+
+$$
+\begin{eqnarray} 
+F_X(x) & = & P(X\leq x)  \\
+& = & 0 \text{, if $x< 0$ } \\
+ & = & 1 \text{, if $x >1$ } \\
+ & = & x \text{, if $x \in [0,1]$}
+\end{eqnarray}
+$$
+
+```{r unif-rv}
+unif_pdf <- function(a, b){
+  data_frame(x = seq(a - 1, b + 1, by = .01),
+             pdf = dunif(x = x, min = a, max = b)) %>%
+    ggplot(aes(x, pdf)) +
+    geom_line() +
+    labs(title = "Uniform PDF",
+         subtitle = bquote(a == .(a) ~ b == .(b)),
+         x = expression(x),
+         y = expression(f[X] (x)))
+}
+
+unif_cdf <- function(a, b){
+  data_frame(x = seq(a - 1, b + 1, by = .01),
+             cdf = punif(q = x, min = a, max = b)) %>%
+    ggplot(aes(x, cdf)) +
+    geom_line() +
+    labs(title = "Uniform CDF",
+         subtitle = bquote(a == .(a) ~ b == .(b)),
+         x = expression(x),
+         y = expression(F[X] (x)))
+}
+
+unif_pdf(0, 1) +
+  unif_cdf(0, 1)
+```
+
+## Properties of CDFs
+
+* $F_X$ is monotonically nodecreasing -- if $x \leq y$, then $F_X(x) \leq F_X(y)$
+* $F_X(x)$ tends to $0$ as $x \rightarrow -\infty$, and to $1$ as $x \rightarrow \infty$
+* $F_X(x)$ is a continuous function of $x$
+* If $X$ is continuous, the PDF and CDF can be obtained from each other by integration or differentiation
+
+    $$F_X(x) = \int_{-\infty}^x f_X(t) dt, \quad f_X(x) = \frac{dF_X}{dx} (x)$$
+
+# Normal random variables
+
+Suppose $X$ is a random variable with $X \in \Re$ and density
+
+$$
+\begin{eqnarray}
+f(x) & = & \frac{1}{\sqrt{2\pi \sigma^2}}\exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right) \nonumber 
+\end{eqnarray}
+$$
+
+where $\mu$ and $\sigma$ are two scalar parameters characterizing the PDF, with $\sigma$ assumed positive. Then $X$ is a normally distributed random variable with parameters $\mu$ and $\sigma^2$.
+
+```{r norm-rv}
+norm_pdf <- function(mu, sigma){
+  data_frame(x = seq(-5, 5, by = .01),
+             pdf = dnorm(x = x, mean = mu, sd = sigma)) %>%
+    ggplot(aes(x, pdf)) +
+    geom_line() +
+    labs(title = "Normal PDF",
+         subtitle = bquote(mu == .(mu) ~ sigma^2 == .(sigma^2)),
+         x = expression(x),
+         y = expression(f[X] (x)))
+}
+
+norm_cdf <- function(mu, sigma){
+  data_frame(x = seq(-5, 5, by = .01),
+             cdf = pnorm(q = x, mean = mu, sd = sigma)) %>%
+    ggplot(aes(x, cdf)) +
+    geom_line() +
+    labs(title = "Normal CDF",
+         subtitle = bquote(mu == .(mu) ~ sigma^2 == .(sigma^2)),
+         x = expression(x),
+         y = expression(f[X] (x)))
+}
+
+norm_pdf(0, 1) +
+  norm_cdf(0, 1)
+```
+
+Equivalently, we'll write 
+
+$$
+\begin{eqnarray}
+X & \sim & \text{Normal}(\mu, \sigma^2) \nonumber 
+\end{eqnarray}
+$$
+
+## Expected value/variance of normal distribution
+
+* $Z$ is a standard normal distribution if
+
+    $$
+    \begin{eqnarray}
+    Z & \sim & \text{Normal}(0,1) \nonumber 
+    \end{eqnarray}
+    $$
+
+* We'll call the cumulative distribution function of $Z$,
+
+    $$
+    \begin{eqnarray}
+    F_{Z}(x) & = & \frac{1}{\sqrt{2\pi} }\int_{-\infty}^{x} \exp(-z^2/2) dz 
+    \end{eqnarray}
+    $$
+
+* Suppose $Z \sim \text{Normal}(0,1)$
+
+    * $Y = 2Z + 6$
+    * $Y \sim \text{Normal}(6, 4)$
+    
+        ```{r z-norm}
+        data_frame(x = seq(-5, 15, by = .05),
+                   Z = dnorm(x),
+                   Y = dnorm(x, mean = 6, sd = 2)) %>%
+          gather(norm, val, -x) %>%
+          ggplot(aes(x, val, color = norm)) +
+          geom_line() +
+          scale_color_brewer(type = "qual") +
+          labs(x = NULL,
+               y = "Density height",
+               color = NULL) +
+          theme(legend.position = "bottom")
+        ```
+
+* Scale/Location: If $Z \sim N(0,1)$, then $X = aZ + b$ is, 
+
+    $$
+    \begin{eqnarray}
+    X & \sim & \text{Normal} (b, a^2) \nonumber 
+    \end{eqnarray}
+    $$
+
+* Assume we know: 
+
+    $$
+    \begin{eqnarray}
+    \E[Z]  & = & 0 \\
+    \Var(Z) & = & 1 
+    \end{eqnarray}
+    $$
+    
+* This implies that, for $Y \sim \text{Normal}(\mu, \sigma^2)$
+
+    $$
+    \begin{eqnarray} 
+    \E[Y] & = & \E[\sigma Z + \mu] \\
+    & = & \sigma \E[Z] + \mu \nonumber \\
+    & = & \mu \nonumber \\
+    \Var(Y) & = & \Var(\sigma Z + \mu) \\
+     & = & \sigma^2 \Var(Z) + \Var(\mu) \\
+     & = & \sigma^2 + 0 \\
+     & =& \sigma^2 
+    \end{eqnarray}
+    $$
+
+This illustrates a key property of normal random variables. If $X$ is a normal random variable with mean $\mu$ and variance $\sigma^2$, and if $a \neq 0, b$ are scalars, then the random variable
+
+$$Y = aX + b$$
+
+is also normal, with mean and variance
+
+$$\E[Y] = a\mu + b, \quad \Var(Y) = a^2 \sigma^2$$
+
+## Why rely on the standard normal distribution
+
+* Normal distribution is commonly used in statistical analysis
+    * Many random variables can be approximated with the normal distribution
+* Standardizing this makes it easier to make comparisons across variables with different ranges/variances
+    * Example - GRE scores
+    * Verbal and quant scores have different variability
+    * Cannot easily determine if a 159 on the verbal is better or worse than a 159 on the quant
+    * The standard normal distribution is **unitless**, so any random variable can be compared with another random variable
+* Saves time on the calculus
+    * Don't need to recalculate the integral when calculating cumulative probability based on the unique $\mu$ and $\sigma^2$
+    * Instead, do this once and store the info in a lookup table
+    * Made calculating probabilities (relatively) easy before computers
+
+## Example: Support for President Obama
+
+Suppose we are interested in modeling presidential approval.
+
+* Let $Y$ represent random variable: proportion of population who "approves job president is doing"
+* Individual responses (that constitute proportion) are independent and identically distributed (sufficient, not necessary) and we take the average of those individual responses
+* Observe many responses ($N\rightarrow \infty$)
+* Then (by Central Limit Theorm) $Y$ is Normally distributed, or
+
+$$
+\begin{eqnarray}
+Y & \sim & \text{Normal}(\mu, \sigma^2) \\
+f_Y(y) & = & \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{2\sigma^2} \right)
+\end{eqnarray}
+$$
+
+* Suppose $\mu = 0.39$ and $\sigma^2 = 0.0025$
+* $P(Y\geq 0.45)$ (What is the probability it isn't that bad?) ?
+
+$$
+\begin{eqnarray} 
+\Pr(Y \geq 0.45)  &  = & 1 - \Pr(Y \leq 0.45 ) \\
+& = &  1 - \Pr(0.05 Z + 0.39 \leq  0.45) \\
+& = & 1 - \Pr(Z \leq \frac{0.45-0.39 }{0.05} ) \\
+& = & 1 - \frac{1}{\sqrt{2\pi} } \int_{-\infty}^{6/5} \exp(-z^2/2) dz \\
+& = & 1 - F_{Z} (\frac{6}{5} ) \\
+& = & 0.1150697
+\end{eqnarray}
+$$
+
+# Conditioning
+
+
+
+# Acknowledgements {.toc-ignore}
+
+* Material drawn from **Introduction to Probability** (2nd edition) by Bertsekas and Tsitsiklis
+
+# Session Info {.toc-ignore}
+
+```{r child='_sessioninfo.Rmd'}
+```

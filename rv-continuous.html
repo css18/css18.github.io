@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Continuous random variables</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Continuous random variables</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}\]</span></p>
+<div id="continuous-random-variables" class="section level1">
+<h1>Continuous random variables</h1>
+<ul>
+<li>Random variables that are not discrete
+<ul>
+<li>Approval ratings</li>
+<li>GDP</li>
+<li>Wait time between wars: <span class="math inline">\(X(t) = t\)</span> for all <span class="math inline">\(t\)</span></li>
+<li>Proportion of vote received: <span class="math inline">\(X(v) = v\)</span> for all <span class="math inline">\(v\)</span></li>
+</ul></li>
+<li>Many analogues to discrete probability distributions</li>
+<li>We need calculus to answer questions about probability</li>
+</ul>
+</div>
+<div id="probability-density-function" class="section level1">
+<h1>Probability density function</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">norm_pdf &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">by =</span> .<span class="dv">05</span>),
+           <span class="dt">y =</span> <span class="kw">dnorm</span>(<span class="dt">x =</span> x, <span class="dt">mean =</span> <span class="dv">1</span>, <span class="dt">sd =</span> <span class="dv">2</span>),
+           <span class="dt">fill =</span> x <span class="op">&gt;=</span><span class="st"> </span>.<span class="dv">5</span> <span class="op">&amp;</span><span class="st"> </span>x <span class="op">&lt;=</span><span class="st"> </span><span class="dv">2</span>)
+
+<span class="kw">ggplot</span>(norm_pdf) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(x, y)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_ribbon</span>(<span class="dt">data =</span> <span class="kw">filter</span>(norm_pdf, fill),
+              <span class="kw">aes</span>(<span class="dt">x =</span> x,
+                  <span class="dt">ymin =</span> <span class="dv">0</span>, <span class="dt">ymax =</span> y),
+              <span class="dt">fill =</span> <span class="st">&quot;blue&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x)))</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/pdf-1.png" width="672" /></p>
+<ul>
+<li><p>What is the area under the curve under <span class="math inline">\(f(x)\)</span> between <span class="math inline">\(.5\)</span> and <span class="math inline">\(2\)</span>?</p>
+<p><span class="math display">\[\int_{1/2}^{2} f(x)dx = F(2) - F(1/2)\]</span></p></li>
+</ul>
+<div id="definition" class="section level2">
+<h2>Definition</h2>
+<p><span class="math inline">\(X\)</span> is a continuous random variable if there exists a nonnegative function defined for all <span class="math inline">\(x \in \Re\)</span> having the property for any (measurable) set of real numbers <span class="math inline">\(B\)</span>,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\Pr(X \in B) &amp; = &amp; \int_{B} f_X(x)dx
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Non-negative meaning <span class="math inline">\(f(x)\)</span> is never negative</li>
+<li><span class="math inline">\(\Pr(X \in B)\)</span>: probability that <span class="math inline">\(X\)</span> is is an element of <span class="math inline">\(B\)</span></li>
+<li>We’ll call <span class="math inline">\(f(\cdot)\)</span> the <strong>probability density function</strong> (PDF) for <span class="math inline">\(X\)</span></li>
+</ul>
+<p>The probability that the value of <span class="math inline">\(X\)</span> falls within an interval is</p>
+<p><span class="math display">\[\Pr (a \leq X \leq b) = \int_a^b f_X(x) dx\]</span></p>
+<p>and can be interpreted as the area under the graph of the PDF. For any single value <span class="math inline">\(a\)</span>, we have <span class="math inline">\(\Pr (X = a) = \int_a^a f_X(x) dx = 0\)</span>. Note that to qualify as a PDF, a function <span class="math inline">\(f_X\)</span> must be nonnegative, i.e. <span class="math inline">\(f_X(x) \geq 0\)</span> for every <span class="math inline">\(x\)</span>, and must also have the normalization property</p>
+<p><span class="math display">\[\int_{-\infty}^{\infty} f_X(x) dx = \Pr (-\infty \leq X \leq \infty) = 1\]</span></p>
+</div>
+<div id="example-uniform-random-variable" class="section level2">
+<h2>Example: Uniform Random Variable</h2>
+<p><span class="math inline">\(X \sim \text{Uniform}(0,1)\)</span></p>
+<p><span class="math display">\[
+f_X(x) = \left\{
+    \begin{array}{ll}
+        c &amp; \quad \text{if } 0 \leq x \leq 1 \\
+        0 &amp; \quad \text{otherwise}
+    \end{array}
+\right.
+\]</span></p>
+<p>for some constant <span class="math inline">\(c\)</span>. The constant can be determined from the normalization property</p>
+<p><span class="math display">\[1 = \int_{-\infty}^{\infty} f_X(x)dx = \int_0^1 c dx = c \int_0^1 dx = c\]</span></p>
+<p>so that <span class="math inline">\(c=1\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span>.<span class="dv">5</span>, <span class="fl">1.5</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+           <span class="dt">y =</span> <span class="kw">dunif</span>(x)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_step</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(f[X](x)))</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/unif-1.png" width="672" /></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\Pr(X \in [0.2, 0.5]) &amp; = &amp; \int_{0.2}^{0.5} 1 dx \nonumber \\
+&amp; = &amp; X |^{0.5}_{0.2} \nonumber \\
+&amp; = &amp; 0.5  - 0.2  \nonumber \\
+&amp; = &amp; 0.3\nonumber 
+\end{eqnarray}
+\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\Pr(X \in [0, 1] ) &amp; = &amp; \int_{0}^{1} 1 dx \nonumber \\
+&amp; = &amp; X |^{1}_{0} \nonumber \\
+&amp; = &amp; 1 - 0 \nonumber \\
+&amp; = &amp; 1 \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\Pr(X \in [0.5, 0.5]) &amp; = &amp; \int_{0.5}^{0.5} 1dx \nonumber \\
+&amp; = &amp; X|^{0.5}_{0.5} \nonumber \\
+&amp; = &amp; 0.5 - 0.5 \nonumber \\
+&amp; = &amp; 0 \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\Pr(X \in \{[0, 0.2]\cup[0.5, 1]\}) &amp; = &amp; \int_{0}^{0.2} 1dx + \int_{0.5}^{1} 1dx \nonumber \\
+ &amp; = &amp; X_{0}^{0.2} + X_{0.5}^{1} \nonumber \\
+ &amp; = &amp; 0.2 - 0 + 1 - 0.5 \nonumber \\
+ &amp; = &amp; 0.7 \nonumber 
+ \end{eqnarray}
+\]</span></p>
+<p>More generally, the PDF of a <strong>uniform</strong> random variable has the form</p>
+<p><span class="math display">\[
+f_X(x) = \left\{
+    \begin{array}{ll}
+        \frac{1}{b-a} &amp; \quad \text{if } a \leq x \leq b \\
+        0 &amp; \quad \text{otherwise}
+    \end{array}
+\right.
+\]</span></p>
+<ul>
+<li>To summarize
+<ul>
+<li><span class="math inline">\(\Pr(X = a) = 0\)</span></li>
+<li><span class="math inline">\(\Pr(X \in (-\infty, \infty) ) = 1\)</span></li>
+<li>If <span class="math inline">\(F\)</span> is antiderivative of <span class="math inline">\(f\)</span>, then <span class="math inline">\(\Pr(X \in [c,d]) = F(d) - F(c)\)</span> (Fundamental theorem of calculus)</li>
+</ul></li>
+</ul>
+</div>
+<div id="expectation" class="section level2">
+<h2>Expectation</h2>
+<p>The <strong>expected value</strong> of a continuous random variable <span class="math inline">\(X\)</span> is defined as</p>
+<p><span class="math display">\[\E[X] = \int_{-\infty}^{\infty} x f_X(x) dx\]</span></p>
+<p>This is similar to the discrete case except instead of a summation operation, we use integration to calculate the expected value. If <span class="math inline">\(X\)</span> is a continuous random variable with a given PDF, any real-valued function <span class="math inline">\(Y = g(X)\)</span> is also a random variable. The mean of <span class="math inline">\(g(X)\)</span> satisfies the <strong>expected value rule</strong>:</p>
+<p><span class="math display">\[\E[g(X)] = \int_{-\infty}^{\infty} g(x) f_X(x) dx\]</span></p>
+<ul>
+<li>The <strong><span class="math inline">\(n\)</span>th moment</strong> is defined as <span class="math inline">\(\E[X^n]\)</span>, the expected value of the random variable <span class="math inline">\(X^n\)</span></li>
+<li>The <strong>variance</strong>, denoted by <span class="math inline">\(\Var(X)\)</span> is defined as the expected value of the random variable <span class="math inline">\((X - \E[X])^2 = \E[X^2] - (\E[X])^2\)</span></li>
+</ul>
+<div id="example-uniform-random-variable-1" class="section level3">
+<h3>Example: uniform random variable</h3>
+<p>Consider a uniform PDF over an interval <span class="math inline">\([a,b]\)</span>:</p>
+<p><span class="math display">\[
+\begin{align}
+\E[X] = \int_{-\infty}^{\infty} x f_X(x) dx &amp;= \int_a^b x \times \frac{1}{b-a} dx \\
+&amp;= \frac{1}{b-a} \times \frac{1}{2}x^2 \Big|_a^b \\
+&amp;= \frac{1}{b-a} \times \frac{b^2 - a^2}{2} \\
+&amp;= \frac{a+b}{2}
+\end{align}
+\]</span></p>
+<p>To obtain the variance, we first calculate the second moment. We have</p>
+<p><span class="math display">\[
+\begin{align}
+\E[X^2] = \int_a^b x^2 \times \frac{1}{b-a} dx &amp;= \frac{1}{b-a} \int_a^b x^2 dx \\
+&amp;= \frac{1}{b-a} \times \frac{1}{3}x^3 \Big|_a^b \\
+&amp;= \frac{b^3 - a^3}{3(b-a)} \\
+&amp;= \frac{a^2 + ab + b^2}{3}
+\end{align}
+\]</span></p>
+<p>Thus, the variance is</p>
+<p><span class="math display">\[
+\begin{align}
+\Var(X) = \E[X^2] - (\E[X])^2 = \frac{a^2 + ab + b^2}{3} - \left( \frac{a+b}{2} \right)^2 = \frac{(b-a)^2}{12}
+\end{align}
+\]</span></p>
+</div>
+</div>
+<div id="exponential-random-variable" class="section level2">
+<h2>Exponential random variable</h2>
+<p>An <strong>exponential</strong> random variable has a PDF of the form</p>
+<p><span class="math display">\[
+f_X(x) = \left\{
+    \begin{array}{ll}
+        \lambda e^{-\lambda x} &amp; \quad \text{if } x \geq 0 \\
+        0 &amp; \quad \text{otherwise}
+    \end{array}
+\right.
+\]</span></p>
+<p>where <span class="math inline">\(\lambda\)</span> is a positive parameter characterizing the PDF.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">exp_pdf &lt;-<span class="st"> </span><span class="cf">function</span>(rate){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">20</span>, <span class="dt">by =</span> .<span class="dv">05</span>),
+           <span class="dt">pmf =</span> <span class="kw">dexp</span>(<span class="dt">x =</span> x, <span class="dt">rate =</span> rate)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, pmf)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Exponential PDF&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="kw">bquote</span>(lambda <span class="op">==</span><span class="st"> </span>.(rate)),
+       <span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(f[X] (x)))
+}
+
+<span class="kw">exp_pdf</span>(<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">exp_pdf</span>(<span class="dv">3</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">exp_pdf</span>(<span class="dv">7</span>)</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/exp-rv-1.png" width="672" /></p>
+<p><span class="math display">\[\E[X] = \frac{1}{\lambda}, \quad \Var(X) = \frac{1}{\lambda^2}\]</span></p>
+</div>
+</div>
+<div id="cumulative-distribution-function" class="section level1">
+<h1>Cumulative distribution function</h1>
+<ul>
+<li>Probability density function (<span class="math inline">\(f\)</span>) characterizes distribution of continuous random variable.</li>
+<li>Equivalently, cumulative distribution function characterizes continuous random variables</li>
+<li><p>For a continuous random variable <span class="math inline">\(X\)</span> define its <strong>cumulative distribution function</strong> (CDF) <span class="math inline">\(F_X(x)\)</span> as,</p>
+<p><span class="math display">\[
+\begin{eqnarray} 
+F_X(x) &amp; = &amp; P(X \leq x) = \int_{-\infty} ^{x} f_X(t) dt
+\end{eqnarray}
+\]</span></p></li>
+</ul>
+<div id="example-uniform-distribution" class="section level2">
+<h2>Example: uniform distribution</h2>
+<ul>
+<li>Suppose <span class="math inline">\(X \sim Uniform(0,1)\)</span>, then</li>
+</ul>
+<p><span class="math display">\[
+\begin{eqnarray} 
+F_X(x) &amp; = &amp; P(X\leq x)  \\
+&amp; = &amp; 0 \text{, if $x&lt; 0$ } \\
+ &amp; = &amp; 1 \text{, if $x &gt;1$ } \\
+ &amp; = &amp; x \text{, if $x \in [0,1]$}
+\end{eqnarray}
+\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">unif_pdf &lt;-<span class="st"> </span><span class="cf">function</span>(a, b){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(a <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, b <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+             <span class="dt">pdf =</span> <span class="kw">dunif</span>(<span class="dt">x =</span> x, <span class="dt">min =</span> a, <span class="dt">max =</span> b)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, pdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Uniform PDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(a <span class="op">==</span><span class="st"> </span>.(a) <span class="op">~</span><span class="st"> </span>b <span class="op">==</span><span class="st"> </span>.(b)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(f[X] (x)))
+}
+
+unif_cdf &lt;-<span class="st"> </span><span class="cf">function</span>(a, b){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(a <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, b <span class="op">+</span><span class="st"> </span><span class="dv">1</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+             <span class="dt">cdf =</span> <span class="kw">punif</span>(<span class="dt">q =</span> x, <span class="dt">min =</span> a, <span class="dt">max =</span> b)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, cdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Uniform CDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(a <span class="op">==</span><span class="st"> </span>.(a) <span class="op">~</span><span class="st"> </span>b <span class="op">==</span><span class="st"> </span>.(b)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(F[X] (x)))
+}
+
+<span class="kw">unif_pdf</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">unif_cdf</span>(<span class="dv">0</span>, <span class="dv">1</span>)</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/unif-rv-1.png" width="672" /></p>
+</div>
+<div id="properties-of-cdfs" class="section level2">
+<h2>Properties of CDFs</h2>
+<ul>
+<li><span class="math inline">\(F_X\)</span> is monotonically nodecreasing – if <span class="math inline">\(x \leq y\)</span>, then <span class="math inline">\(F_X(x) \leq F_X(y)\)</span></li>
+<li><span class="math inline">\(F_X(x)\)</span> tends to <span class="math inline">\(0\)</span> as <span class="math inline">\(x \rightarrow -\infty\)</span>, and to <span class="math inline">\(1\)</span> as <span class="math inline">\(x \rightarrow \infty\)</span></li>
+<li><span class="math inline">\(F_X(x)\)</span> is a continuous function of <span class="math inline">\(x\)</span></li>
+<li><p>If <span class="math inline">\(X\)</span> is continuous, the PDF and CDF can be obtained from each other by integration or differentiation</p>
+<p><span class="math display">\[F_X(x) = \int_{-\infty}^x f_X(t) dt, \quad f_X(x) = \frac{dF_X}{dx} (x)\]</span></p></li>
+</ul>
+</div>
+</div>
+<div id="normal-random-variables" class="section level1">
+<h1>Normal random variables</h1>
+<p>Suppose <span class="math inline">\(X\)</span> is a random variable with <span class="math inline">\(X \in \Re\)</span> and density</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(x) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}}\exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right) \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>where <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are two scalar parameters characterizing the PDF, with <span class="math inline">\(\sigma\)</span> assumed positive. Then <span class="math inline">\(X\)</span> is a normally distributed random variable with parameters <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">norm_pdf &lt;-<span class="st"> </span><span class="cf">function</span>(mu, sigma){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+             <span class="dt">pdf =</span> <span class="kw">dnorm</span>(<span class="dt">x =</span> x, <span class="dt">mean =</span> mu, <span class="dt">sd =</span> sigma)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, pdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Normal PDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(mu <span class="op">==</span><span class="st"> </span>.(mu) <span class="op">~</span><span class="st"> </span>sigma<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span>.(sigma<span class="op">^</span><span class="dv">2</span>)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(f[X] (x)))
+}
+
+norm_cdf &lt;-<span class="st"> </span><span class="cf">function</span>(mu, sigma){
+  <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+             <span class="dt">cdf =</span> <span class="kw">pnorm</span>(<span class="dt">q =</span> x, <span class="dt">mean =</span> mu, <span class="dt">sd =</span> sigma)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, cdf)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Normal CDF&quot;</span>,
+         <span class="dt">subtitle =</span> <span class="kw">bquote</span>(mu <span class="op">==</span><span class="st"> </span>.(mu) <span class="op">~</span><span class="st"> </span>sigma<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span>.(sigma<span class="op">^</span><span class="dv">2</span>)),
+         <span class="dt">x =</span> <span class="kw">expression</span>(x),
+         <span class="dt">y =</span> <span class="kw">expression</span>(f[X] (x)))
+}
+
+<span class="kw">norm_pdf</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">norm_cdf</span>(<span class="dv">0</span>, <span class="dv">1</span>)</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/norm-rv-1.png" width="672" /></p>
+<p>Equivalently, we’ll write</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+X &amp; \sim &amp; \text{Normal}(\mu, \sigma^2) \nonumber 
+\end{eqnarray}
+\]</span></p>
+<div id="expected-valuevariance-of-normal-distribution" class="section level2">
+<h2>Expected value/variance of normal distribution</h2>
+<ul>
+<li><p><span class="math inline">\(Z\)</span> is a standard normal distribution if</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Z &amp; \sim &amp; \text{Normal}(0,1) \nonumber 
+\end{eqnarray}
+\]</span></p></li>
+<li><p>We’ll call the cumulative distribution function of <span class="math inline">\(Z\)</span>,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+F_{Z}(x) &amp; = &amp; \frac{1}{\sqrt{2\pi} }\int_{-\infty}^{x} \exp(-z^2/2) dz 
+\end{eqnarray}
+\]</span></p></li>
+<li><p>Suppose <span class="math inline">\(Z \sim \text{Normal}(0,1)\)</span></p>
+<ul>
+<li><span class="math inline">\(Y = 2Z + 6\)</span></li>
+<li><p><span class="math inline">\(Y \sim \text{Normal}(6, 4)\)</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">15</span>, <span class="dt">by =</span> .<span class="dv">05</span>),
+           <span class="dt">Z =</span> <span class="kw">dnorm</span>(x),
+           <span class="dt">Y =</span> <span class="kw">dnorm</span>(x, <span class="dt">mean =</span> <span class="dv">6</span>, <span class="dt">sd =</span> <span class="dv">2</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(norm, val, <span class="op">-</span>x) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, val, <span class="dt">color =</span> norm)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Density height&quot;</span>,
+       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/z-norm-1.png" width="672" /></p></li>
+</ul></li>
+<li><p>Scale/Location: If <span class="math inline">\(Z \sim N(0,1)\)</span>, then <span class="math inline">\(X = aZ + b\)</span> is,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+X &amp; \sim &amp; \text{Normal} (b, a^2) \nonumber 
+\end{eqnarray}
+\]</span></p></li>
+<li><p>Assume we know:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\E[Z]  &amp; = &amp; 0 \\
+\Var(Z) &amp; = &amp; 1 
+\end{eqnarray}
+\]</span></p></li>
+<li><p>This implies that, for <span class="math inline">\(Y \sim \text{Normal}(\mu, \sigma^2)\)</span></p>
+<p><span class="math display">\[
+\begin{eqnarray} 
+\E[Y] &amp; = &amp; \E[\sigma Z + \mu] \\
+&amp; = &amp; \sigma \E[Z] + \mu \nonumber \\
+&amp; = &amp; \mu \nonumber \\
+\Var(Y) &amp; = &amp; \Var(\sigma Z + \mu) \\
+ &amp; = &amp; \sigma^2 \Var(Z) + \Var(\mu) \\
+ &amp; = &amp; \sigma^2 + 0 \\
+ &amp; =&amp; \sigma^2 
+\end{eqnarray}
+\]</span></p></li>
+</ul>
+<p>This illustrates a key property of normal random variables. If <span class="math inline">\(X\)</span> is a normal random variable with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>, and if <span class="math inline">\(a \neq 0, b\)</span> are scalars, then the random variable</p>
+<p><span class="math display">\[Y = aX + b\]</span></p>
+<p>is also normal, with mean and variance</p>
+<p><span class="math display">\[\E[Y] = a\mu + b, \quad \Var(Y) = a^2 \sigma^2\]</span></p>
+</div>
+<div id="why-rely-on-the-standard-normal-distribution" class="section level2">
+<h2>Why rely on the standard normal distribution</h2>
+<ul>
+<li>Normal distribution is commonly used in statistical analysis
+<ul>
+<li>Many random variables can be approximated with the normal distribution</li>
+</ul></li>
+<li>Standardizing this makes it easier to make comparisons across variables with different ranges/variances
+<ul>
+<li>Example - GRE scores</li>
+<li>Verbal and quant scores have different variability</li>
+<li>Cannot easily determine if a 159 on the verbal is better or worse than a 159 on the quant</li>
+<li>The standard normal distribution is <strong>unitless</strong>, so any random variable can be compared with another random variable</li>
+</ul></li>
+<li>Saves time on the calculus
+<ul>
+<li>Don’t need to recalculate the integral when calculating cumulative probability based on the unique <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span></li>
+<li>Instead, do this once and store the info in a lookup table</li>
+<li>Made calculating probabilities (relatively) easy before computers</li>
+</ul></li>
+</ul>
+</div>
+<div id="example-support-for-president-obama" class="section level2">
+<h2>Example: Support for President Obama</h2>
+<p>Suppose we are interested in modeling presidential approval.</p>
+<ul>
+<li>Let <span class="math inline">\(Y\)</span> represent random variable: proportion of population who “approves job president is doing”</li>
+<li>Individual responses (that constitute proportion) are independent and identically distributed (sufficient, not necessary) and we take the average of those individual responses</li>
+<li>Observe many responses (<span class="math inline">\(N\rightarrow \infty\)</span>)</li>
+<li>Then (by Central Limit Theorm) <span class="math inline">\(Y\)</span> is Normally distributed, or</li>
+</ul>
+<p><span class="math display">\[
+\begin{eqnarray}
+Y &amp; \sim &amp; \text{Normal}(\mu, \sigma^2) \\
+f_Y(y) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{2\sigma^2} \right)
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Suppose <span class="math inline">\(\mu = 0.39\)</span> and <span class="math inline">\(\sigma^2 = 0.0025\)</span></li>
+<li><span class="math inline">\(P(Y\geq 0.45)\)</span> (What is the probability it isn’t that bad?) ?</li>
+</ul>
+<p><span class="math display">\[
+\begin{eqnarray} 
+\Pr(Y \geq 0.45)  &amp;  = &amp; 1 - \Pr(Y \leq 0.45 ) \\
+&amp; = &amp;  1 - \Pr(0.05 Z + 0.39 \leq  0.45) \\
+&amp; = &amp; 1 - \Pr(Z \leq \frac{0.45-0.39 }{0.05} ) \\
+&amp; = &amp; 1 - \frac{1}{\sqrt{2\pi} } \int_{-\infty}^{6/5} \exp(-z^2/2) dz \\
+&amp; = &amp; 1 - F_{Z} (\frac{6}{5} ) \\
+&amp; = &amp; 0.1150697
+\end{eqnarray}
+\]</span></p>
+</div>
+</div>
+<div id="conditioning" class="section level1">
+<h1>Conditioning</h1>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <strong>Introduction to Probability</strong> (2nd edition) by Bertsekas and Tsitsiklis</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-10-31</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package      * version date       source                              
+##  assertthat     0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports      1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base         * 3.5.1   2018-07-05 local                               
+##  bindr          0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     * 0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom        * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger     1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli            1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  codetools      0.2-15  2016-10-05 CRAN (R 3.5.1)                      
+##  colorspace     1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler       3.5.1   2018-07-05 local                               
+##  crayon         1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets     * 3.5.1   2018-07-05 local                               
+##  devtools       1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest         0.6.15  2018-01-28 CRAN (R 3.5.0)                      
+##  dplyr        * 0.7.6   2018-06-29 cran (@0.7.6)                       
+##  evaluate       0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats      * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2      * 3.0.0   2018-07-03 CRAN (R 3.5.0)                      
+##  glue           1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics     * 3.5.1   2018-07-05 local                               
+##  grDevices    * 3.5.1   2018-07-05 local                               
+##  grid           3.5.1   2018-07-05 local                               
+##  gtable         0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven          1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms            0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools      0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr           1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite       1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr          1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  labeling       0.3     2014-08-23 CRAN (R 3.5.0)                      
+##  lattice        0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval       0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate      1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr       1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise        1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods      * 3.5.1   2018-07-05 local                               
+##  modelr         0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell        0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme           3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork    * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar         1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig      2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr           1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr        * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6             2.2.2   2017-06-17 CRAN (R 3.5.0)                      
+##  RColorBrewer   1.1-2   2014-12-07 CRAN (R 3.5.0)                      
+##  Rcpp           0.12.18 2018-07-23 CRAN (R 3.5.0)                      
+##  readr        * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl         1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang          0.2.1   2018-05-30 CRAN (R 3.5.0)                      
+##  rmarkdown      1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot      1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi     0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest          0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales         1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats        * 3.5.1   2018-07-05 local                               
+##  stringi        1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr      * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble       * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr        * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect     0.2.4   2018-02-26 CRAN (R 3.5.0)                      
+##  tidyverse    * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools          3.5.1   2018-07-05 local                               
+##  utils        * 3.5.1   2018-07-05 local                               
+##  withr          2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2           1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml           2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
