@@ -1,0 +1,34 @@
+---
+title: "Continuous random variables"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm010 - November 1, 2018
+
+## Overview
+
+* Define a continuous random variable
+* Identify continuous random variable distributions relevant to social science
+* Define expected value and variance of continuous random variables
+* Relate continuous random variables to discrete random variables
+* Define cumulative distribution functions (CDFs) for continuous random variables and compare to discrete random variables
+* Explain how to condition random variables on events and other random variables
+
+## Before class
+
+* Read [chapters 2-3 (Random Variables and Expectation) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+    * Focus primarily on content related to **continuous** random variables
+
+## Slides and class materials
+
+* [Slides](extras/cm010_slides.html)
+* [Continuous random variables](rv-continuous.html)
+
+## Additional resources
+
+## What you need to do
+
