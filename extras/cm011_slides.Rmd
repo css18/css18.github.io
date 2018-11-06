@@ -1,0 +1,544 @@
+---
+title: "Continuous random variables"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 18))
+```
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}$$
+
+## Continuous random variables
+
+* Random variables that are not discrete
+    * Approval ratings
+    * GDP
+    * Wait time between wars: $X(t) = t$ for all $t$
+    * Proportion of vote received: $X(v) = v$ for all $v$
+* Many analogues to discrete probability distributions
+* We need calculus to answer questions about probability
+
+## Probability density function
+
+```{r pdf, fig.height = 4}
+norm_pdf <- data_frame(x = seq(-3, 3, by = .05),
+           y = dnorm(x = x, mean = 1, sd = 2),
+           fill = x >= .5 & x <= 2)
+
+ggplot(norm_pdf) +
+  geom_line(aes(x, y)) +
+  geom_ribbon(data = filter(norm_pdf, fill),
+              aes(x = x,
+                  ymin = 0, ymax = y),
+              fill = "blue") +
+  labs(x = expression(x),
+       y = expression(f(x)))
+```
+
+* What is the area under the curve under $f(x)$ between $.5$ and $2$?
+
+    $$\int_{1/2}^{2} f(x)dx = F(2) - F(1/2)$$
+
+## Definition
+
+* $X$ is a continuous random variable if there exists a nonnegative function defined for all $x \in \Re$ having the property for any (measurable) set of real numbers $B$,
+
+    $$
+    \begin{eqnarray}
+    \Pr(X \in B) & = & \int_{B} f_X(x)dx
+    \end{eqnarray}
+    $$
+
+* Probability density function (PDF)
+* The probability that the value of $X$ falls within an interval is
+
+    $$\Pr (a \leq X \leq b) = \int_a^b f_X(x) dx$$
+
+## Example: Uniform Random Variable
+
+* $X \sim \text{Uniform}(0,1)$
+
+    $$
+    f_X(x) = \left\{
+        \begin{array}{ll}
+            c & \quad \text{if } 0 \leq x \leq 1 \\
+            0 & \quad \text{otherwise}
+        \end{array}
+    \right.
+    $$
+
+    for some constant $c$
+* Constant can be determined from the normalization property
+
+    $$1 = \int_{-\infty}^{\infty} f_X(x)dx = \int_0^1 c dx = c \int_0^1 dx = c$$
+
+## Example: Uniform Random Variable
+
+```{r unif}
+data_frame(x = seq(-.5, 1.5, by = .01),
+           y = dunif(x)) %>%
+  ggplot(aes(x, y)) +
+  geom_step() +
+  labs(x = expression(x),
+       y = expression(f[X](x)))
+```
+
+## Example: Uniform Random Variable {.scrollable}
+
+$$
+\begin{eqnarray}
+\Pr(X \in [0.2, 0.5]) & = & \int_{0.2}^{0.5} 1 dx \nonumber \\
+& = & X |^{0.5}_{0.2} \nonumber \\
+& = & 0.5  - 0.2  \nonumber \\
+& = & 0.3\nonumber 
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\Pr(X \in [0, 1] ) & = & \int_{0}^{1} 1 dx \nonumber \\
+& = & X |^{1}_{0} \nonumber \\
+& = & 1 - 0 \nonumber \\
+& = & 1 \nonumber 
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\Pr(X \in [0.5, 0.5]) & = & \int_{0.5}^{0.5} 1dx \nonumber \\
+& = & X|^{0.5}_{0.5} \nonumber \\
+& = & 0.5 - 0.5 \nonumber \\
+& = & 0 \nonumber 
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+\Pr(X \in \{[0, 0.2]\cup[0.5, 1]\}) & = & \int_{0}^{0.2} 1dx + \int_{0.5}^{1} 1dx \nonumber \\
+ & = & X_{0}^{0.2} + X_{0.5}^{1} \nonumber \\
+ & = & 0.2 - 0 + 1 - 0.5 \nonumber \\
+ & = & 0.7 \nonumber 
+ \end{eqnarray}
+$$
+
+## Example: Uniform Random Variable
+
+$$
+f_X(x) = \left\{
+    \begin{array}{ll}
+        \frac{1}{b-a} & \quad \text{if } a \leq x \leq b \\
+        0 & \quad \text{otherwise}
+    \end{array}
+\right.
+$$
+
+## Expectation
+
+* Expected value of a continuous random variable $X$ is defined as
+
+    $$\E[X] = \int_{-\infty}^{\infty} x f_X(x) dx$$
+* Similar to discrete case
+* If $X$ is a continuous random variable with a given PDF, any real-valued function $Y = g(X)$ is also a random variable
+* Mean of $g(X)$ satisfies the **expected value rule**:
+
+    $$\E[g(X)] = \int_{-\infty}^{\infty} g(x) f_X(x) dx$$
+
+    * The **$n$th moment** is defined as $\E[X^n]$
+    * The **variance**, denoted by $\Var(X)$ is defined as the expected value of the random variable $(X - \E[X])^2 = \E[X^2] - (\E[X])^2$
+
+## Example: uniform random variable {.scrollable}
+
+* Consider a uniform PDF over an interval $[a,b]$:
+
+    $$
+    \begin{align}
+    \E[X] &= \int_{-\infty}^{\infty} x f_X(x) dx \\
+    &= \int_a^b x \times \frac{1}{b-a} dx \\
+    &= \frac{1}{b-a} \times \frac{1}{2}x^2 \Big|_a^b \\
+    &= \frac{1}{b-a} \times \frac{b^2 - a^2}{2} \\
+    &= \frac{a+b}{2}
+    \end{align}
+    $$
+
+* To obtain the variance, we first calculate the second moment. We have
+
+    $$
+    \begin{align}
+    \E[X^2] &= \int_a^b x^2 \times \frac{1}{b-a} dx \\
+    &= \frac{1}{b-a} \int_a^b x^2 dx \\
+    &= \frac{1}{b-a} \times \frac{1}{3}x^3 \Big|_a^b \\
+    &= \frac{b^3 - a^3}{3(b-a)} \\
+    &= \frac{a^2 + ab + b^2}{3}
+    \end{align}
+    $$
+
+* Variance is
+
+    $$
+    \begin{align}
+    \Var(X) &= \E[X^2] - (\E[X])^2 \\
+    &= \frac{a^2 + ab + b^2}{3} - \left( \frac{a+b}{2} \right)^2 \\
+    &= \frac{(b-a)^2}{12}
+    \end{align}
+    $$
+
+## Exponential random variable
+
+* An **exponential** random variable has a PDF of the form
+
+    $$
+    f_X(x) = \left\{
+        \begin{array}{ll}
+            \lambda e^{-\lambda x} & \quad \text{if } x \geq 0 \\
+            0 & \quad \text{otherwise}
+        \end{array}
+    \right.
+    $$
+    
+    where $\lambda$ is a positive parameter characterizing the PDF
+
+## Exponential random variable
+
+```{r exp-rv, fig.height = 4.5}
+exp_pdf <- function(rate){
+  data_frame(x = seq(0, 20, by = .05),
+           pmf = dexp(x = x, rate = rate)) %>%
+  ggplot(aes(x, pmf)) +
+  geom_line() +
+  labs(title = "Exponential PDF",
+       subtitle = bquote(lambda == .(rate)),
+       x = expression(x),
+       y = expression(f[X] (x)))
+}
+
+exp_pdf(1) +
+  exp_pdf(3) +
+  exp_pdf(7)
+```
+
+$$\E[X] = \frac{1}{\lambda}, \quad \Var(X) = \frac{1}{\lambda^2}$$
+
+## Cumulative distribution function
+
+* For a continuous random variable $X$ define its **cumulative distribution function** (CDF) $F_X(x)$ as, 
+
+    $$
+    \begin{eqnarray} 
+    F_X(x) & = & P(X \leq x) = \int_{-\infty} ^{x} f_X(t) dt
+    \end{eqnarray}
+    $$
+
+## Example: uniform distribution
+
+* Suppose $X \sim Uniform(0,1)$, then
+
+    $$
+    \begin{eqnarray} 
+    F_X(x) & = & P(X\leq x)  \\
+    & = & 0 \text{, if $x< 0$ } \\
+     & = & 1 \text{, if $x >1$ } \\
+     & = & x \text{, if $x \in [0,1]$}
+    \end{eqnarray}
+    $$
+    
+    ```{r unif-rv, fig.height = 3}
+    unif_pdf <- function(a, b){
+      data_frame(x = seq(a - 1, b + 1, by = .01),
+                 pdf = dunif(x = x, min = a, max = b)) %>%
+        ggplot(aes(x, pdf)) +
+        geom_line() +
+        labs(title = "Uniform PDF",
+             subtitle = bquote(a == .(a) ~ b == .(b)),
+             x = expression(x),
+             y = expression(f[X] (x)))
+    }
+    
+    unif_cdf <- function(a, b){
+      data_frame(x = seq(a - 1, b + 1, by = .01),
+                 cdf = punif(q = x, min = a, max = b)) %>%
+        ggplot(aes(x, cdf)) +
+        geom_line() +
+        labs(title = "Uniform CDF",
+             subtitle = bquote(a == .(a) ~ b == .(b)),
+             x = expression(x),
+             y = expression(F[X] (x)))
+    }
+    
+    unif_pdf(0, 1) +
+      unif_cdf(0, 1)
+    ```
+
+## Properties of CDFs
+
+* $F_X$ is monotonically nodecreasing -- if $x \leq y$, then $F_X(x) \leq F_X(y)$
+* $F_X(x)$ tends to $0$ as $x \rightarrow -\infty$, and to $1$ as $x \rightarrow \infty$
+* $F_X(x)$ is a continuous function of $x$
+* If $X$ is continuous, the PDF and CDF can be obtained from each other by integration or differentiation
+
+    $$F_X(x) = \int_{-\infty}^x f_X(t) dt, \quad f_X(x) = \frac{dF_X}{dx} (x)$$
+    
+    * Fundamental theorem of calculus
+
+## Normal random variables
+
+* Suppose $X$ is a random variable with $X \in \Re$ and density
+
+    $$
+    \begin{eqnarray}
+    f(x) & = & \frac{1}{\sqrt{2\pi \sigma^2}}\exp\left(-\frac{(x - \mu)^2}{2\sigma^2}\right) \nonumber 
+    \end{eqnarray}
+    $$
+
+    * $\mu$ and $\sigma$ are two scalar parameters characterizing the PDF
+    * $\sigma$ assumed positive
+
+## Normal random variables
+
+```{r norm-rv}
+norm_pdf <- function(mu, sigma){
+  data_frame(x = seq(-5, 5, by = .01),
+             pdf = dnorm(x = x, mean = mu, sd = sigma)) %>%
+    ggplot(aes(x, pdf)) +
+    geom_line() +
+    labs(title = "Normal PDF",
+         subtitle = bquote(mu == .(mu) ~ sigma^2 == .(sigma^2)),
+         x = expression(x),
+         y = expression(f[X] (x)))
+}
+
+norm_cdf <- function(mu, sigma){
+  data_frame(x = seq(-5, 5, by = .01),
+             cdf = pnorm(q = x, mean = mu, sd = sigma)) %>%
+    ggplot(aes(x, cdf)) +
+    geom_line() +
+    labs(title = "Normal CDF",
+         subtitle = bquote(mu == .(mu) ~ sigma^2 == .(sigma^2)),
+         x = expression(x),
+         y = expression(f[X] (x)))
+}
+
+norm_pdf(0, 1) +
+  norm_cdf(0, 1)
+```
+
+$$
+\begin{eqnarray}
+X & \sim & \text{Normal}(\mu, \sigma^2) \nonumber 
+\end{eqnarray}
+$$
+
+## Expected value/variance of normal distribution {.scrollable}
+
+* $Z$ is a standard normal distribution if
+
+    $$
+    \begin{eqnarray}
+    Z & \sim & \text{Normal}(0,1) \nonumber 
+    \end{eqnarray}
+    $$
+
+* We'll call the cumulative distribution function of $Z$,
+
+    $$
+    \begin{eqnarray}
+    F_{Z}(x) & = & \frac{1}{\sqrt{2\pi} }\int_{-\infty}^{x} \exp(-z^2/2) dz 
+    \end{eqnarray}
+    $$
+
+* Suppose $Z \sim \text{Normal}(0,1)$
+
+    * $Y = 2Z + 6$
+    * $Y \sim \text{Normal}(6, 4)$
+    
+        ```{r z-norm}
+        data_frame(x = seq(-5, 15, by = .05),
+                   Z = dnorm(x),
+                   Y = dnorm(x, mean = 6, sd = 2)) %>%
+          gather(norm, val, -x) %>%
+          ggplot(aes(x, val, color = norm)) +
+          geom_line() +
+          scale_color_brewer(type = "qual") +
+          labs(x = NULL,
+               y = "Density height",
+               color = NULL) +
+          theme(legend.position = "bottom")
+        ```
+
+## Expected value/variance of normal distribution {.scrollable}
+
+* Scale/Location: If $Z \sim N(0,1)$, then $X = aZ + b$ is, 
+
+    $$
+    \begin{eqnarray}
+    X & \sim & \text{Normal} (b, a^2) \nonumber 
+    \end{eqnarray}
+    $$
+
+* Assume we know: 
+
+    $$
+    \begin{eqnarray}
+    \E[Z]  & = & 0 \\
+    \Var(Z) & = & 1 
+    \end{eqnarray}
+    $$
+    
+* This implies that, for $Y \sim \text{Normal}(\mu, \sigma^2)$
+
+    $$
+    \begin{eqnarray} 
+    \E[Y] & = & \E[\sigma Z + \mu] \\
+    & = & \sigma \E[Z] + \mu \nonumber \\
+    & = & \mu \nonumber \\
+    \Var(Y) & = & \Var(\sigma Z + \mu) \\
+     & = & \sigma^2 \Var(Z) + \Var(\mu) \\
+     & = & \sigma^2 + 0 \\
+     & =& \sigma^2 
+    \end{eqnarray}
+    $$
+
+## Expected value/variance of normal distribution
+
+* If $X$ is a normal random variable with mean $\mu$ and variance $\sigma^2$, and if $a \neq 0, b$ are scalars, then the random variable
+
+    $$Y = aX + b$$
+    
+    is also normal, with mean and variance
+    
+    $$\E[Y] = a\mu + b, \quad \Var(Y) = a^2 \sigma^2$$
+
+## Why rely on the standard normal distribution
+
+* Normal distribution is commonly used in statistical analysis
+* Standardizing this makes it easier to make comparisons across variables with different ranges/variances
+    * Example - GRE scores
+* The standard normal distribution is unitless
+* Saves time on the calculus
+
+## Example: Support for President Obama
+
+* Let $Y$ represent random variable: proportion of population who "approves job president is doing"
+* Individual responses (that constitute proportion) are independent and identically distributed (sufficient, not necessary) and we take the average of those individual responses
+* Observe many responses ($N\rightarrow \infty$)
+* Then (by Central Limit Theorm) $Y$ is Normally distributed, or
+
+    $$
+    \begin{eqnarray}
+    Y & \sim & \text{Normal}(\mu, \sigma^2) \\
+    f_Y(y) & = & \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{2\sigma^2} \right)
+    \end{eqnarray}
+    $$
+
+## Example: Support for President Obama
+
+* Suppose $\mu = 0.39$ and $\sigma^2 = 0.0025$
+* $\Pr(Y\geq 0.45)$ (What is the probability it isn't that bad?)
+
+    $$
+    \begin{eqnarray} 
+    \Pr(Y \geq 0.45)  &  = & 1 - \Pr(Y \leq 0.45 ) \\
+    & = &  1 - \Pr(0.05 Z + 0.39 \leq  0.45) \\
+    & = & 1 - \Pr(Z \leq \frac{0.45-0.39 }{0.05} ) \\
+    & = & 1 - \frac{1}{\sqrt{2\pi} } \int_{-\infty}^{6/5} \exp(-z^2/2) dz \\
+    & = & 1 - F_{Z} (\frac{6}{5} ) \\
+    & = & 0.1150697
+    \end{eqnarray}
+    $$
+
+## Conditioning a random variable on an event
+
+* Conditional PDF of a continuous random variable $X$, given an event $A$ with $\Pr (A) > 0$, is defined as a nonnegative function $f_{X|A}$ that satisfies
+
+    $$\Pr (X \in B | A) = \int_B f_{X|A}(x) dx$$
+
+    for any subset $B$ of the real line
+* Let $B$ be the entire real line
+* Normalization property
+
+    $$\int_{-\infty}^{\infty} f_{X|A} (x) dx = 1$$
+
+    so that $f_{X|A}$ is a legitimate PDF
+
+## Conditioning a random variable on an event
+
+* When we condition on an event of the form ${X \in A}$ with $\Pr (X \in A) > 0$ we get
+
+    $$\Pr (X \in B | X \in A) = \frac{\Pr (X \in B, X \in A)}{\Pr (X \in A)} = \frac{\int_{A \cap B} f_X(x) dx}{\Pr (X \in A)}$$
+
+* Conditional PDF is
+
+    $$
+    f_{X | X \in A} (x) = \left\{
+        \begin{array}{ll}
+            \frac{f_X (x)}{\Pr (X \in A)} & \quad \text{if } x \in A \\
+            0 & \quad \text{otherwise}
+        \end{array}
+    \right.
+    $$
+
+## Conditioning a random variable on an event
+
+```{r conditional-pdf}
+data_frame(x = seq(-3, 3, by = .01),
+           pdf = dnorm(x = x),
+           pdf_cond = ifelse(x > -1 & x < 1, pdf / (pnorm(1) - pnorm(-1)), 0)) %>%
+  gather(pdf, value, -x) %>%
+  ggplot(aes(x, value, color = pdf)) +
+  geom_line() +
+  scale_color_brewer(type = "qual", labels = c(expression(f[X](x)), expression(f[X*"|"*X %in% A](x)))) +
+  labs(title = "Standard normal random variable",
+       x = expression(X),
+       y = "PDF",
+       color = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Example: Exponential random variable
+
+> The time $T$ until a new light bulb burns out is an exponential random variable with parameter $\lambda$. Ariadne turns on the light, leaves the room, and when she returns, $t$ time units later, finds that the light bulb is still on, which corresponds to the event $A = \{ T > t \}$. Let $X$ be the additional time until the light bulb burns out. What is the conditional PDF of $X$, given the event $A$?
+
+## Example: Exponential random variable {.scrollable}
+
+* For $x \geq 0$,
+
+    $$
+    \begin{align}
+    \Pr (X > x | A) &= \Pr (T > t + x | T > t) \\
+    &= \frac{\Pr (T > t + x )\cup \Pr(T > t)}{\Pr( T >t)} \\
+    &= \frac{\Pr (T > t + x)}{\Pr (T > t)} \\
+    &= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
+    &= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
+    &= e^{-\lambda x}
+    \end{align}
+    $$
+
+## Weather forecasting
+
+> According to British weather forecasters, the average monthly rainfall in London during the month of June is $\mu = 2.09$ inches. Assume the monthly precipitation is a normally-distributed random variable with a standard deviation of $\sigma = 0.48$ inches.
+
+* What is the probability that London will have between 1.5 and 2.5 inches of precipitation next June?
+* What is the probability that London will have 1 inch or less of precipitation?
+* If London authorities prepare for flood conditions when the monthly precipitation falls in the upper 5% of the normal June amounts, how much rain would have to fall to cause local authorities to begin flood preparations?
+
+## Booking travel (redux) {.scrollable}
+
+> Book4Less.com is an online travel website that offers competitive prices on airline and hotel bookings. During a typical weekday, the website averages 10 visits per minute.
+
+* If the Poisson arrival rate is 10 visitors per minute, what is the mean of the associated exponential probility density function? What is the rate parameter $\lambda$?
+* What is the exponential PDF and CDF?
+* If the internet server experiences a brief power failure of 18 seconds duration during which time people would be denied access to the website, what is the probability that no one attempted to visit the Book4Less.com website anyway and thus no business was lost during the down-time? Use the exponential framework to answer this question.
+* Answer the previous question using the Poisson probability approach. Confirm that the answer is equal to that above.

@@ -742,7 +742,7 @@ f_Y(y) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{
 \]</span></p>
 <ul>
 <li>Suppose <span class="math inline">\(\mu = 0.39\)</span> and <span class="math inline">\(\sigma^2 = 0.0025\)</span></li>
-<li><span class="math inline">\(P(Y\geq 0.45)\)</span> (What is the probability it isn’t that bad?) ?</li>
+<li><span class="math inline">\(\Pr(Y\geq 0.45)\)</span> (What is the probability it isn’t that bad?) ?</li>
 </ul>
 <p><span class="math display">\[
 \begin{eqnarray} 
@@ -796,7 +796,8 @@ f_{X | X \in A} (x) = \left\{
 <p>We have, for <span class="math inline">\(x \geq 0\)</span>,</p>
 <p><span class="math display">\[
 \begin{align}
-\Pr (X &gt; x | A) &amp;= \Pr (T &gt; t + x | T &gt; t) = \frac{\Pr (T &gt; t + x )\cup \Pr(T &gt; t)}{\Pr( T &gt;t)} \\
+\Pr (X &gt; x | A) &amp;= \Pr (T &gt; t + x | T &gt; t) \\
+&amp;= \frac{\Pr (T &gt; t + x )\cup \Pr(T &gt; t)}{\Pr( T &gt;t)} \\
 &amp;= \frac{\Pr (T &gt; t + x)}{\Pr (T &gt; t)} \\
 &amp;= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
 &amp;= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\

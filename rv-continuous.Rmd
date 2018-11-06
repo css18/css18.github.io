@@ -451,7 +451,7 @@ f_Y(y) & = & \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{2\sigma^
 $$
 
 * Suppose $\mu = 0.39$ and $\sigma^2 = 0.0025$
-* $P(Y\geq 0.45)$ (What is the probability it isn't that bad?) ?
+* $\Pr(Y\geq 0.45)$ (What is the probability it isn't that bad?) ?
 
 $$
 \begin{eqnarray} 
@@ -518,7 +518,8 @@ We have, for $x \geq 0$,
 
 $$
 \begin{align}
-\Pr (X > x | A) &= \Pr (T > t + x | T > t) = \frac{\Pr (T > t + x )\cup \Pr(T > t)}{\Pr( T >t)} \\
+\Pr (X > x | A) &= \Pr (T > t + x | T > t) \\
+&= \frac{\Pr (T > t + x )\cup \Pr(T > t)}{\Pr( T >t)} \\
 &= \frac{\Pr (T > t + x)}{\Pr (T > t)} \\
 &= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
 &= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
