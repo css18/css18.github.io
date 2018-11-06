@@ -757,6 +757,57 @@ f_Y(y) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{
 </div>
 <div id="conditioning" class="section level1">
 <h1>Conditioning</h1>
+<p>We can condition a random variable on an event or on another random variable, and define the concepts of <strong>conditional PDF</strong> and <strong>conditional expectation</strong>.</p>
+<div id="conditioning-a-random-variable-on-an-event" class="section level2">
+<h2>Conditioning a random variable on an event</h2>
+<p>The <strong>conditional PDF</strong> of a continuous random variable <span class="math inline">\(X\)</span>, given an event <span class="math inline">\(A\)</span> with <span class="math inline">\(\Pr (A) &gt; 0\)</span>, is defined as a nonnegative function <span class="math inline">\(f_{X|A}\)</span> that satisfies</p>
+<p><span class="math display">\[\Pr (X \in B | A) = \int_B f_{X|A}(x) dx\]</span></p>
+<p>for any subset <span class="math inline">\(B\)</span> of the real line. By letting <span class="math inline">\(B\)</span> be the entire real line, we obtain the normalization property</p>
+<p><span class="math display">\[\int_{-\infty}^{\infty} f_{X|A} (x) dx = 1\]</span></p>
+<p>so that <span class="math inline">\(f_{X|A}\)</span> is a legitimate PDF. Based on the definition of conditional probabilities, when we condition on an event of the form <span class="math inline">\({X \in A}\)</span> with <span class="math inline">\(\Pr (X \in A) &gt; 0\)</span> we get</p>
+<p><span class="math display">\[\Pr (X \in B | X \in A) = \frac{\Pr (X \in B, X \in A)}{\Pr (X \in A)} = \frac{\int_{A \cap B} f_X(x) dx}{\Pr (X \in A)}\]</span></p>
+<p>Therefore the conditional PDF is</p>
+<p><span class="math display">\[
+f_{X | X \in A} (x) = \left\{
+    \begin{array}{ll}
+        \frac{f_X (x)}{\Pr (X \in A)} &amp; \quad \text{if } x \in A \\
+        0 &amp; \quad \text{otherwise}
+    \end{array}
+\right.
+\]</span></p>
+<p>Within the conditioning set, the conditional PDF has exactly the same shape as the unconditional one, except that it is scaled by the constant factor <span class="math inline">\(1 / \Pr (X \in A)\)</span>, so that <span class="math inline">\(f_{X | \{X \in A\}}\)</span> integrates to 1. Thus, the conditional PDF is similar to an ordinary PDF, except that it refers to a new universe in which the event <span class="math inline">\(\{ X \in A \}\)</span> is known to have occurred.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+           <span class="dt">pdf =</span> <span class="kw">dnorm</span>(<span class="dt">x =</span> x),
+           <span class="dt">pdf_cond =</span> <span class="kw">ifelse</span>(x <span class="op">&gt;</span><span class="st"> </span><span class="op">-</span><span class="dv">1</span> <span class="op">&amp;</span><span class="st"> </span>x <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>, pdf <span class="op">/</span><span class="st"> </span>(<span class="kw">pnorm</span>(<span class="dv">1</span>) <span class="op">-</span><span class="st"> </span><span class="kw">pnorm</span>(<span class="op">-</span><span class="dv">1</span>)), <span class="dv">0</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">gather</span>(pdf, value, <span class="op">-</span>x) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, value, <span class="dt">color =</span> pdf)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="kw">expression</span>(f[X](x)), <span class="kw">expression</span>(f[X<span class="op">*</span><span class="st">&quot;|&quot;</span><span class="op">*</span>X <span class="op">%in%</span><span class="st"> </span>A](x)))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Standard normal random variable&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(X),
+       <span class="dt">y =</span> <span class="st">&quot;PDF&quot;</span>,
+       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</code></pre></div>
+<p><img src="rv-continuous_files/figure-html/conditional-pdf-1.png" width="672" /></p>
+<div id="example-exponential-random-variable" class="section level3">
+<h3>Example: Exponential random variable</h3>
+<p>The time <span class="math inline">\(T\)</span> until a new light bulb burns out is an exponential random variable with parameter <span class="math inline">\(\lambda\)</span>. Ariadne turns on the light, leaves the room, and when she returns, <span class="math inline">\(t\)</span> time units later, finds that the light bulb is still on, which corresponds to the event <span class="math inline">\(A = \{ T &gt; t \}\)</span>. Let <span class="math inline">\(X\)</span> be the additional time until the light bulb burns out. What is the conditional PDF of <span class="math inline">\(X\)</span>, given the event <span class="math inline">\(A\)</span>?</p>
+<p>We have, for <span class="math inline">\(x \geq 0\)</span>,</p>
+<p><span class="math display">\[
+\begin{align}
+\Pr (X &gt; x | A) &amp;= \Pr (T &gt; t + x | T &gt; t) = \frac{\Pr (T &gt; t + x )\cup \Pr(T &gt; t)}{\Pr( T &gt;t)} \\
+&amp;= \frac{\Pr (T &gt; t + x)}{\Pr (T &gt; t)} \\
+&amp;= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
+&amp;= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
+&amp;= e^{-\lambda x}
+\end{align}
+\]</span></p>
+<p>where we use the CDF of the exponential random variable. Thus, the conditional PDF of <span class="math inline">\(X\)</span> is exponential with parameter <span class="math inline">\(\lambda\)</span>, regardless of the time <span class="math inline">\(t\)</span> that has elapsed between lighting the bulb and Ariadne’s arrival (known as the <strong>memorylessness property</strong> of the exponential).</p>
+</div>
+</div>
+<div id="conditioning-a-random-variable-on-another" class="section level2">
+<h2>Conditioning a random variable on another</h2>
+</div>
 </div>
 <div id="acknowledgements" class="section level1 toc-ignore">
 <h1>Acknowledgements</h1>
@@ -775,7 +826,7 @@ f_Y(y) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       America/Chicago             
-##  date     2018-10-31</code></pre>
+##  date     2018-11-06</code></pre>
 <pre><code>## Packages -----------------------------------------------------------------</code></pre>
 <pre><code>##  package      * version date       source                              
 ##  assertthat     0.2.0   2017-04-11 CRAN (R 3.5.0)                      
@@ -792,11 +843,11 @@ f_Y(y) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{
 ##  crayon         1.3.4   2017-09-16 CRAN (R 3.5.0)                      
 ##  datasets     * 3.5.1   2018-07-05 local                               
 ##  devtools       1.13.6  2018-06-27 CRAN (R 3.5.0)                      
-##  digest         0.6.15  2018-01-28 CRAN (R 3.5.0)                      
+##  digest         0.6.18  2018-10-10 cran (@0.6.18)                      
 ##  dplyr        * 0.7.6   2018-06-29 cran (@0.7.6)                       
 ##  evaluate       0.11    2018-07-17 CRAN (R 3.5.0)                      
 ##  forcats      * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
-##  ggplot2      * 3.0.0   2018-07-03 CRAN (R 3.5.0)                      
+##  ggplot2      * 3.1.0   2018-10-25 cran (@3.1.0)                       
 ##  glue           1.3.0   2018-07-17 CRAN (R 3.5.0)                      
 ##  graphics     * 3.5.1   2018-07-05 local                               
 ##  grDevices    * 3.5.1   2018-07-05 local                               
@@ -825,10 +876,10 @@ f_Y(y) &amp; = &amp; \frac{1}{\sqrt{2\pi \sigma^2}} \exp\left(-\frac{(y-\mu)^2}{
 ##  purrr        * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
 ##  R6             2.2.2   2017-06-17 CRAN (R 3.5.0)                      
 ##  RColorBrewer   1.1-2   2014-12-07 CRAN (R 3.5.0)                      
-##  Rcpp           0.12.18 2018-07-23 CRAN (R 3.5.0)                      
+##  Rcpp           0.12.19 2018-10-01 cran (@0.12.19)                     
 ##  readr        * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
 ##  readxl         1.1.0   2018-04-20 CRAN (R 3.5.0)                      
-##  rlang          0.2.1   2018-05-30 CRAN (R 3.5.0)                      
+##  rlang          0.3.0.1 2018-10-25 cran (@0.3.0.1)                     
 ##  rmarkdown      1.10    2018-06-11 CRAN (R 3.5.0)                      
 ##  rprojroot      1.3-2   2018-01-03 CRAN (R 3.5.0)                      
 ##  rstudioapi     0.7     2017-09-07 CRAN (R 3.5.0)                      

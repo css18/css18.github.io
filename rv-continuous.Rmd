@@ -464,6 +464,70 @@ $$
 
 # Conditioning
 
+We can condition a random variable on an event or on another random variable, and define the concepts of **conditional PDF** and **conditional expectation**.
+
+## Conditioning a random variable on an event
+
+The **conditional PDF** of a continuous random variable $X$, given an event $A$ with $\Pr (A) > 0$, is defined as a nonnegative function $f_{X|A}$ that satisfies
+
+$$\Pr (X \in B | A) = \int_B f_{X|A}(x) dx$$
+
+for any subset $B$ of the real line. By letting $B$ be the entire real line, we obtain the normalization property
+
+$$\int_{-\infty}^{\infty} f_{X|A} (x) dx = 1$$
+
+so that $f_{X|A}$ is a legitimate PDF. Based on the definition of conditional probabilities, when we condition on an event of the form ${X \in A}$ with $\Pr (X \in A) > 0$ we get
+
+$$\Pr (X \in B | X \in A) = \frac{\Pr (X \in B, X \in A)}{\Pr (X \in A)} = \frac{\int_{A \cap B} f_X(x) dx}{\Pr (X \in A)}$$
+
+Therefore the conditional PDF is
+
+$$
+f_{X | X \in A} (x) = \left\{
+    \begin{array}{ll}
+        \frac{f_X (x)}{\Pr (X \in A)} & \quad \text{if } x \in A \\
+        0 & \quad \text{otherwise}
+    \end{array}
+\right.
+$$
+
+Within the conditioning set, the conditional PDF has exactly the same shape as the unconditional one, except that it is scaled by the constant factor $1 / \Pr (X \in A)$, so that $f_{X | \{X \in A\}}$ integrates to 1. Thus, the conditional PDF is similar to an ordinary PDF, except that it refers to a new universe in which the event $\{ X \in A \}$ is known to have occurred.
+
+```{r conditional-pdf}
+data_frame(x = seq(-3, 3, by = .01),
+           pdf = dnorm(x = x),
+           pdf_cond = ifelse(x > -1 & x < 1, pdf / (pnorm(1) - pnorm(-1)), 0)) %>%
+  gather(pdf, value, -x) %>%
+  ggplot(aes(x, value, color = pdf)) +
+  geom_line() +
+  scale_color_brewer(type = "qual", labels = c(expression(f[X](x)), expression(f[X*"|"*X %in% A](x)))) +
+  labs(title = "Standard normal random variable",
+       x = expression(X),
+       y = "PDF",
+       color = NULL) +
+  theme(legend.position = "bottom")
+```
+
+### Example: Exponential random variable
+
+The time $T$ until a new light bulb burns out is an exponential random variable with parameter $\lambda$. Ariadne turns on the light, leaves the room, and when she returns, $t$ time units later, finds that the light bulb is still on, which corresponds to the event $A = \{ T > t \}$. Let $X$ be the additional time until the light bulb burns out. What is the conditional PDF of $X$, given the event $A$?
+
+We have, for $x \geq 0$,
+
+$$
+\begin{align}
+\Pr (X > x | A) &= \Pr (T > t + x | T > t) = \frac{\Pr (T > t + x )\cup \Pr(T > t)}{\Pr( T >t)} \\
+&= \frac{\Pr (T > t + x)}{\Pr (T > t)} \\
+&= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
+&= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
+&= e^{-\lambda x}
+\end{align}
+$$
+
+where we use the CDF of the exponential random variable. Thus, the conditional PDF of $X$ is exponential with parameter $\lambda$, regardless of the time $t$ that has elapsed between lighting the bulb and Ariadne's arrival (known as the **memorylessness property** of the exponential).
+
+## Conditioning a random variable on another
+
 
 
 # Acknowledgements {.toc-ignore}
