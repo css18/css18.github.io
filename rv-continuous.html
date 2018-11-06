@@ -797,9 +797,9 @@ f_{X | X \in A} (x) = \left\{
 <p><span class="math display">\[
 \begin{align}
 \Pr (X &gt; x | A) &amp;= \Pr (T &gt; t + x | T &gt; t) \\
-&amp;= \frac{\Pr (T &gt; t + x )\cup \Pr(T &gt; t)}{\Pr( T &gt;t)} \\
+&amp;= \frac{\Pr (T &gt; t + x )\cap \Pr(T &gt; t)}{\Pr( T &gt;t)} \\
 &amp;= \frac{\Pr (T &gt; t + x)}{\Pr (T &gt; t)} \\
-&amp;= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
+&amp;= \frac{1 - \lambda e^{-\lambda(t + x)}}{1 - \lambda e^{-\lambda t}} \\
 &amp;= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
 &amp;= e^{-\lambda x}
 \end{align}

@@ -146,7 +146,7 @@ f_X(x) = \left\{
 \right.
 $$
 
-## Expectation
+## Expectation {.scrollable}
 
 * Expected value of a continuous random variable $X$ is defined as
 
@@ -518,9 +518,9 @@ data_frame(x = seq(-3, 3, by = .01),
     $$
     \begin{align}
     \Pr (X > x | A) &= \Pr (T > t + x | T > t) \\
-    &= \frac{\Pr (T > t + x )\cup \Pr(T > t)}{\Pr( T >t)} \\
+    &= \frac{\Pr (T > t + x )\cap \Pr(T > t)}{\Pr( T >t)} \\
     &= \frac{\Pr (T > t + x)}{\Pr (T > t)} \\
-    &= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
+    &= \frac{1 - \lambda e^{-\lambda(t + x)}}{1 - \lambda e^{-\lambda t}} \\
     &= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
     &= e^{-\lambda x}
     \end{align}
@@ -530,9 +530,39 @@ data_frame(x = seq(-3, 3, by = .01),
 
 > According to British weather forecasters, the average monthly rainfall in London during the month of June is $\mu = 2.09$ inches. Assume the monthly precipitation is a normally-distributed random variable with a standard deviation of $\sigma = 0.48$ inches.
 
-* What is the probability that London will have between 1.5 and 2.5 inches of precipitation next June?
-* What is the probability that London will have 1 inch or less of precipitation?
-* If London authorities prepare for flood conditions when the monthly precipitation falls in the upper 5% of the normal June amounts, how much rain would have to fall to cause local authorities to begin flood preparations?
+## What is the probability that London will have between 1.5 and 2.5 inches of precipitation next June?
+
+* $$\Pr (1.5 \leq x \leq 2.5) = \Pr (-1.23 \leq z \leq 0.85) = `r pnorm(q = 2.5, mean = 2.09, sd = 0.48) - pnorm(q = 1.5, mean = 2.09, sd = 0.48)`$$
+
+    ```{r, echo = TRUE}
+    pnorm(q = 2.5, mean = 2.09, sd = 0.48) - pnorm(q = 1.5, mean = 2.09, sd = 0.48)
+    ```
+
+## What is the probability that London will have 1 inch or less of precipitation?
+
+* $$\Pr (x \leq 1) = \Pr (z \leq -2.27) = `r pnorm(q = 1, mean = 2.09, sd = 0.48)`$$
+
+    ```{r, echo = TRUE}
+    pnorm(q = 1, mean = 2.09, sd = 0.48)
+    ```
+
+## If London authorities prepare for flood conditions when the monthly precipitation falls in the upper 5% of the normal June amounts, how much rain would have to fall to cause local authorities to begin flood preparations? {.scrollable}
+
+* Since $z = 1.645$ cuts off the upper 5% of the standard normal probability distribution, we solve for the corresponding value of $x$.
+
+    $$
+    \begin{align}
+    \frac{x - \mu}{\sigma} &= 1.645 \\
+    x &= \mu + 1.645 \times \sigma \\
+    &= 2.09 + 1.648 \times 0.48 \\
+    &= 2.09 + 0.79 \\
+    &= `r qnorm(p = .95, mean = 2.09, sd = 0.48)`
+    \end{align}
+    $$
+    
+    ```{r, echo = TRUE}
+    qnorm(p = .95, mean = 2.09, sd = 0.48)
+    ```
 
 ## Booking travel (redux) {.scrollable}
 

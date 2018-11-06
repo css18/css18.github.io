@@ -519,9 +519,9 @@ We have, for $x \geq 0$,
 $$
 \begin{align}
 \Pr (X > x | A) &= \Pr (T > t + x | T > t) \\
-&= \frac{\Pr (T > t + x )\cup \Pr(T > t)}{\Pr( T >t)} \\
+&= \frac{\Pr (T > t + x )\cap \Pr(T > t)}{\Pr( T >t)} \\
 &= \frac{\Pr (T > t + x)}{\Pr (T > t)} \\
-&= \frac{\lambda e^{-\lambda(t + x)}}{\lambda e^{-\lambda t}} \\
+&= \frac{1 - \lambda e^{-\lambda(t + x)}}{1 - \lambda e^{-\lambda t}} \\
 &= \frac{ e^{-\lambda(t + x)}}{ e^{-\lambda t}} \\
 &= e^{-\lambda x}
 \end{align}
