@@ -234,6 +234,8 @@ exp_pdf(1) +
 
 $$\E[X] = \frac{1}{\lambda}, \quad \Var(X) = \frac{1}{\lambda^2}$$
 
+It is frequently used to model phenomena of a continuous nature such as the **time** between arrivals (e.g. time between customers arriving at a restaraunt) and the **distance** between occurrences (e.g. distance between defects in a plate glass window). It is closely associated with the Poisson discrete random variable, which we will return to later.
+
 # Cumulative distribution function
 
 * Probability density function ($f$) characterizes distribution of continuous random variable.
@@ -526,7 +528,141 @@ $$
 
 where we use the CDF of the exponential random variable. Thus, the conditional PDF of $X$ is exponential with parameter $\lambda$, regardless of the time $t$ that has elapsed between lighting the bulb and Ariadne's arrival (known as the **memorylessness property** of the exponential).
 
-## Conditioning a random variable on another
+# Practice working with continuous random variables in R
+
+## Weather forecasting
+
+According to British weather forecasters, the average monthly rainfall in London during the month of June is $\mu = 2.09$ inches. Assume the monthly precipitation is a normally-distributed random variable with a standard deviation of $\sigma = 0.48$ inches.
+
+##### What is the probability that London will have between 1.5 and 2.5 inches of precipitation next June?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+$$\Pr (1.5 \leq x \leq 2.5) = \Pr (-1.23 \leq z \leq 0.85) = `r pnorm(q = 2.5, mean = 2.09, sd = 0.48) - pnorm(q = 1.5, mean = 2.09, sd = 0.48)`$$
+
+```{r}
+pnorm(q = 2.5, mean = 2.09, sd = 0.48) - pnorm(q = 1.5, mean = 2.09, sd = 0.48)
+```
+
+  </p>
+</details>
+
+##### What is the probability that London will have 1 inch or less of precipitation?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+$$\Pr (x \leq 1) = \Pr (z \leq -2.27) = `r pnorm(q = 1, mean = 2.09, sd = 0.48)`$$
+
+```{r}
+pnorm(q = 1, mean = 2.09, sd = 0.48)
+```
+
+  </p>
+</details>
+
+##### If London authorities prepare for flood conditions when the monthly precipitation falls in the upper 5% of the normal June amounts, how much rain would have to fall to cause local authorities to begin flood preparations?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+Since $z = 1.645$ cuts off the upper 5% of the standard normal probability distribution, we solve for the corresponding value of $x$.
+
+$$
+\begin{align}
+\frac{x - \mu}{\sigma} &= 1.645 \\
+x &= \mu + 1.645 \times \sigma = 2.09 + 1.648 \times 0.48 = 2.09 + 0.79 = `r qnorm(p = .95, mean = 2.09, sd = 0.48)`
+\end{align}
+$$
+
+```{r}
+qnorm(p = .95, mean = 2.09, sd = 0.48)
+```
+
+  </p>
+</details>
+
+## Booking travel (redux)
+
+Book4Less.com is an online travel website that offers competitive prices on airline and hotel bookings. During a typical weekday, the website averages 10 visits per minute.
+
+##### If the Poisson arrival rate is 10 visitors per minute, what is the mean of the associated exponential probility density function? What is the rate parameter $\lambda$?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+If the mean Poisson arrival rate is 10 visitors per minute (every sixty seconds), then the average time between passenger visitors is exponentially-distributed with a mean of 6 seconds.
+
+$$\E[X] = \frac{1}{\lambda} \equiv \mu$$
+
+$$\lambda = \frac{1}{\mu} = \frac{1}{6}$$
+
+  </p>
+</details>
+
+##### What is the exponential PDF and CDF?
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+$$
+\begin{align}
+f_X(x) &= \lambda e^{-\lambda x} = \frac{1}{6} e^{- \frac{1}{6}x} \\
+F_X(x) &= 1 - e^{-\lambda x} = 1 - e^{-\frac{1}{6} x}, \quad \text{for } x > 0
+\end{align}
+$$
+
+  </p>
+</details>
+
+##### If the internet server experiences a brief power failure of 18 seconds duration during which time people would be denied access to the website, what is the probability that no one attempted to visit the Book4Less.com website anyway and thus no business was lost during the down-time? Use the exponential framework to answer this question.
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+$$\Pr (x \geq 18) = 1 - \Pr (X \leq 18) = 1 - (1 - e^{-\frac{18}{6}}) = e^{-\frac{18}{6}} = `r 1 - pexp(q = 18, rate = 1/6)`$$
+
+```{r}
+1 - pexp(q = 18, rate = 1/6)
+```
+
+  </p>
+</details>
+
+##### Answer the previous question using the Poisson probability approach. Confirm that the answer is equal to that above.
+
+<details> 
+  <summary>Click for the solution</summary>
+  <p>
+
+Since we are told that there is an average of 10 visitors per minute, or 10 visitors per 60 seconds, we need to convert this parameter: $\mu = \frac{10 \text{ visitors}}{60 \text{ seconds}} = \frac{3 \text{ visitors}}{18 \text{ seconds}}$.
+
+Recall that the Poisson probability function is
+
+$$
+\begin{align}
+f_X(x | \lambda) &= e^{-\lambda} \frac{\lambda^{x}}{x!}, \quad x = 0,1,2,\ldots \\
+f_X(x = 0 | \lambda = 3) &= e^{-3} \frac{3^{0}}{0!} \\
+&= e^{-3} \\
+&= `r dpois(x = 0, lambda = 3)`
+\end{align}
+$$
+
+```{r}
+dpois(x = 0, lambda = 3)
+```
+
+If the interval of time (or distance) between occurrences is distributed exponentially, then the number of occurrences in that interval must be Poisson-distributed. The two distributions are interrelated. See [here](https://stats.stackexchange.com/a/2094) for a more in-depth explanation.
+
+  </p>
+</details>
 
 
 
