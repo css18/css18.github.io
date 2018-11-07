@@ -1,5 +1,5 @@
 ---
-title: "Homework 05: Continuous random variables"
+title: "Homework 05: Continuous random variables and optimization"
 output: html_document
 ---
 
@@ -11,7 +11,7 @@ Due before class on ~~November 6th~~ November 13th.
 
 Go [here](https://github.com/css18/hw05) to fork the repo for homework 05.
 
-# Exercises on continuous random variables (10 points)
+# Part 1: Exercises on continuous random variables
 
 Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate $\LaTeX$ mathematical notation.
 
@@ -20,10 +20,6 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\sd}{\
 1. A recent college graduate is moving to Houston, Texas to take a new job, and is looking to purchase a home. Since Houston comprises a relatively large metropolitan area of about 7 million people, there are a lot of homes from which to choose. When searching for properties on the real estate websites, it is possible to select the price range of housing in which one is most interested. Suppose the potential buyer specifies a price range of \$200,000 to \$250,000, and the result of the search returns thousands of homes with prices distributed uniformly throughout that range.
     a. Analytically identify $\E[X]$ and $\sigma$ of the probability density function associated with this random variable.
     a.  If the buyer ultimately selects a home from this initial list of possibilities, what is the probability she will have to pay more than \$235,000? Use R to find the solution.
-1. Use R to generate 10,000 uniformly-distributed data values with a lower bound of $-10$, an upper bound of $15$. List the first 5 data values.
-    a. Analytically calculate $\E[X]$ and $\sigma$.
-    a. Use R to find the mean and standard deviation of the (uniform) data.
-    a. Do your answers to the previous question diverge from the analytical solution? Why or why not?
 1. Let $X$ be uniformly distributed in the unit interval $[0,1]$. Consider the random variable $Y = g(X)$, where
     $$g(x) = \left\{
         \begin{array}{ll}
@@ -33,7 +29,6 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\sd}{\
     \right.$$
     
     Find the expected value of $Y$ by first calculating its probability mass function (PMF). Verify the result using the expected value rule.
-1. Calamity Jane goes to the bank to make a withdrawal, and is equally likely to find 0 or 1 customers ahead of her. The service time of the customer ahead, if present, is exponentially distributed with parameter $\lambda$. What is the CDF of Jane's waiting time?
 1. Let $X$ and $Y$ be normal random variables with means 0 and 1, respectively, and variances 1 and 4, respectively.
     a. Find $\Pr(X \leq 1.5)$ and $\Pr(X \leq -1)$.
     a. Find the PDF of $(Y - 1) / 2$.
@@ -62,6 +57,39 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\sd}{\
     a. Transform your 1000 bundles of 1000 random $U(0,1)$ draws into 1000 bundles of 1000 draws $G_{ij}$ from a Gumbel $(1,2)$ distribution.
     a. Plot the empirical variances of $G$, and discuss how they compare to the theoretical variance of a $\zeta(1,2)$ distribution.
     a. Plot the density of the values of the 75th percentiles from those 1000 bundles of Gumbel variates.
+    
+# Part 2: Optimization
+
+1. **Maximum likelihood estimation** is a technique for developing estimators. Consider the following likelihood function for the sample mean:
+    $$
+    \begin{align}
+    f(\mu) &= \prod_{i=1}^{N} \exp( \frac{-(Y_{i} - \mu)^2}{ 2}) \\
+    \log f(\mu) &= -\frac{1}{2} \left(\sum_{i=1}^{N} Y_{i}^2 - 2\mu \sum_{i=1}^{N} Y_{i} + N\times\mu^2 \right)
+    \end{align}
+    $$
+    a. Write a function `mean_lik()` for the log-likelihood of the sample mean. This function should takes a vector of guesses for the value of the sample mean and a vector of data for which we want to estimate the sample mean. The function should return the resulting log-likelihoods for a given guess of the sample mean.
+    a. Import `trade.csv` data file from the `data/` folder.
+    a. Use a **grid search** to find the optimal estimate of the sample mean, testing values ranging from 30,000 to 80,000. Use your function to find the resulting log-likelihood values for the `income` variable in the `trade` data frame. Plot the results with the parameter guesses on the x-axis and the resulting log-likelihoods on the y-axis. Label the axes in the graph and provide a title.
+    a. Using `optim()` and your function `mean_lik()`, find the maximum value of the log-likelihood function. At what parameter value is the log-likelihood of the sample mean of `income` maximized?
+    a. Check your work using the `mean()` function on `income`. Do you get the same estimate from `optim()` and `mean()`?
+    a. Draw a vertical line at the value of your answer to (e) on your graph of the log-likelihood from (c).
+1. Now let's use this same basic approach to examine the likelihood for **logistic regression**, a type of regression sometimes employed instead of ordinary least squares (OLS) when a dependent variable is assumed to be drawn from a **Bernoulli** probability distribution.
+
+    Consider the following log-likelihood function for a logistic regression:
+    
+    $$
+    \begin{align}
+    L(\beta | y_i, x_{1i}, x_{2i}) &= \prod_{i=1}^n \left[ \left( \frac{1}{1 + \exp(-(\beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i}))} \right)^{y_i} \left(1 - \frac{1}{1 + \exp(-(\beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i}))} \right)^{1 - y_i} \right] \\
+    \log L(\beta | y_i, x_{1i}, x_{2i}) &= \sum_{i=1}^n \left[ -y_i \log(1 + \exp (-(\beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i}))) + (1 - y_i) \log \left(1 - \frac{1}{1 + \exp(-(\beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i}))} \right)^{1 - y_i} \right]
+    \end{align}
+    $$
+    
+    where $y$ is a vector containing the dependent variable, $x_1$ is a vector containing the first independent variable, and $x_2$ is a vector containing the second independent variable.
+    
+    a. Write a function `llik_logistic()` that accepts as arguments a vector of three parameter values, a data frame, and some method for identifying the dependent and independent variables in the model. The function should then return the log-likelihood for those parameter values. Be sure either in the function or prior to passing in the data frame to remove any rows with missing values.
+    a. Use a grid search to determine the values for the parameters that maximize the log-likelihood of the function, where `free_trade_support` is the dependent variable and `income` and `education` are the independent variables. Iterate over all possible combinations of the intercept `seq(from = -1, 1, by = 0.05)`, the income parameter `seq(from = 0.000005, to = 0.00001, by = 0.000001)`, and the education parameter `seq(from = 0, to = 1, by = 0.05)`.
+    a. Use the `optim()` function to calculate the parameters that maximize the log-likelihood for the the same variables as before.
+    a. Compare these results to what you would obtain from R's canned function that does this. Run the `glm()` function with `family = binomial` and the same model you used above. Compare the resulting estimates to what you obtained using your own function and both the grid search/`optim()` approaches.
     
 # Submit the assignment
 
