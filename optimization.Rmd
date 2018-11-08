@@ -607,6 +607,13 @@ $$x_{(k+1)} = x_{(k)} - \alpha \nabla f\bigl(x_{(k)}\bigr)$$
 where $k = 1, 2, \ldots,$ maximum iteration, and $\alpha$ is the step size.
 
 ```{r gradient-descent}
+# func - the function to optimize
+# grad - gradient of the function to optimize
+# stepsize - size of each step
+# tol - tolerance (stopping criteria for the algorithm)
+# iter - maximum number of iterations to attempt. will not exceed even if
+#        tolerance is not achieved
+
 grad_desc <- function(func, grad, stepsize = 0.003, tol = 1e-5, iter = 500){
   # randomly initialize a value to x
   set.seed(100)
