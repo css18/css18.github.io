@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Optimization</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Optimization</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}\]</span></p>
+<div id="optimization" class="section level1">
+<h1>Optimization</h1>
+<p><strong>Optimization</strong> is a method for selecting the best element (based on some criterion) from some set of available alternatives. In the simplest form, an optimization problem consists of maximizing or minimizing a real function by systematically choosing input values from within an allowed set and computing the value of the function.</p>
+<p>More formally, given a function <span class="math inline">\(f: A \rightarrow \Re\)</span> from some set <span class="math inline">\(A\)</span> to the real numbers, we seek to determine an element <span class="math inline">\(x_0 \in A\)</span> such that <span class="math inline">\(f(x_0) \leq f(x)\)</span> for all <span class="math inline">\(x \in A\)</span> (minimization) or such that <span class="math inline">\(f(x_0) \geq f(x)\)</span> for all <span class="math inline">\(x \in A\)</span> (maximization). Typically <span class="math inline">\(A\)</span> is some subset of <span class="math inline">\(\Re^n\)</span>, often specified by a set of <strong>constraints</strong>. The domain of <span class="math inline">\(A\)</span> is called the <strong>search space</strong> or the <strong>choice set</strong>, while the elements of <span class="math inline">\(A\)</span> are called <strong>candidate solutions</strong> or <strong>feasible solutions</strong>.</p>
+<p>The function <span class="math inline">\(f\)</span> is known by several possible names:</p>
+<ul>
+<li>Objective function</li>
+<li>Loss or cost function (minimization)</li>
+<li>Utility or fitness function (maximization)</li>
+</ul>
+<blockquote>
+<p>By contention, optimization problems are usually stated in terms of minimization. When using canned functions in R or Python to optimize over functions, make sure your function is expressed appropriately. That is, if the optimizer finds solutions that minimize your function <span class="math inline">\(f\)</span>, make sure <span class="math inline">\(f\)</span> is expressed so that it needs to be minimized, rather than maximized. For example, if your function defines utility (a maximization problem) and your optimizer finds solutions that minimize the function, invert your function by multiplying the result times <span class="math inline">\(-1\)</span>. <span class="math inline">\(\min [ -f(x)] \equiv \max [f(x)]\)</span>.</p>
+</blockquote>
+</div>
+<div id="analytical-methods-for-optimizing-functions" class="section level1">
+<h1>Analytical methods for optimizing functions</h1>
+<p>Relatively simple functions can be optimized analytically using <strong>differentiation</strong>. Here let’s review the standard approach.</p>
+<div id="single-variable-functions" class="section level2">
+<h2>Single variable functions</h2>
+<ol style="list-style-type: decimal">
+<li>Find <span class="math inline">\(f&#39;(x)\)</span></li>
+<li>Set <span class="math inline">\(f&#39;(x)=0\)</span> and solve for <span class="math inline">\(x\)</span>. Call all <span class="math inline">\(x_0\)</span> such that <span class="math inline">\(f&#39;(x_0)=0\)</span> <strong>critical values</strong></li>
+<li>Find <span class="math inline">\(f&#39;&#39;(x)\)</span>. Evaluate at each <span class="math inline">\(x_0\)</span>
+<ul>
+<li>If <span class="math inline">\(f&#39;&#39;(x) &gt; 0\)</span>, concave up, and therefore a local minimum</li>
+<li>If <span class="math inline">\(f&#39;&#39;(x) &lt; 0\)</span>, concave down, and therefore a local maximum</li>
+<li>If it’s the global maximum/minimum, it will produce the largest/smallest value for <span class="math inline">\(f(x)\)</span></li>
+<li>On a closed range along the domain, check the endpoints as well</li>
+</ul></li>
+</ol>
+<div id="fx--x2-x-in--3-3" class="section level3">
+<h3><span class="math inline">\(f(x) = -x^2\)</span>, <span class="math inline">\(x \in [-3, 3]\)</span></h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="cf">function</span>(x) <span class="op">-</span>x<span class="op">^</span><span class="dv">2</span>, <span class="dt">size =</span> .<span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x) <span class="op">==</span><span class="st"> </span><span class="op">-</span>x<span class="op">^</span><span class="dv">2</span>),
+       <span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x)))</code></pre></div>
+<p><img src="optimization_files/figure-html/ex-1-1.png" width="672" /></p>
+<div id="critical-value" class="section level4">
+<h4>Critical Value</h4>
+<p><span class="math display">\[
+\begin{eqnarray}
+f&#39;(x) &amp; = &amp; - 2 x  \\
+0 &amp; = &amp; - 2 x^{*}  \\
+x^{*} &amp; = &amp; 0 
+\end{eqnarray}
+\]</span></p>
+</div>
+<div id="second-derivative" class="section level4">
+<h4>Second Derivative</h4>
+<p><span class="math display">\[
+\begin{eqnarray}
+f^{&#39;}(x) &amp; = &amp; - 2x  \\
+f^{&#39;&#39;}(x)  &amp; = &amp; - 2  
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(f^{&#39;&#39;}(x)&lt; 0\)</span>, local maximum</li>
+</ul>
+</div>
+</div>
+<div id="fx-x3-x-in--3-3" class="section level3">
+<h3><span class="math inline">\(f(x) = x^3\)</span>, <span class="math inline">\(x \in [-3, 3]\)</span></h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> <span class="cf">function</span>(x) x<span class="op">^</span><span class="dv">3</span>, <span class="dt">size =</span> .<span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x) <span class="op">==</span><span class="st"> </span>x<span class="op">^</span><span class="dv">3</span>),
+       <span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x)))</code></pre></div>
+<p><img src="optimization_files/figure-html/ex-2-1.png" width="672" /></p>
+<div id="critical-value-1" class="section level4">
+<h4>Critical Value</h4>
+<p><span class="math display">\[
+\begin{eqnarray}
+f&#39;(x) &amp; = &amp; 3 x^2  \\
+0 &amp; = &amp; 3 (x^{*})^2  \\
+x^{*} &amp; = &amp; 0 
+\end{eqnarray}
+\]</span></p>
+</div>
+<div id="second-derivative-1" class="section level4">
+<h4>Second Derivative</h4>
+<p><span class="math display">\[
+\begin{eqnarray}
+f^{&#39;&#39;}(x) &amp; = &amp; 6x  \\
+f^{&#39;&#39;}(0)  &amp; = &amp; 0
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Neither a minimum nor a maximum, it is a <strong>saddle point</strong></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="multivariable-functions" class="section level2">
+<h2>Multivariable functions</h2>
+<div id="differences-from-single-variable-optimization-procedure" class="section level3">
+<h3>Differences from single variable optimization procedure</h3>
+<ul>
+<li>Same basic approach, except we have multiple parameters of interest</li>
+<li>Requires more explicit knowledge of linear algebra to track all the components and optimize over the multidimensional space</li>
+</ul>
+<p>Let <span class="math inline">\(\boldsymbol{x} \in \Re^{n}\)</span> and let <span class="math inline">\(\delta &gt;0\)</span>. Define a <strong>neighborhood</strong> of <span class="math inline">\(\boldsymbol{x}\)</span>, <span class="math inline">\(B(\boldsymbol{x}, \delta)\)</span>, as the set of points such that,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+B(\boldsymbol{x}, \delta) &amp; = &amp; \{ \boldsymbol{y} \in \Re^{n} : ||\boldsymbol{x} - \boldsymbol{y}||&lt; \delta \}
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>That is, <span class="math inline">\(B(\boldsymbol{x}, \delta)\)</span> is the set of points where the vector <span class="math inline">\(\boldsymbol{y}\)</span> is a vector in n-dimensional space such that vector norm of <span class="math inline">\(\boldsymbol{x} - \boldsymbol{y}\)</span> is less than <span class="math inline">\(\delta\)</span></li>
+<li>So the neighborhood is at most <span class="math inline">\(\delta\)</span> big</li>
+</ul>
+<p>Now suppose <span class="math inline">\(f:X \rightarrow \Re\)</span> with <span class="math inline">\(X \subset \Re^{n}\)</span>. A vector <span class="math inline">\(\boldsymbol{x}^{*} \in X\)</span> is a <strong>global maximum</strong> if , for all other <span class="math inline">\(\boldsymbol{x} \in X\)</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(\boldsymbol{x}^{*}) &amp; &gt; &amp; f(\boldsymbol{x} ) \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>A vector <span class="math inline">\(\boldsymbol{x}^{\text{local}}\)</span> is a <strong>local</strong> maximum if there is a neighborhood around <span class="math inline">\(\boldsymbol{x}^{\text{local}}\)</span>, <span class="math inline">\(Q \subset X\)</span> such that, for all <span class="math inline">\(x \in Q\)</span>,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(\boldsymbol{x}^{\text{local} }) &amp; &gt; &amp; f(\boldsymbol{x} )
+\end{eqnarray}
+\]</span></p>
+<p>The maximum and minimum values of a function <span class="math inline">\(f:X \rightarrow \Re\)</span> on the real number line (in n-dimensional space) will fall somewhere along <span class="math inline">\(X\)</span>. This is the same as we saw yesterday, except now <span class="math inline">\(X\)</span> is not a scalar value - it is a vector <span class="math inline">\(\boldsymbol{X}\)</span>.</p>
+</div>
+</div>
+<div id="first-derivative-test-gradient" class="section level2">
+<h2>First derivative test: Gradient</h2>
+<p>Suppose <span class="math inline">\(f:X \rightarrow \Re^{n}\)</span> with <span class="math inline">\(X \subset \Re^{1}\)</span> is a differentiable function. Define the <strong>gradient</strong> vector of <span class="math inline">\(f\)</span> at <span class="math inline">\(\boldsymbol{x}_{0}\)</span>, <span class="math inline">\(\nabla f(\boldsymbol{x}_{0})\)</span> as</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\nabla f (\boldsymbol{x}_{0})  &amp; = &amp; \left(\frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{1} }, \frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{2} }, \frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{3} }, \ldots, \frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{n} } \right) 
+\end{eqnarray}
+\]</span></p>
+<p>It is the first partial derivatives for each variable <span class="math inline">\(x_n\)</span> stored in a vector. So if <span class="math inline">\(\boldsymbol{a} \in X\)</span> is a <strong>local</strong> extremum, then,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\nabla f(\boldsymbol{a}) &amp; = &amp; \boldsymbol{0}  \\
+                                    &amp; = &amp; (0, 0, \ldots, 0)                 
+\end{eqnarray}
+\]</span></p>
+<p>That is, the root(s) of the gradient are where <span class="math inline">\(f(\boldsymbol{a})\)</span> equals <span class="math inline">\(\boldsymbol{0}\)</span> in <span class="math inline">\(n\)</span>-dimensional space.</p>
+<div id="examples" class="section level3">
+<h3>Examples</h3>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(x,y) &amp;=&amp; x^2+y^2 \\
+\nabla f(x,y) &amp;=&amp; (2x, \, 2y)
+\end{eqnarray}
+\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(x,y) &amp;=&amp; x^3 y^4 +e^x -\log y \\
+\nabla f(x,y) &amp;=&amp; (3x^2 y^4 + e^x, \, 4x^3y^3 - \frac{1}{y})
+\end{eqnarray}
+\]</span></p>
+</div>
+<div id="critical-values" class="section level3">
+<h3>Critical values</h3>
+<p>We can have <em>critical values</em>:</p>
+<ol style="list-style-type: decimal">
+<li>Maximum</li>
+<li>Minimum</li>
+<li>Saddle point</li>
+</ol>
+<p>In order to know if we are at a max/min/saddle point, we need to perform the second derivative test.</p>
+</div>
+</div>
+<div id="second-derivative-test-hessian" class="section level2">
+<h2>Second derivative test: Hessian</h2>
+<p>Suppose <span class="math inline">\(f:X \rightarrow \Re^{1}\)</span> , <span class="math inline">\(X \subset \Re^{n}\)</span>, with <span class="math inline">\(f\)</span> a twice differentiable function. We will define the <strong>Hessian</strong> matrix as the matrix of second derivatives at <span class="math inline">\(\boldsymbol{x}^{*} \in X\)</span>,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\boldsymbol{H}(f)(\boldsymbol{x}^{*} )  &amp; = &amp; \begin{pmatrix} 
+        \frac{\partial^{2} f }{\partial x_{1} \partial x_{1} } (\boldsymbol{x}^{*} ) &amp; \frac{\partial^{2} f }{\partial x_{1} \partial x_{2} } (\boldsymbol{x}^{*} ) &amp; \ldots &amp; \frac{\partial^{2} f }{\partial x_{1} \partial x_{n} } (\boldsymbol{x}^{*} ) \\
+        \frac{\partial^{2} f }{\partial x_{2} \partial x_{1} } (\boldsymbol{x}^{*} ) &amp; \frac{\partial^{2} f }{\partial x_{2} \partial x_{2} } (\boldsymbol{x}^{*} ) &amp; \ldots &amp; \frac{\partial^{2} f }{\partial x_{2} \partial x_{n} } (\boldsymbol{x}^{*} ) \\
+        \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+        \frac{\partial^{2} f }{\partial x_{n} \partial x_{1} } (\boldsymbol{x}^{*} ) &amp; \frac{\partial^{2} f }{\partial x_{n} \partial x_{2} } (\boldsymbol{x}^{*} ) &amp; \ldots &amp; \frac{\partial^{2} f }{\partial x_{n} \partial x_{n} } (\boldsymbol{x}^{*} ) \\
+\end{pmatrix} \nonumber 
+\end{eqnarray}
+\]</span></p>
+<ul>
+<li>Requires differentiating on the entire gradient with respect to each <span class="math inline">\(x_n\)</span></li>
+</ul>
+<div id="example-hessians" class="section level3">
+<h3>Example Hessians</h3>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(x,y) &amp;=&amp; x^2+y^2 \\
+\nabla f(x,y) &amp;=&amp; (2x, \, 2y) \\
+\boldsymbol{H}(f)(x,y) &amp;=&amp; \begin{pmatrix}
+2 &amp; 0 \\
+0 &amp; 2
+\end{pmatrix}
+\end{eqnarray}
+\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(x,y) &amp;=&amp; x^3 y^4 +e^x -\log y \\
+\nabla f(x,y) &amp;=&amp; (3x^2 y^4 + e^x, \, 4x^3y^3 - \frac{1}{y}) \\
+\boldsymbol{H}(f)(x,y) &amp;=&amp; \begin{pmatrix}
+6xy^4 + e^x &amp; 12x^2y^3 \\
+12x^2y^3 &amp; 12x^3y^2 + \frac{1}{y^2}
+\end{pmatrix}
+\end{eqnarray}
+\]</span></p>
+</div>
+<div id="definiteness-of-a-matrix" class="section level3">
+<h3>Definiteness of a matrix</h3>
+<p>Consider <span class="math inline">\(n \times n\)</span> matrix <span class="math inline">\(\boldsymbol{A}\)</span>. If, for all <span class="math inline">\(\boldsymbol{x} \in \Re^{n}\)</span> where <span class="math inline">\(\boldsymbol{x} \neq 0\)</span>:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\boldsymbol{x}^{&#39;} \boldsymbol{A} \boldsymbol{x} &amp; &gt; &amp; 0, \quad \text{ $\boldsymbol{A}$ is positive definite } \\
+\boldsymbol{x}^{&#39;} \boldsymbol{A} \boldsymbol{x} &amp; &lt; &amp; 0, \quad \text{ $\boldsymbol{A}$ is negative definite } 
+\end{eqnarray}
+\]</span></p>
+<p>If <span class="math inline">\(\boldsymbol{x}^{&#39;} \boldsymbol{A} \boldsymbol{x} &gt;0\)</span> for some <span class="math inline">\(\boldsymbol{x}\)</span> and <span class="math inline">\(\boldsymbol{x}^{&#39;} \boldsymbol{A} \boldsymbol{x}&lt;0\)</span> for other <span class="math inline">\(\boldsymbol{x}\)</span>, then we say <span class="math inline">\(\boldsymbol{A}\)</span> is indefinite.</p>
+<ul>
+<li><span class="math inline">\(\boldsymbol{x}\)</span> is a vector of the appropriate length (can be any vector drawn from <span class="math inline">\(\Re^n\)</span> space), so a transposed vector times a matrix times a vector will result in a scalar value</li>
+<li><span class="math inline">\(0\)</span> is not a vector or a matrix, it is a scalar</li>
+</ul>
+</div>
+<div id="second-derivative-test" class="section level3">
+<h3>Second derivative test</h3>
+<ul>
+<li>If <span class="math inline">\(\boldsymbol{H}(f)(\boldsymbol{a})\)</span> is positive definite then <span class="math inline">\(\boldsymbol{a}\)</span> is a local minimum</li>
+<li>If <span class="math inline">\(\boldsymbol{H}(f)(\boldsymbol{a})\)</span> is negative definite then <span class="math inline">\(\boldsymbol{a}\)</span> is a local maximum</li>
+<li>If <span class="math inline">\(\boldsymbol{H}(f)(\boldsymbol{a})\)</span> is indefinite then <span class="math inline">\(\boldsymbol{a}\)</span> is a saddle point</li>
+</ul>
+</div>
+<div id="use-the-determinant-to-assess-definiteness" class="section level3">
+<h3>Use the determinant to assess definiteness</h3>
+<p>How do we measure definiteness when up until now <span class="math inline">\(\boldsymbol{x}\)</span> could be any vector? We can use the <strong>determinant</strong> of the Hessian of <span class="math inline">\(f\)</span> at the critical value <span class="math inline">\(\boldsymbol{a}\)</span>:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\boldsymbol{H}(f)(\boldsymbol{a}) &amp; = &amp; \begin{pmatrix} 
+    A &amp; B \\
+    B &amp; C \\
+\end{pmatrix} 
+\end{eqnarray}
+\]</span></p>
+<p>The determinant for a <span class="math inline">\(2 \times 2\)</span> matrix can easily be calculated using the known formula <span class="math inline">\(AC - B^2\)</span>.</p>
+<ul>
+<li><span class="math inline">\(AC - B^2&gt; 0\)</span> and <span class="math inline">\(A&gt;0\)</span> <span class="math inline">\(\leadsto\)</span> positive definite <span class="math inline">\(\leadsto\)</span> <span class="math inline">\(\boldsymbol{a}\)</span> is a local minimum</li>
+<li><span class="math inline">\(AC - B^2&gt; 0\)</span> and <span class="math inline">\(A&lt;0\)</span> <span class="math inline">\(\leadsto\)</span> negative definite <span class="math inline">\(\leadsto\)</span> <span class="math inline">\(\boldsymbol{a}\)</span> is a local maximum</li>
+<li><span class="math inline">\(AC - B^2&lt;0\)</span> <span class="math inline">\(\leadsto\)</span> indefinite <span class="math inline">\(\leadsto\)</span> saddle point</li>
+<li><span class="math inline">\(AC- B^2 = 0\)</span> inconclusive</li>
+</ul>
+</div>
+</div>
+<div id="basic-procedure-summarized" class="section level2">
+<h2>Basic procedure summarized</h2>
+<ol style="list-style-type: decimal">
+<li>Calculate gradient (first derivative)</li>
+<li>Set equal to zero, solve system of equations</li>
+<li>Calculate Hessian (second derivative)</li>
+<li>Assess Hessian at critical values</li>
+<li>Boundary values? (if relevant)</li>
+</ol>
+</div>
+</div>
+<div id="a-simple-optimization-example" class="section level1">
+<h1>A simple optimization example</h1>
+<p>Suppose <span class="math inline">\(f:\Re^{2} \rightarrow \Re\)</span> with</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+f(x_{1}, x_{2}) &amp; = &amp; 3(x_1 + 2)^2  + 4(x_{2}  + 4)^2 \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>Calculate gradient:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\nabla f(\boldsymbol{x}) &amp; = &amp; (6 x_{1} + 12 , 8x_{2} + 32 ) \nonumber \\
+\boldsymbol{0} &amp; = &amp; (6 x_{1}^{*} + 12 , 8x_{2}^{*} + 32 ) \nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>We now solve the system of equations to yield</p>
+<p><span class="math display">\[x_{1}^{*}  = - 2, \quad x_{2}^{*}  = -4\]</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\textbf{H}(f)(\boldsymbol{x}^{*}) &amp; = &amp; \begin{pmatrix}
+6 &amp; 0 \\
+0 &amp; 8 \\
+\end{pmatrix}\nonumber 
+\end{eqnarray}
+\]</span></p>
+<p>det<span class="math inline">\((\textbf{H}(f)(\boldsymbol{x}^{*}))\)</span> = 48 and <span class="math inline">\(6&gt;0\)</span> so <span class="math inline">\(\textbf{H}(f)(\boldsymbol{x}^{*})\)</span> is positive definite. <span class="math inline">\(\boldsymbol{x^{*}}\)</span> is a <strong>local minimum</strong>.</p>
+</div>
+<div id="computational-optimization-procedures" class="section level1">
+<h1>Computational optimization procedures</h1>
+<p>The calculus-based approach to optimizing a function can be tedious and difficult (if not impossible) to perform on even mildly complex functions. Major fields of math and programming are dedicated to developing algorithmic approaches to solving optimization problems. Some algorithmic methods are better than others, and each tends to have specific benefits and drawbacks. Here, we will define and implement 3 basic computational methods:</p>
+<ol style="list-style-type: decimal">
+<li>Grid search</li>
+<li>Newton-Raphson hill climber</li>
+<li>Gradient descent</li>
+</ol>
+</div>
+<div id="grid-search" class="section level1">
+<h1>Grid search</h1>
+<p>A <strong>grid search</strong> or a <strong>parameter sweep</strong> is a type of exhaustive search through a manually defined search space, evaluating every possible parameter value(s), calculating the value(s) of the function <span class="math inline">\(f\)</span> for those parameter values, and then selecting the parameter value(s) which minimize/maximize the function. Since the parameter space could include real-valued or unbounded value spaces for certain parameters, the researcher has to manually impose bounds and potentially discretize the parameter values for the grid search to be performed.</p>
+<div id="example-maximum-likelihood-estimation-for-a-normal-distribution" class="section level2">
+<h2>Example: Maximum likelihood estimation for a normal distribution</h2>
+<p>Suppose that we draw an independent and identically distributed random sample of <span class="math inline">\(n\)</span> observations from a normal distribution,</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+Y_{i} &amp; \sim &amp; \text{Normal}(\mu, \sigma^2)  \\  
+\boldsymbol{Y} &amp; = &amp; (Y_{1}, Y_{2}, \ldots, Y_{n} )   
+\end{eqnarray}
+\]</span></p>
+<p>The <strong>likelihood function</strong> defines the plausibility of a statistical model’s parameter value, given specific observed data. It is proportional to the following function:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+L(\mu, \sigma^2 | \boldsymbol{Y} ) &amp; \propto &amp; \prod_{i=1}^{n} f(Y_{i}|\mu, \sigma^2) \\  
+&amp;\propto  &amp;  \prod_{i=1}^{N} \frac{\exp[ - \frac{ (Y_{i} - \mu)^2 }{2\sigma^2} ]}{\sqrt{2 \pi \sigma^2}} \\
+&amp; \propto  &amp; \frac{\exp[ -\sum_{i=1}^{n} \frac{(Y_{i} - \mu)^2}{2\sigma^2}  ]}{ (2\pi)^{n/2} \sigma^{2n/2} }
+ \end{eqnarray}
+\]</span></p>
+<p>Taking the logarithm, we have</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+\log L(\mu, \sigma^2|\boldsymbol{Y} ) &amp; = &amp; -\sum_{i=1}^{n} \frac{(Y_{i} - \mu)^2}{2\sigma^2} - \frac{n}{2} log(2 \pi) - \frac{n}{2} \log (\sigma^2)
+\end{eqnarray}
+\]</span></p>
+<p>In R, let’s draw 10,000 realizations from <span class="math inline">\(Y_{i} \sim \text{Normal}(0.25, 100)\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">mean =</span> <span class="fl">0.25</span>, <span class="dt">sd =</span> <span class="dv">10</span>)</code></pre></div>
+<p>From this observed data, we want to obtain the optimal values for <span class="math inline">\(\mu, \sigma^2\)</span>. To employ a grid search, we evaluate the function <span class="math inline">\(\log L(\mu, \sigma^2|\boldsymbol{Y})\)</span> iteratively with different combinations of potential values for <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>. Each time we evaluate this likelihood function we store the resulting log-likelihood value. This optimization problem requires <strong>maximization</strong> (maximizing the log-likelihood), so whichever combination of parameter values produces the largest log-likelihood value is the solution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define the log-likelihood function for a normal distribution</span>
+log.like &lt;-<span class="st"> </span><span class="cf">function</span>(mu, sigma.<span class="dv">2</span>, y){
+    part1 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span> <span class="op">*</span><span class="st"> </span>sigma.<span class="dv">2</span>)) <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>((y <span class="op">-</span><span class="st"> </span>mu)<span class="op">^</span><span class="dv">2</span>) 
+    part2 &lt;-<span class="st"> </span><span class="op">-</span><span class="st"> </span>(<span class="kw">length</span>(y)<span class="op">/</span><span class="dv">2</span>) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(sigma.<span class="dv">2</span>)         
+    out &lt;-<span class="st"> </span>part1 <span class="op">+</span><span class="st"> </span>part2
+    <span class="kw">return</span>(out)
+    }</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define search space</span>
+(search_space &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(<span class="dt">mu =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dt">by =</span> .<span class="dv">01</span>),
+            <span class="dt">sigma2 =</span> <span class="kw">seq</span>(<span class="dv">8</span><span class="op">^</span><span class="dv">2</span>, <span class="dv">12</span><span class="op">^</span><span class="dv">2</span>, <span class="dt">by =</span> .<span class="dv">1</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble)</code></pre></div>
+<pre><code>## # A tibble: 321,201 x 2
+##       mu sigma2
+##    &lt;dbl&gt;  &lt;dbl&gt;
+##  1 -2        64
+##  2 -1.99     64
+##  3 -1.98     64
+##  4 -1.97     64
+##  5 -1.96     64
+##  6 -1.95     64
+##  7 -1.94     64
+##  8 -1.93     64
+##  9 -1.92     64
+## 10 -1.91     64
+## # ... with 321,191 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># evaluate parameters</span>
+<span class="kw">system.time</span>((search_space &lt;-<span class="st"> </span>search_space <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">logLik =</span> <span class="kw">map2_dbl</span>(mu, sigma2, log.like, <span class="dt">y =</span> y))))</code></pre></div>
+<pre><code>##    user  system elapsed 
+##    11.9     3.1    15.4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># which parameter values maximize the likelihood function</span>
+<span class="kw">filter</span>(search_space, logLik <span class="op">==</span><span class="st"> </span><span class="kw">max</span>(logLik))</code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##      mu sigma2  logLik
+##   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+## 1  0.31   97.5 -27900.</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># draw a heatmap of the log-likelihood values</span>
+<span class="kw">ggplot</span>(search_space, <span class="kw">aes</span>(mu, sigma2, <span class="dt">fill =</span> logLik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_raster</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_contour</span>(<span class="kw">aes</span>(<span class="dt">z =</span> logLik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_fill_continuous</span>(<span class="dt">type =</span> <span class="st">&quot;viridis&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(mu),
+       <span class="dt">y =</span> <span class="kw">expression</span>(sigma<span class="op">^</span><span class="dv">2</span>))</code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing non-finite values (stat_contour).</code></pre>
+<p><img src="optimization_files/figure-html/grid-results-1.png" width="672" /></p>
+<p>Here, the grid search provides a reasonable approximation of <span class="math inline">\(\hat{\mu}, \hat{\sigma}^2\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(y)</code></pre></div>
+<pre><code>## [1] 0.311</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">var</span>(y)</code></pre></div>
+<pre><code>## [1] 97.5</code></pre>
+<p>However, the drawbacks are clear. This exhaustive search took over 18 seconds on a high-powered laptop for a relatively simple likelihood function and only two parameters. Grid searches suffer from the <strong>curse of dimensionality</strong> – as the number of parameters in the search space increases, the sample space increases rapidly. Grid searches can be parallelized to improve performance, but still require the researcher to define the domain of the sample space manually.</p>
+</div>
+</div>
+<div id="newton-raphson-hill-climber" class="section level1">
+<h1>Newton-Raphson hill climber</h1>
+<p><strong>Roots</strong> are values of the function <span class="math inline">\(f(x)\)</span> where <span class="math inline">\(f(x) = 0\)</span>, where the function crosses the <span class="math inline">\(x\)</span>-axis. Roots can analytically be determined by calculating the first derivative <span class="math inline">\(f&#39;(x)\)</span>, setting it equal to 0, and solving for <span class="math inline">\(x^{*}\)</span>. However, this is not always a realistic method or easy to compute value. Instead, we can use general iterative procedures to <strong>approximate</strong> <span class="math inline">\(x^{*}\)</span>, with decent reliability. <strong>Newton’s method</strong> (also called <strong>Newton-Raphson</strong> or a <strong>Newton-Raphson hill climber</strong>) is one such procedure that iterates over a series of possible <span class="math inline">\(x^{*}\)</span> values until converging on the final estimate.</p>
+<div id="description-of-algorithm" class="section level2">
+<h2>Description of algorithm</h2>
+<p>We want to find the root value <span class="math inline">\(x_1\)</span> based on a starting point of <span class="math inline">\(x_0\)</span></p>
+<p><span class="math display">\[
+\begin{eqnarray}
+0 &amp; \cong &amp; f(x_0) + \frac{f^{&#39;}(x_0)}{1} (x_1 - x_0)
+\end{eqnarray}
+\]</span></p>
+<p>where the quality of the approximation increases with better and better guesses of <span class="math inline">\(x_0\)</span>. With a little rearrangement:</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+x_1 &amp; \cong &amp; x_0 - \frac{f(x_0)}{f&#39;(x_0)}
+\end{eqnarray}
+\]</span></p>
+<p>we calculate candidate values for <span class="math inline">\(x_1\)</span>. The procedure is algorithmic and iterative because our initial guess for <span class="math inline">\(x_1\)</span> will not be optimal. However, we can use the same procedure multiple times substituting the new value for <span class="math inline">\(x_1\)</span> into the function as <span class="math inline">\(f_0\)</span> and updating <span class="math inline">\(x_1\)</span>. The generalized form is:</p>
+<p><span class="math display">\[
+x_{n+1} \cong x_n - \frac{f(x_n)}{f&#39;(x_n)}
+\]</span></p>
+<p>Repeat this step sufficiently until <span class="math inline">\(f(x_{j+1})\)</span> is sufficiently close to zero, then stop.</p>
+<p>Newton-Raphson is not a foolproof method in that it can fail to converge to a solution. In fact, there are no “perfect” computational methods that will always converge on a solution. Particularly, the assumption <span class="math inline">\(f&#39;&#39;(x)\)</span> exists and is continuous near the actual root <span class="math inline">\(r\)</span> must be made.</p>
+<blockquote>
+<p>Notice for optimization problems, we want to find the roots of the first derivative of the initial function <span class="math inline">\(f(x)\)</span>, not the roots of <span class="math inline">\(f(x)\)</span> directly.</p>
+</blockquote>
+</div>
+<div id="implementation-in-r" class="section level2">
+<h2>Implementation in R</h2>
+<p>The <code>unitroot()</code> function in R provides an implementation of Newton-Raphson for finding the root of an equation. The function is only capable of finding one root in the given interval. The <code>rootSolve</code> package features the <code>uniroot.all()</code> function which extends the uniroot routine to detect multiple roots should they exist.</p>
+<p>The equation for which we wish to find the root is:</p>
+<p><span class="math display">\[y = x^3 + 2x - 5\]</span> This function looks like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define the function</span>
+func2 &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  x<span class="op">^</span><span class="dv">3</span> <span class="op">-</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>x <span class="op">-</span><span class="st"> </span><span class="dv">5</span>
+}
+
+<span class="co"># draw a plot of the function</span>
+range &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>))
+
+f0 &lt;-<span class="st"> </span>range <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> func2, <span class="dt">size =</span> .<span class="dv">5</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x)))
+f0</code></pre></div>
+<p><img src="optimization_files/figure-html/poly-func-1.png" width="672" /></p>
+<p>It looks like the function equals 0 when <span class="math inline">\(x\)</span> is approximately 2. To find the root of the equation, use the <code>uniroot()</code> function with a starting value of 2 and upper bound of 3.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">uniroot</span>(func2, <span class="dt">interval =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</code></pre></div>
+<pre><code>## $root
+## [1] 2.09
+## 
+## $f.root
+## [1] -0.000115
+## 
+## $iter
+## [1] 5
+## 
+## $init.it
+## [1] NA
+## 
+## $estim.prec
+## [1] 6.1e-05</code></pre>
+<p>It took 5 iterations for Newton-Raphson to converge on this solution. A quick and dirty function to perform the method in R can be implemented to further verify our understanding of the Newton-Raphson method. The <code>numDeriv</code> package is used to compute the derivative <span class="math inline">\(f&#39;(x)\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># f - the function to optimize</span>
+<span class="co"># a - lower bound for the search</span>
+<span class="co"># b - upper bound for the search</span>
+<span class="co"># tol - tolerance (stopping criteria for the algorithm)</span>
+<span class="co"># n - maximum number of iterations to attempt. will not exceed even if</span>
+<span class="co">#     tolerance is not achieved</span>
+
+newton_raphson &lt;-<span class="st"> </span><span class="cf">function</span>(f, a, b, <span class="dt">tol =</span> <span class="fl">1e-5</span>, <span class="dt">n_iter =</span> <span class="dv">1000</span>) {
+  <span class="kw">require</span>(numDeriv) <span class="co"># Package for computing f&#39;(x)</span>
+  
+  x0 &lt;-<span class="st"> </span>a <span class="co"># Set start value to supplied lower bound</span>
+  k &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dt">length =</span> n_iter) <span class="co"># Initialize for iteration results</span>
+  
+  <span class="co"># Check the upper and lower bounds to see if approximations result in 0</span>
+  fa &lt;-<span class="st"> </span><span class="kw">f</span>(a)
+  <span class="cf">if</span> (fa <span class="op">==</span><span class="st"> </span><span class="fl">0.0</span>) {
+    <span class="kw">return</span>(a)
+  }
+  
+  fb &lt;-<span class="st"> </span><span class="kw">f</span>(b)
+  <span class="cf">if</span> (fb <span class="op">==</span><span class="st"> </span><span class="fl">0.0</span>) {
+    <span class="kw">return</span>(b)
+  }
+
+  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>n_iter) {
+    dx &lt;-<span class="st"> </span><span class="kw">genD</span>(<span class="dt">func =</span> f, <span class="dt">x =</span> x0)<span class="op">$</span>D[<span class="dv">1</span>] <span class="co"># First-order derivative f&#39;(x0)</span>
+    x1 &lt;-<span class="st"> </span>x0 <span class="op">-</span><span class="st"> </span>(<span class="kw">f</span>(x0) <span class="op">/</span><span class="st"> </span>dx) <span class="co"># Calculate next value x1</span>
+    k[[i]] &lt;-<span class="st"> </span>x1 <span class="co"># Store x1</span>
+    
+    <span class="co"># Once the difference between x0 and x1 becomes sufficiently small, output the results.</span>
+    <span class="cf">if</span> (<span class="kw">abs</span>(x1 <span class="op">-</span><span class="st"> </span>x0) <span class="op">&lt;</span><span class="st"> </span>tol) {
+      root.approx &lt;-<span class="st"> </span>x1
+      res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&#39;root approximation&#39;</span> =<span class="st"> </span>root.approx, <span class="st">&#39;iterations&#39;</span> =<span class="st"> </span>k[<span class="dv">1</span><span class="op">:</span>i])
+      <span class="kw">return</span>(res)
+    }
+    <span class="co"># If Newton-Raphson has not yet reached convergence set x1 as x0 and continue</span>
+    x0 &lt;-<span class="st"> </span>x1
+  }
+  <span class="kw">print</span>(<span class="st">&#39;Too many iterations in method&#39;</span>)
+}</code></pre></div>
+<p>Computing the root of the above equation with the <code>newton_raphson()</code> function yields:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">newton_raphson</span>(<span class="dt">f =</span> func2, <span class="dt">a =</span> <span class="dv">2</span>, <span class="dt">b =</span> <span class="dv">3</span>)</code></pre></div>
+<pre><code>## Loading required package: numDeriv</code></pre>
+<pre><code>## $`root approximation`
+## [1] 2.09
+## 
+## $iterations
+## [1] 2.10 2.09 2.09 2.09</code></pre>
+</div>
+</div>
+<div id="gradient-descent" class="section level1">
+<h1>Gradient descent</h1>
+<p><strong>Gradient descent</strong> is another computational method for finding local minima of a function. It behaves similarly to Newton-Raphson in that it takes steps from an initial guess <span class="math inline">\(x_0\)</span> for the root of a function <span class="math inline">\(f(x)\)</span> and (hopefully) converges on the local minimum value. To find that local minimum, one takes steps proportional to the <strong>negative</strong> of the gradient of the function at the current point. If, instead, one takes steps proportional to the <strong>positive</strong> of the gradient, one approaches a local <strong>maximum</strong> of that function; the procedure is then known as <strong>gradient ascent</strong>.</p>
+<p>It is based on the observation that if a function <span class="math inline">\(f(\boldsymbol{x})\)</span> is defined and differentiable in a neighborhood of a point <span class="math inline">\(\boldsymbol{a}\)</span>, then <span class="math inline">\(f(\boldsymbol{x})\)</span> decreases fastest if one goes from <span class="math inline">\(\boldsymbol{a}\)</span> in the direction of the negative gradient of <span class="math inline">\(f\)</span> at <span class="math inline">\(\boldsymbol{a}\)</span>. It follows that, if</p>
+<p><span class="math display">\[\mathbf{a}_{n+1} = \mathbf{a}_n-\gamma\nabla F(\mathbf{a}_n)\]</span></p>
+<p>for <span class="math inline">\(\gamma \in \Re_{+}\)</span> small enough, then <span class="math inline">\(f(\mathbf{a_n})\geq f(\mathbf{a_{n+1}})\)</span>. In other words, the term <span class="math inline">\(\gamma\nabla F(\mathbf{a})\)</span> is subtracted from <span class="math inline">\(\mathbf{a}\)</span> because we want to move against the gradient, toward the minimum. With this observation in mind, one starts with a guess <span class="math inline">\(\mathbf{x}_0\)</span> for a local minimum of <span class="math inline">\(f\)</span>, and considers the sequence <span class="math inline">\(\mathbf{x}_0, \mathbf{x}_1, \mathbf{x}_2, \dots\)</span> such that</p>
+<p><span class="math display">\[\mathbf{x}_{n+1}=\mathbf{x}_n-\gamma_n \nabla F(\mathbf{x}_n),\ n \ge 0\]</span></p>
+<p>We have a monotonic sequence</p>
+<p><span class="math display">\[f(\mathbf{x}_0)\ge f(\mathbf{x}_1)\ge f(\mathbf{x}_2)\ge \cdots\]</span></p>
+<p>so hopefully the sequence <span class="math inline">\((\mathbf{x}_n)\)</span> converges to the desired local minimum. Note that the value of the <strong>step size</strong> <span class="math display">\[\gamma\]</span> is allowed to change at every iteration.</p>
+<p>Gradient descent is a good method for functions which are <strong>convex</strong> (or concave upward) and have an easily calculated (or approximated) gradient (first derivative), regardless of dimensionality. If a function is not globally convex, gradient descent can zig-zag through the function as the gradients point towards various local minima.</p>
+<div id="implementation-in-r-1" class="section level2">
+<h2>Implementation in R</h2>
+<p>The following code is an example of implementing gradient descent algorithm to find the minimum of the function <span class="math inline">\(f{(x)} = x^{4} - 3x^{3} + 2\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define the function</span>
+obj_func &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  x<span class="op">^</span><span class="dv">4</span> <span class="op">-</span><span class="st"> </span><span class="dv">3</span> <span class="op">*</span><span class="st"> </span>x<span class="op">^</span><span class="dv">3</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span>
+}
+
+<span class="co"># draw a plot of the function</span>
+range &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="fl">3.25</span>))
+
+f0 &lt;-<span class="st"> </span>range <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> obj_func, <span class="dt">size =</span> .<span class="dv">5</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x)))
+f0</code></pre></div>
+<p><img src="optimization_files/figure-html/plot-grad-func-1.png" width="672" /></p>
+<p>Note that we are looking for <span class="math inline">\(f\)</span>’s minimum by solving its derivative being equal to zero.</p>
+<p><span class="math display">\[\nabla f(x) = 4x^3 - 9x^2 = 0\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define the gradient</span>
+gradient &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  (<span class="dv">4</span> <span class="op">*</span><span class="st"> </span>x<span class="op">^</span><span class="dv">3</span>) <span class="op">-</span><span class="st"> </span>(<span class="dv">9</span> <span class="op">*</span><span class="st"> </span>x<span class="op">^</span><span class="dv">2</span>)
+}
+
+f0 &lt;-<span class="st"> </span>range <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> gradient, <span class="dt">size =</span> .<span class="dv">5</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(x),
+       <span class="dt">y =</span> <span class="kw">expression</span>(<span class="kw">f</span>(x)))
+f0</code></pre></div>
+<p><img src="optimization_files/figure-html/plot-grad-func-deriv-1.png" width="672" /></p>
+<p>And the <span class="math inline">\(x\)</span> can be updated with gradient descent method every iteration in the form of</p>
+<p><span class="math display">\[x_{(k+1)} = x_{(k)} - \alpha \nabla f\bigl(x_{(k)}\bigr)\]</span></p>
+<p>where <span class="math inline">\(k = 1, 2, \ldots,\)</span> maximum iteration, and <span class="math inline">\(\alpha\)</span> is the step size.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">grad_desc &lt;-<span class="st"> </span><span class="cf">function</span>(func, grad, <span class="dt">stepsize =</span> <span class="fl">0.003</span>, <span class="dt">tol =</span> <span class="fl">1e-5</span>, <span class="dt">iter =</span> <span class="dv">500</span>){
+  <span class="co"># randomly initialize a value to x</span>
+  <span class="kw">set.seed</span>(<span class="dv">100</span>)
+  x &lt;-<span class="st"> </span><span class="kw">floor</span>(<span class="kw">runif</span>(<span class="dv">1</span>)<span class="op">*</span><span class="dv">10</span>)
+  
+  <span class="co"># create a vector to contain all xs for all steps</span>
+  x.All &lt;-<span class="st"> </span><span class="kw">vector</span>(<span class="st">&quot;numeric&quot;</span>, iter)
+  
+  <span class="co"># gradient descent method to find the minimum</span>
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>iter){
+    x1 &lt;-<span class="st"> </span>x <span class="op">-</span><span class="st"> </span>stepsize <span class="op">*</span><span class="st"> </span><span class="kw">grad</span>(x)
+    x.All[[i]] &lt;-<span class="st"> </span>x1
+    
+    <span class="co"># Once the difference between x0 and x1 becomes sufficiently small, output the results.</span>
+    <span class="cf">if</span> (<span class="kw">abs</span>(x <span class="op">-</span><span class="st"> </span>x1) <span class="op">&lt;</span><span class="st"> </span>tol) {
+      root.approx &lt;-<span class="st"> </span>x
+      res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="st">&#39;root approximation&#39;</span> =<span class="st"> </span>root.approx, <span class="st">&#39;iterations&#39;</span> =<span class="st"> </span>x.All[<span class="dv">1</span><span class="op">:</span>i])
+      <span class="kw">return</span>(res)
+    }
+    
+    <span class="co"># If gradient descent has not yet reached convergence set x as x0 and continue</span>
+    x &lt;-<span class="st"> </span>x1
+  }
+  
+  <span class="kw">print</span>(<span class="st">&#39;Too many iterations in method&#39;</span>)
+}
+
+<span class="kw">grad_desc</span>(<span class="dt">func =</span> obj_func, <span class="dt">grad =</span> gradient)</code></pre></div>
+<pre><code>## $`root approximation`
+## [1] 2.25
+## 
+## $iterations
+##   [1] 2.92 2.85 2.79 2.74 2.70 2.66 2.62 2.59 2.56 2.54 2.52 2.50 2.48 2.46
+##  [15] 2.45 2.43 2.42 2.41 2.40 2.39 2.38 2.37 2.36 2.35 2.35 2.34 2.33 2.33
+##  [29] 2.32 2.32 2.31 2.31 2.31 2.30 2.30 2.30 2.29 2.29 2.29 2.29 2.28 2.28
+##  [43] 2.28 2.28 2.28 2.27 2.27 2.27 2.27 2.27 2.27 2.27 2.27 2.26 2.26 2.26
+##  [57] 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26 2.26
+##  [71] 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25
+##  [85] 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25
+##  [99] 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25
+## [113] 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25 2.25
+## [127] 2.25</code></pre>
+</div>
+</div>
+<div id="optimize-and-optim" class="section level1">
+<h1><code>optimize()</code> and <code>optim()</code></h1>
+<p><code>optim()</code> is a general-purpose optimization function which employs one of several different optimization algorithms. The major arguments are <code>par</code> (inital values for the parameters to be optimized over), and <code>fn</code> (the function to be minimized). Your <code>fn</code> should have as its first argument the parameters over which minimization is to take place, and the function should return a single scalar value.</p>
+<div id="example-one-dimensional-utility" class="section level2">
+<h2>Example: one-dimensional utility</h2>
+<p>Let’s try to figure out what policy a politician preferred given their utility function. Here’s the utility function:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">politician.utility &lt;-<span class="st"> </span><span class="cf">function</span>(policy.content){
+        politician.support &lt;-<span class="st"> </span><span class="op">-</span>(policy.content <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">8</span>
+        <span class="kw">return</span>(politician.support)
+}</code></pre></div>
+<p>And here is how this utility function looked like:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">range &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">4</span>))
+
+range <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> politician.utility, <span class="dt">size =</span> .<span class="dv">5</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Legislator&#39;s Utility Function&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Policy Ideology&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Legislator Utility From Policy&quot;</span>)</code></pre></div>
+<p><img src="optimization_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Where is the peak of this function? Let’s use <code>optimize()</code> to find out.</p>
+<p>First, we pass our function <code>politician.utility()</code> to <code>optimize()</code>. When using optimizers you will need to write a function that returns an output you would like to maximize or minimize. Second, we need to provide an interval over which <code>optimize()</code> can search for a maximum value. Third, note that we need to specify that we want to find the maximum of this function. The default setting in <code>optimize()</code> is to find the minimum of a function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">optimize</span>(<span class="dt">f =</span> politician.utility, <span class="dt">interval =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">4</span>), <span class="dt">maximum =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>## $maximum
+## [1] 1
+## 
+## $objective
+## [1] 8</code></pre>
+<ul>
+<li><code>maximum</code> tells us value for <span class="math inline">\(x\)</span> at which the function is maximized</li>
+<li><code>objective</code> tells us the value of the function <span class="math inline">\(f(x)\)</span> evaluated at this point</li>
+</ul>
+</div>
+<div id="example-one-dimensional-utility-1" class="section level2">
+<h2>Example: one-dimensional utility</h2>
+<p>When politicians decide whether to support a bill there are often more than a single dimension at play. For example, an issue might touch on both economic and social issues. Suppose a politician has different utility functions over two aspects of a bill. What combination of economic and social policy content might they prefer from the bill?</p>
+<p>Here is a new function describing politican support for a policy proposal:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">politician.utility.2d &lt;-<span class="st"> </span><span class="cf">function</span>(params){
+  <span class="co"># split parameters</span>
+  economic.content &lt;-<span class="st"> </span>params[<span class="dv">1</span>]
+  social.content &lt;-<span class="st"> </span>params[<span class="dv">2</span>]
+  
+  <span class="co"># calculate utility</span>
+  politician.support &lt;-<span class="st"> </span>(<span class="op">-</span>(economic.content <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">8</span> ) <span class="op">+</span><span class="st"> </span>(<span class="op">-</span>(social.content <span class="op">+</span><span class="st"> </span><span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">8</span>)
+  <span class="kw">return</span>(politician.support)
+}</code></pre></div>
+<p>Note the function receives only one argument (<code>params</code>) which will contain two elements. The function then assigns the first element of <code>params</code> to the first dimension of the legislator’s utility function, and the second one to the social dimension. This is because <code>optim()</code> will optimize only the first argument of our function – regardless of how many elements (i.e., variables) it contains.</p>
+<p>Now we can run <code>optim()</code>. The function takes at least three arguments. The first argument is <code>par</code>, which specifies the starting points at which <code>optim()</code> will start to assess optima. The second argument is <code>fun</code> – the function we want to optimize. As the function <code>optimize()</code> minimizes by default, in order to find the maximum of our function we need to add the argument “control=list(fnscale=-1)”. An alternative would be to have our <code>politician.utility.2d()</code> function return the negative of politician support. This would accomplish the same thing without needing to change around the optim parameters.</p>
+<p>Let’s optimize our function now:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">optim</span>(<span class="dt">par =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>), <span class="dt">fn =</span> politician.utility.2d, <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="op">-</span><span class="dv">1</span>))</code></pre></div>
+<pre><code>## $par
+## [1]  1 -2
+## 
+## $value
+## [1] 16
+## 
+## $counts
+## function gradient 
+##       61       NA 
+## 
+## $convergence
+## [1] 0
+## 
+## $message
+## NULL</code></pre>
+<p><code>optim()</code> has several outputs. The most important ones are the two elements contained in the <code>par</code> output. They show the optimized values for each parameter.</p>
+</div>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-08</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version  date       source                              
+##  assertthat   0.2.0    2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2    2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1    2018-07-05 local                               
+##  bindr        0.1.1    2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp   * 0.2.2    2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0    2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0    2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0    2017-11-05 CRAN (R 3.5.0)                      
+##  codetools    0.2-15   2016-10-05 CRAN (R 3.5.1)                      
+##  colorspace   1.3-2    2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1    2018-07-05 local                               
+##  crayon       1.3.4    2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1    2018-07-05 local                               
+##  devtools     1.13.6   2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.18   2018-10-10 cran (@0.6.18)                      
+##  dplyr      * 0.7.6    2018-06-29 cran (@0.7.6)                       
+##  evaluate     0.11     2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0    2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.1.0    2018-10-25 cran (@3.1.0)                       
+##  glue         1.3.0    2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1    2018-07-05 local                               
+##  grDevices  * 3.5.1    2018-07-05 local                               
+##  grid         3.5.1    2018-07-05 local                               
+##  gtable       0.2.0    2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2    2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2    2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6    2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1    2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5      2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20     2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35  2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1    2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4    2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5      2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0    2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1    2018-07-05 local                               
+##  modelr       0.1.2    2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0    2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137  2018-04-07 CRAN (R 3.5.1)                      
+##  numDeriv   * 2016.8-1 2016-08-27 CRAN (R 3.5.0)                      
+##  patchwork  * 0.0.1    2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0    2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2    2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4    2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5    2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.2.2    2017-06-17 CRAN (R 3.5.0)                      
+##  Rcpp         0.12.19  2018-10-01 cran (@0.12.19)                     
+##  readr      * 1.1.1    2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0    2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.3.0.1  2018-10-25 cran (@0.3.0.1)                     
+##  rmarkdown    1.10     2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2    2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7      2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2    2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0    2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1    2018-07-05 local                               
+##  stringi      1.2.4    2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1    2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2    2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1    2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.4    2018-02-26 CRAN (R 3.5.0)                      
+##  tidyverse  * 1.2.1    2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1    2018-07-05 local                               
+##  utils      * 3.5.1    2018-07-05 local                               
+##  withr        2.1.2    2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0    2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0    2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
