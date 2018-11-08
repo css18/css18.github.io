@@ -1,0 +1,30 @@
+---
+title: "Optimization"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm012 - November 8, 2018
+
+## Overview
+
+* Define optimization and identify research tasks which require optimization
+* Explain analytical methods for optimizing functions
+* Introduce a few major optimization algorithms
+* Demonstrate how to implement optimization methods in R using custom functions and the `optimize()` function
+
+## Before class
+
+
+## Slides and class materials
+
+* [Slides](extras/cm012_slides.html)
+* [Optimization](optimization.html)
+
+## Additional resources
+
+## What you need to do
+
