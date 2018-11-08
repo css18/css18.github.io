@@ -696,6 +696,22 @@ politician.utility.2d <- function(params){
 }
 ```
 
+```{r}
+# generate data values
+expand.grid(economic.substance = seq(from=-8,to=8, by=.2),
+            social.substance = seq(from=-8, to=8, by=.2)) %>%
+  as_tibble %>%
+  mutate(utility = map2_dbl(economic.substance, social.substance,
+                            ~ politician.utility.2d(c(.x, .y)))) %>%
+  ggplot(aes(economic.substance, social.substance, fill = utility)) +
+  geom_raster() +
+  geom_contour(aes(z = utility)) +
+  scale_fill_continuous(type = "viridis") +
+  labs(title = "Utility Based on Policy Content on Two Dimensions",
+       x = "Economic Policy Content",
+       y = "Social Policy Content")
+```
+
 Note the function receives only one argument (`params`) which will contain two elements. The function then assigns the first element of `params` to the first dimension of the legislator's utility function, and the second one to the social dimension. This is because `optim()` will optimize only the first argument of our function -- regardless of how many elements (i.e., variables) it contains.
 
 Now we can run `optim()`. The function takes at least three arguments. The first argument is `par`, which specifies the starting points at which `optim()` will start to assess optima. The second argument is `fun` -- the function we want to optimize. As the function `optimize()` minimizes by default, in order to find the maximum of our function we need to add the argument "control=list(fnscale=-1)". An alternative would be to have our `politician.utility.2d()` function return the negative of politician support. This would accomplish the same thing without needing to change around the optim parameters.  
