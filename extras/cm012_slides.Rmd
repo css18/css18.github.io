@@ -1,0 +1,645 @@
+---
+title: "Optimization"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 18))
+```
+
+## Optimization
+
+* Method for selecting the best element (based on some criterion) from some set of available alternatives
+* Maximizing/minimizing a function via systematic selection
+* Given a function $f: A \rightarrow \Re$ from some set $A$ to the real numbers, we seek to determine an element $x_0 \in A$ such that
+    * $f(x_0) \leq f(x)$ for all $x \in A$
+    * $f(x_0) \geq f(x)$ for all $x \in A$
+* $A$ is some subset of $\Re^n$
+* Domain of $A$ is called the **search space**
+* Elements of $A$ are called **candidate solutions**
+* Function $f$
+    * Objective function
+    * Loss or cost function (minimization)
+    * Utility or fitness function (maximization)
+
+## Analytical solution for single variable functions
+
+1. Find $f'(x)$
+1. Set $f'(x)=0$ and solve for $x$. Call all $x_0$ such that $f'(x_0)=0$ **critical values**
+1. Find $f''(x)$. Evaluate at each $x_0$
+    * If $f''(x) > 0$, concave up, and therefore a local minimum
+    * If $f''(x) < 0$, concave down, and therefore a local maximum
+    * If it's the global maximum/minimum, it will produce the largest/smallest value for $f(x)$
+    * On a closed range along the domain, check the endpoints as well
+
+## $f(x) = -x^2$,  $x \in [-3, 3]$
+
+```{r ex-1, echo = FALSE}
+data_frame(x = c(-4, 4)) %>%
+  ggplot(aes(x)) +
+  stat_function(fun = function(x) -x^2, size = .5) +
+  geom_vline(xintercept = c(-3, 3), linetype = 2) +
+  labs(title = expression(f(x) == -x^2),
+       x = expression(x),
+       y = expression(f(x)))
+```
+
+## $f(x) = -x^2$,  $x \in [-3, 3]$
+
+##### Critical Value
+
+$$
+\begin{eqnarray}
+f'(x) & = & - 2 x  \\
+0 & = & - 2 x^{*}  \\
+x^{*} & = & 0 
+\end{eqnarray}
+$$
+
+##### Second Derivative
+
+$$
+\begin{eqnarray}
+f^{'}(x) & = & - 2x  \\
+f^{''}(x)  & = & - 2  
+\end{eqnarray}
+$$
+
+* $f^{''}(x)< 0$, local maximum
+
+## $f(x) = x^3$, $x \in [-3, 3]$
+
+```{r ex-2, echo = FALSE}
+data_frame(x = c(-5, 5)) %>%
+  ggplot(aes(x)) +
+  stat_function(fun = function(x) x^3, size = .5) +
+  geom_vline(xintercept = c(-3, 3), linetype = 2) +
+  labs(title = expression(f(x) == x^3),
+       x = expression(x),
+       y = expression(f(x)))
+```
+
+## $f(x) = x^3$, $x \in [-3, 3]$
+
+##### Critical Value
+
+$$
+\begin{eqnarray}
+f'(x) & = & 3 x^2  \\
+0 & = & 3 (x^{*})^2  \\
+x^{*} & = & 0 
+\end{eqnarray}
+$$
+
+##### Second Derivative
+
+$$
+\begin{eqnarray}
+f^{''}(x) & = & 6x  \\
+f^{''}(0)  & = & 0
+\end{eqnarray}
+$$
+
+* Neither a minimum nor a maximum, it is a **saddle point**
+
+## Differences from single variable optimization procedure
+
+* Let $f:X \rightarrow \Re$ with $X \subset \Re^{n}$. A vector $\boldsymbol{x}^{*} \in X$ is a **global maximum** if , for all other $\boldsymbol{x} \in X$
+
+    $$
+    \begin{eqnarray}
+    f(\boldsymbol{x}^{*}) & > & f(\boldsymbol{x} ) \nonumber 
+    \end{eqnarray}
+    $$
+
+* A vector $\boldsymbol{x}^{\text{local}}$ is a **local** maximum if there is a neighborhood around $\boldsymbol{x}^{\text{local}}$, $Q \subset X$ such that, for all $x \in Q$,
+
+    $$
+    \begin{eqnarray}
+    f(\boldsymbol{x}^{\text{local} }) & > & f(\boldsymbol{x} )
+    \end{eqnarray}
+    $$
+
+## First derivative test: Gradient
+
+* Suppose $f:X \rightarrow \Re^{n}$ with $X \subset \Re^{1}$ is a differentiable function.  Define the **gradient** vector of $f$ at $\boldsymbol{x}_{0}$, $\nabla f(\boldsymbol{x}_{0})$ as
+
+    $$
+    \begin{eqnarray}
+    \nabla f (\boldsymbol{x}_{0})  & = & \left(\frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{1} }, \frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{2} }, \frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{3} }, \ldots, \frac{\partial f (\boldsymbol{x}_{0}) }{\partial x_{n} } \right) 
+    \end{eqnarray}
+    $$
+
+* It is the first partial derivatives for each variable $x_n$ stored in a vector. So if $\boldsymbol{a} \in X$ is a **local** extremum, then, 
+
+    $$
+    \begin{eqnarray}
+    \nabla f(\boldsymbol{a}) & = & \boldsymbol{0}  \\
+    									& = & (0, 0, \ldots, 0)  				
+    \end{eqnarray}
+    $$
+
+## Example gradients
+
+$$
+\begin{eqnarray}
+f(x,y) &=& x^2+y^2 \\
+\nabla f(x,y) &=& (2x, \, 2y)
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+f(x,y) &=& x^3 y^4 +e^x -\log y \\
+\nabla f(x,y) &=& (3x^2 y^4 + e^x, \, 4x^3y^3 - \frac{1}{y})
+\end{eqnarray}
+$$
+
+## Critical values
+
+1. Maximum
+1. Minimum
+1. Saddle point
+
+## Second derivative test: Hessian
+
+* Suppose $f:X \rightarrow \Re^{1}$ , $X \subset \Re^{n}$, with $f$ a twice differentiable function.  We will define the **Hessian** matrix as the matrix of second derivatives at $\boldsymbol{x}^{*} \in X$,
+
+    $$
+    \begin{eqnarray}
+    \boldsymbol{H}(f)(\boldsymbol{x}^{*} )  & = & \begin{pmatrix} 
+    		\frac{\partial^{2} f }{\partial x_{1} \partial x_{1} } (\boldsymbol{x}^{*} ) & \frac{\partial^{2} f }{\partial x_{1} \partial x_{2} } (\boldsymbol{x}^{*} ) & \ldots & \frac{\partial^{2} f }{\partial x_{1} \partial x_{n} } (\boldsymbol{x}^{*} ) \\
+    		\frac{\partial^{2} f }{\partial x_{2} \partial x_{1} } (\boldsymbol{x}^{*} ) & \frac{\partial^{2} f }{\partial x_{2} \partial x_{2} } (\boldsymbol{x}^{*} ) & \ldots & \frac{\partial^{2} f }{\partial x_{2} \partial x_{n} } (\boldsymbol{x}^{*} ) \\
+    		\vdots & \vdots & \ddots & \vdots \\
+    		\frac{\partial^{2} f }{\partial x_{n} \partial x_{1} } (\boldsymbol{x}^{*} ) & \frac{\partial^{2} f }{\partial x_{n} \partial x_{2} } (\boldsymbol{x}^{*} ) & \ldots & \frac{\partial^{2} f }{\partial x_{n} \partial x_{n} } (\boldsymbol{x}^{*} ) \\
+    \end{pmatrix} \nonumber 
+    \end{eqnarray}
+    $$
+
+* Requires differentiating on the entire gradient with respect to each $x_n$
+
+## Example Hessians
+
+$$
+\begin{eqnarray}
+f(x,y) &=& x^2+y^2 \\
+\nabla f(x,y) &=& (2x, \, 2y) \\
+\boldsymbol{H}(f)(x,y) &=& \begin{pmatrix}
+2 & 0 \\
+0 & 2
+\end{pmatrix}
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+f(x,y) &=& x^3 y^4 +e^x -\log y \\
+\nabla f(x,y) &=& (3x^2 y^4 + e^x, \, 4x^3y^3 - \frac{1}{y}) \\
+\boldsymbol{H}(f)(x,y) &=& \begin{pmatrix}
+6xy^4 + e^x & 12x^2y^3 \\
+12x^2y^3 & 12x^3y^2 + \frac{1}{y^2}
+\end{pmatrix}
+\end{eqnarray}
+$$
+
+## Definiteness of a matrix
+
+* Consider $n \times n$ matrix $\boldsymbol{A}$.  If, for all $\boldsymbol{x} \in \Re^{n}$ where $\boldsymbol{x} \neq 0$:
+
+    $$
+    \begin{eqnarray}
+    \boldsymbol{x}^{'} \boldsymbol{A} \boldsymbol{x} & > & 0, \quad \text{ $\boldsymbol{A}$ is positive definite } \\
+    \boldsymbol{x}^{'} \boldsymbol{A} \boldsymbol{x} & < & 0, \quad \text{ $\boldsymbol{A}$ is negative definite } 
+    \end{eqnarray}
+    $$
+
+* If $\boldsymbol{x}^{'} \boldsymbol{A} \boldsymbol{x} >0$ for some $\boldsymbol{x}$ and $\boldsymbol{x}^{'} \boldsymbol{A} \boldsymbol{x}<0$ for other $\boldsymbol{x}$, then we say $\boldsymbol{A}$ is indefinite.
+
+## Second derivative test
+
+* If $\boldsymbol{H}(f)(\boldsymbol{a})$ is positive definite then $\boldsymbol{a}$ is a local minimum 
+* If $\boldsymbol{H}(f)(\boldsymbol{a})$ is \alert{negative definite} then $\boldsymbol{a}$ is a local maximum 
+* If $\boldsymbol{H}(f)(\boldsymbol{a})$ is \alert{indefinite} then $\boldsymbol{a}$ is a saddle point
+
+## Use the determinant to assess definiteness
+
+$$
+\begin{eqnarray}
+\boldsymbol{H}(f)(\boldsymbol{a}) & = & \begin{pmatrix} 
+	A & B \\
+	B & C \\
+\end{pmatrix} 
+\end{eqnarray}
+$$
+
+* $AC - B^2> 0$ and $A>0$ $\leadsto$ positive definite $\leadsto$ $\boldsymbol{a}$ is a local minimum 
+* $AC - B^2> 0$ and $A<0$ $\leadsto$ negative definite $\leadsto$ $\boldsymbol{a}$ is a local maximum
+* $AC - B^2<0$ $\leadsto$ indefinite $\leadsto$ saddle point 
+* $AC- B^2 = 0$ inconclusive
+
+## Basic procedure summarized
+
+1. Calculate gradient
+1. Set equal to zero, solve system of equations
+1. Calculate Hessian
+1. Assess Hessian at critical values
+1. Boundary values?  (if relevant)
+
+## A simple optimization example
+
+* Suppose $f:\Re^{2} \rightarrow \Re$ with 
+
+    $$
+    \begin{eqnarray}
+    f(x_{1}, x_{2}) & = & 3(x_1 + 2)^2  + 4(x_{2}  + 4)^2 \nonumber 
+    \end{eqnarray}
+    $$
+
+* Calculate gradient:
+
+    $$
+    \begin{eqnarray}
+    \nabla f(\boldsymbol{x}) & = & (6 x_{1} + 12 , 8x_{2} + 32 ) \nonumber \\
+    \boldsymbol{0} & = & (6 x_{1}^{*} + 12 , 8x_{2}^{*} + 32 ) \nonumber 
+    \end{eqnarray}
+    $$
+
+* We now solve the system of equations to yield
+
+    $$x_{1}^{*}  = - 2, \quad x_{2}^{*}  = -4$$ 
+    
+    $$
+    \begin{eqnarray}
+    \textbf{H}(f)(\boldsymbol{x}^{*}) & = & \begin{pmatrix}
+    6 & 0 \\
+    0 & 8 \\
+    \end{pmatrix}\nonumber 
+    \end{eqnarray}
+    $$
+
+    det$(\textbf{H}(f)(\boldsymbol{x}^{*}))$ = 48 and $6>0$ so $\textbf{H}(f)(\boldsymbol{x}^{*})$ is positive definite. $\boldsymbol{x^{*}}$ is a **local minimum**.
+
+## Computational optimization procedures
+
+* Calculus-based methods
+* Numerical/computational methods
+
+1. Grid search
+1. Newton-Raphson hill climber
+1. Gradient descent
+
+## Grid search
+
+* Exhaustive search through manually defined search space
+* Evaluates all possible parameter value(s)
+* Select the parameter value(s) which minimize/maximize the function
+
+## Example: MLE for a normal distribution {.scrollable}
+
+$$
+\begin{eqnarray}
+Y_{i} & \sim & \text{Normal}(\mu, \sigma^2)  \\  
+\boldsymbol{Y} & = & (Y_{1}, Y_{2}, \ldots, Y_{n} )   
+\end{eqnarray}
+$$
+
+* Likelihood function
+
+    $$
+    \begin{eqnarray}
+    L(\mu, \sigma^2 | \boldsymbol{Y} ) & \propto & \prod_{i=1}^{n} f(Y_{i}|\mu, \sigma^2) \\  
+    &\propto  &  \prod_{i=1}^{N} \frac{\exp[ - \frac{ (Y_{i} - \mu)^2 }{2\sigma^2} ]}{\sqrt{2 \pi \sigma^2}} \\
+    & \propto  & \frac{\exp[ -\sum_{i=1}^{n} \frac{(Y_{i} - \mu)^2}{2\sigma^2}  ]}{ (2\pi)^{n/2} \sigma^{2n/2} }
+     \end{eqnarray}
+    $$
+ 
+* Log-likelihood
+
+    $$
+    \begin{eqnarray}
+    \log L(\mu, \sigma^2|\boldsymbol{Y} ) & = & -\sum_{i=1}^{n} \frac{(Y_{i} - \mu)^2}{2\sigma^2} - \frac{n}{2} log(2 \pi) - \frac{n}{2} \log (\sigma^2)
+    \end{eqnarray}
+    $$
+
+## Example: MLE for a normal distribution {.scrollable}
+
+```{r sim-norm}
+set.seed(1234)
+
+y <- rnorm(n = 10000, mean = 0.25, sd = 10)
+head(y)
+```
+
+```{r loglik}
+# define the log-likelihood function for a normal distribution
+log.like <- function(mu, sigma.2, y){
+	part1 <- - (1 / (2 * sigma.2)) * sum((y - mu)^2) 
+	part2 <- - (length(y)/2) * log(sigma.2) 		
+	out <- part1 + part2
+	return(out)
+	}
+```
+
+```{r search-space}
+# define search space
+(search_space <- expand.grid(mu = seq(-2, 2, by = .01),
+            sigma2 = seq(8^2, 12^2, by = .1)) %>%
+  as_tibble)
+
+# evaluate parameters
+system.time((search_space <- search_space %>%
+  mutate(logLik = map2_dbl(mu, sigma2, log.like, y = y))))
+```
+
+```{r grid-results, dependson = "search-space"}
+# which parameter values maximize the likelihood function
+filter(search_space, logLik == max(logLik))
+
+# draw a heatmap of the log-likelihood values
+ggplot(search_space, aes(mu, sigma2, fill = logLik)) +
+  geom_raster() +
+  geom_contour(aes(z = logLik)) +
+  scale_fill_continuous(type = "viridis") +
+  labs(x = expression(mu),
+       y = expression(sigma^2))
+```
+
+```{r sim-norm-stats}
+mean(y)
+var(y)
+```
+
+## Newton-Raphson hill climber
+
+* Roots
+* Approximate methods
+* Newton-Raphson (Newton's method)
+
+## Description of algorithm
+
+$$
+\begin{eqnarray}
+0 & \cong & f(x_0) + \frac{f^{'}(x_0)}{1} (x_1 - x_0)
+\end{eqnarray}
+$$
+
+$$
+\begin{eqnarray}
+x_1 & \cong & x_0 - \frac{f(x_0)}{f'(x_0)}
+\end{eqnarray}
+$$
+
+$$
+x_{n+1} \cong x_n - \frac{f(x_n)}{f'(x_n)}
+$$
+
+## Implementation in R {.scrollable}
+
+$$y = x^3 + 2x - 5$$
+
+```{r poly-func}
+# define the function
+func2 <- function(x) {
+  x^3 - 2 * x - 5
+}
+
+# draw a plot of the function
+range <- data_frame(x = c(-5, 5))
+
+f0 <- range %>%
+  ggplot(aes(x)) +
+  stat_function(fun = func2, size = .5, linetype = 2) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  labs(x = expression(x),
+       y = expression(f(x)))
+f0
+```
+
+```{r uniroot}
+uniroot(func2, interval = c(2, 3))
+```
+
+## Implementation in R {.scrollable}
+
+```{r newton-manual}
+# f - the function to optimize
+# a - lower bound for the search
+# b - upper bound for the search
+# tol - tolerance (stopping criteria for the algorithm)
+# n - maximum number of iterations to attempt. will not exceed even if
+#     tolerance is not achieved
+
+newton_raphson <- function(f, a, b, tol = 1e-5, n_iter = 1000) {
+  require(numDeriv) # Package for computing f'(x)
+  
+  x0 <- a # Set start value to supplied lower bound
+  k <- vector("numeric", length = n_iter) # Initialize for iteration results
+  
+  # Check the upper and lower bounds to see if approximations result in 0
+  fa <- f(a)
+  if (fa == 0.0) {
+    return(a)
+  }
+  
+  fb <- f(b)
+  if (fb == 0.0) {
+    return(b)
+  }
+
+  for (i in 1:n_iter) {
+    dx <- genD(func = f, x = x0)$D[1] # First-order derivative f'(x0)
+    x1 <- x0 - (f(x0) / dx) # Calculate next value x1
+    k[[i]] <- x1 # Store x1
+    
+    # Once the difference between x0 and x1 becomes sufficiently small, output the results.
+    if (abs(x1 - x0) < tol) {
+      root.approx <- x1
+      res <- list('root approximation' = root.approx, 'iterations' = k[1:i])
+      return(res)
+    }
+    # If Newton-Raphson has not yet reached convergence set x1 as x0 and continue
+    x0 <- x1
+  }
+  print('Too many iterations in method')
+}
+```
+
+```{r newton-manual-apply}
+newton_raphson(f = func2, a = 2, b = 3)
+```
+
+## Gradient descent
+
+* Similar to Newton-Raphson
+* Step size is proportional to the negative of the gradient of the function at the current point
+
+    $$\mathbf{a}_{n+1} = \mathbf{a}_n-\gamma\nabla F(\mathbf{a}_n)$$
+
+    $$\mathbf{x}_{n+1}=\mathbf{x}_n-\gamma_n \nabla F(\mathbf{x}_n),\ n \ge 0$$
+
+    $$f(\mathbf{x}_0)\ge f(\mathbf{x}_1)\ge f(\mathbf{x}_2)\ge \cdots$$
+
+* Good for convex functions with easily calculated gradients
+
+## Implementation in R {.scrollable}
+
+```{r plot-grad-func}
+# define the function
+obj_func <- function(x) {
+  x^4 - 3 * x^3 + 2
+}
+
+# draw a plot of the function
+range <- data_frame(x = c(-1, 3.25))
+
+f0 <- range %>%
+  ggplot(aes(x)) +
+  stat_function(fun = obj_func, size = .5, linetype = 2) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  labs(x = expression(x),
+       y = expression(f(x)))
+f0
+```
+
+## Implementation in R {.scrollable}
+
+$$\nabla f(x) = 4x^3 - 9x^2 = 0$$
+
+```{r plot-grad-func-deriv}
+# define the gradient
+gradient <- function(x) {
+  (4 * x^3) - (9 * x^2)
+}
+
+f0 <- range %>%
+  ggplot(aes(x)) +
+  stat_function(fun = gradient, size = .5, linetype = 2) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  labs(x = expression(x),
+       y = expression(f(x)))
+f0
+```
+
+## Implementation in R {.scrollable}
+
+```{r gradient-descent}
+# func - the function to optimize
+# grad - gradient of the function to optimize
+# stepsize - size of each step
+# tol - tolerance (stopping criteria for the algorithm)
+# iter - maximum number of iterations to attempt. will not exceed even if
+#        tolerance is not achieved
+
+grad_desc <- function(func, grad, stepsize = 0.003, tol = 1e-5, iter = 500){
+  # randomly initialize a value to x
+  set.seed(100)
+  x <- floor(runif(1)*10)
+  
+  # create a vector to contain all xs for all steps
+  x.All <- vector("numeric", iter)
+  
+  # gradient descent method to find the minimum
+  for(i in 1:iter){
+    x1 <- x - stepsize * grad(x)
+    x.All[[i]] <- x1
+    
+    # Once the difference between x0 and x1 becomes sufficiently small, output the results.
+    if (abs(x - x1) < tol) {
+      root.approx <- x
+      res <- list('root approximation' = root.approx, 'iterations' = x.All[1:i])
+      return(res)
+    }
+    
+    # If gradient descent has not yet reached convergence set x as x0 and continue
+    x <- x1
+  }
+  
+  print('Too many iterations in method')
+}
+
+grad_desc(func = obj_func, grad = gradient)
+```
+
+## `optimize()` and `optim()`
+
+* `optim()`
+* `optimize()`
+
+## Example: one-dimensional utility {.scrollable}
+
+```{r}
+politician.utility <- function(policy.content){
+		politician.support <- -(policy.content - 1)^2 + 8
+		return(politician.support)
+}
+```
+
+```{r}
+range <- data_frame(x = c(-2, 4))
+
+range %>%
+  ggplot(aes(x)) +
+  stat_function(fun = politician.utility, size = .5, linetype = 2) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  labs(title = "Legislator's Utility Function",
+       x = "Policy Ideology",
+       y = "Legislator Utility From Policy")
+```
+
+## Example: one-dimensional utility {.scrollable}
+
+```{r}
+optimize(f = politician.utility, interval = c(-2, 4), maximum = TRUE)
+```
+
+## Example: two-dimensional utility {.scrollable}
+
+```{r}
+politician.utility.2d <- function(params){
+  # split parameters
+  economic.content <- params[1]
+  social.content <- params[2]
+  
+  # calculate utility
+  politician.support <- (-(economic.content - 1)^2 + 8 ) + (-(social.content + 2)^2 + 8)
+  return(politician.support)
+}
+```
+
+```{r}
+# generate data values
+expand.grid(economic.substance = seq(from=-8,to=8, by=.2),
+            social.substance = seq(from=-8, to=8, by=.2)) %>%
+  as_tibble %>%
+  mutate(utility = map2_dbl(economic.substance, social.substance,
+                            ~ politician.utility.2d(c(.x, .y)))) %>%
+  ggplot(aes(economic.substance, social.substance, fill = utility)) +
+  geom_raster() +
+  geom_contour(aes(z = utility)) +
+  scale_fill_continuous(type = "viridis") +
+  labs(title = "Utility Based on Policy Content on Two Dimensions",
+       x = "Economic Policy Content",
+       y = "Social Policy Content")
+```
+
+## Example: two-dimensional utility {.scrollable}
+
+```{r}
+optim(par = c(-1, 0), fn = politician.utility.2d, control = list(fnscale = -1))
+```

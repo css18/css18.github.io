@@ -685,7 +685,7 @@ optimize(f = politician.utility, interval = c(-2, 4), maximum = TRUE)
 * `maximum` tells us value for $x$ at which the function is maximized
 * `objective` tells us the value of the function $f(x)$ evaluated at this point
 
-## Example: one-dimensional utility
+## Example: two-dimensional utility
 
 When politicians decide whether to support a bill there are often more than a single dimension at play. For example, an issue might touch on both economic and social issues. Suppose a politician has different utility functions over two aspects of a bill. What combination of economic and social policy content might they prefer from the bill?
 
