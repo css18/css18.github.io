@@ -9,7 +9,8 @@ output: rcfss::cfss_slides
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(cache = TRUE,
                       message = FALSE,
-                      warning = FALSE)
+                      warning = FALSE,
+                      echo = FALSE)
 
 library(tidyverse)
 library(patchwork)
@@ -190,8 +191,6 @@ ggplot(infant, aes(mortal)) +
 * Parametric regression
 * Nonparametric regression
 
-OLS is a classic example of parametric regression, where we assume a monotonic, linear relationship between the features and outcome of interest and attempt to estimate the parameter values (coefficients) from the data. Nonparametric regression makes no assumptions about the functional form of $r(x)$, so $\xi$ is infinite. While more flexible, this makes estimating the regression model far more difficult.
-
 ## Naive non-parametric regression
 
 ```{r np-data}
@@ -317,7 +316,7 @@ $$X_3 \in \{1, 2, \dots ,10 \}$$
 
 * $10^3 = 1000$ possible combinations of the explanatory variables and $1000$ conditional expectations of $Y$ given $X$:
 
-$$\mu = E(Y|x_1, x_2, x_3) = f(x_1, x_2, x_3)$$
+    $$\mu = E(Y|x_1, x_2, x_3) = f(x_1, x_2, x_3)$$
 
 ## Naive non-parametric regression {.scrollable}
 
@@ -441,7 +440,7 @@ ggplot(wage10_np, aes(n)) +
 
     $$\frac{\hat{\theta}_n - \theta}{\se} \leadsto N(0,1)$$
 
-## Example: Bernoulli distributed random variable
+## Example: Bernoulli distributed random variable {.scrollable}
 
 * Let $X_1, \ldots, X_n ~ \text{Bernoulli}(\pi)$
 * Let $\hat{\pi}_n = \frac{1}{n} \sum_{i=1}^n X_i$. Then
@@ -474,7 +473,7 @@ ggplot(wage10_np, aes(n)) +
     * $b = b(X_1, \ldots, X_n)$
 
         $$\Pr_{\theta} (\theta \in C_n) \geq 1 - \alpha, \quad \forall \theta \in \Theta$$
-* $(a,b)$ traps $\theta$ with probability $1- \alpha$. 
+* $(a,b)$ traps $\theta$ with probability $1- \alpha$
 
 ## Caution interpreting confidence intervals
 
@@ -545,7 +544,7 @@ ggplot(wage10_np, aes(n)) +
 * Sufficient evidence to reject the null hypothesis?
 * Let
 
-$$X_1, \ldots, X_n \sim \text{Bernoulli}(\pi)$$
+    $$X_1, \ldots, X_n \sim \text{Bernoulli}(\pi)$$
 * Is it a fair coin?
     * $H_0: \pi = 0.5$
     * $H_1: \pi \neq 0.5$
