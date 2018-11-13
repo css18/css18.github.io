@@ -1,0 +1,32 @@
+---
+title: "Models, statistical inference, and learning"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm013 - November 13, 2018
+
+## Overview
+
+* Define statistical inference
+* Define parametric vs. nonparametric models
+* Introduce basic examples of nonparametric models
+* Summarize core concepts of point estimates, confidence sets, and hypothesis testing
+
+## Before class
+
+* Read [chapter 6 (Models, statistical inference, and learning) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+
+
+## Slides and class materials
+
+* [Slides](extras/cm013_slides.html)
+* [Statistical inference](stat-inference.html)
+
+## Additional resources
+
+## What you need to do
+
