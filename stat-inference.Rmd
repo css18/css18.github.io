@@ -46,7 +46,7 @@ A **nonparametric model** is a set $\xi$ that cannot be parameterized by a finit
 
 ### One-dimensional parametric estimation
 
-Let $X_1, \ldots, X_n$ be independent observations drawn from a Bernoulli random variable with probability $\pi$ of success. The problem is to estiamte the parameter $\pi$.
+Let $X_1, \ldots, X_n$ be independent observations drawn from a Bernoulli random variable with probability $\pi$ of success. The problem is to estimate the parameter $\pi$.
 
 ### Two-dimensional parametric estimation
 
@@ -54,7 +54,7 @@ Suppose that $X_1, \ldots, X_n \sim F$ and we assume that the PDF $f \in \xi$ wh
 
 ## Nonparametric density estimation
 
-Let $X_1, \ldots, X_n$ be independent observations from a cumulative distribution function (CDF) $F$ and let $f = F'$ be the probability density function (PDF)> Suppose we want to estimate the PDF $f$. It is not possible to estimate $f$ assuming only that $F \in \xi_{\text{ALL}}$ where $\xi_{\text{ALL}} = \{\text{all CDF's} \}$ -- that is, the sample space includes an infinite range of possible functions for the CDF. Instead, we need to assume some smoothness on $f$. We might assume that $f \in \xi = \xi_{\text{DENS}} \cap \xi_{\text{SOB}}$ where $\xi_{\text{DENS}}$ is the set of all PDFs and
+Let $X_1, \ldots, X_n$ be independent observations from a cumulative distribution function (CDF) $F$ and let $f = F'$ be the probability density function (PDF). Suppose we want to estimate the PDF $f$. It is not possible to estimate $f$ assuming only that $F \in \xi_{\text{ALL}}$ where $\xi_{\text{ALL}} = \{\text{all CDF's} \}$ -- that is, the sample space includes an infinite range of possible functions for the CDF. Instead, we need to assume some smoothness on $f$. We might assume that $f \in \xi = \xi_{\text{DENS}} \cap \xi_{\text{SOB}}$ where $\xi_{\text{DENS}}$ is the set of all PDFs and
 
 $$\xi_{\text{SOB}} \equiv f: \int (f''(x))^2 dx < \infty$$
 
@@ -411,9 +411,9 @@ Unless your dataset is extremely large or you have a small handful of variables 
 
 **Point estimation** refers to providing a single "best guess" of some quantity of interest. This quantity of interest could be a parameter in a parametric model, a CDF $F$, a PDF $f$, a regression function $r$, or a prediction for a future value $Y$ of some random variable.
 
-We denote a point estimate of $\theta$ by $\hat{\theta}$ or $\hat{\theta}_n$. Remember that $\theta$ is a fixed, unknown quantity. The estimate $\hat{\theta}$ depends on the data, so $\hat{\theta}$ is a random variable. More formally, let $X_1, \ldots, X_n$ be $n$ IID (independently and identically drawn) data points from some distribution $F$. A point estimator $\hat{\theta}_n$ of a paramater $\theta$ is some function of $X_1, \ldots, X_n$:
+We denote a point estimate of $\theta$ by $\hat{\theta}$ or $\hat{\theta}_n$. Remember that $\theta$ is a fixed, unknown quantity. The estimate $\hat{\theta}$ depends on the data, so $\hat{\theta}$ is a random variable. More formally, let $X_1, \ldots, X_n$ be $n$ IID (independently and identically drawn) data points from some distribution $F$. A point estimator $\hat{\theta}_n$ of a parameter $\theta$ is some function of $X_1, \ldots, X_n$:
 
-$$\hat{\theta}_n = g($X_1, \ldots, X_n$)$$
+$$\hat{\theta}_n = g(X_1, \ldots, X_n)$$
 
 ## Properties of point estimates
 
