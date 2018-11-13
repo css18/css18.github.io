@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Models, statistical inference, and learning</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Models, statistical inference, and learning</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}}\]</span></p>
+<div id="statistical-inference" class="section level1">
+<h1>Statistical inference</h1>
+<p><strong>Statistical inference</strong> is the process of using data to infer the probability distribution/random variable that generated the data. Given a sample <span class="math inline">\(X_1, \ldots, X_n \sim F\)</span>, how do we infer <span class="math inline">\(F\)</span>? Sometimes we want to infer all the features/parameters of <span class="math inline">\(F\)</span>, and sometimes we only need a subset of those features/parameters.</p>
+</div>
+<div id="parametric-vs.nonparametric-models" class="section level1">
+<h1>Parametric vs. nonparametric models</h1>
+<p>A <strong>statistical model</strong> <span class="math inline">\(\xi\)</span> is a set of distributions (or densities or regression functions). A <strong>parametric model</strong> is a set <span class="math inline">\(\xi\)</span> that can be parameterized by a finite number of parameters. We have seen many examples of parametric models - all the major types of random variables we’ve explored are defined in terms of a fixed number of parameters. For instance, if we assume that the data is generated by a Normal distribution, then the model is</p>
+<p><span class="math display">\[\xi \equiv f(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \exp \left[ -\frac{1}{2\sigma^2} (x - \mu)^2 \right], \quad \mu \in \Re, \sigma &gt; 0\]</span></p>
+<p>This is an example of a two-parameter model. The density <span class="math inline">\(f(x; \mu, \sigma)\)</span> indicates that <span class="math inline">\(x\)</span> is a value of the random variable <span class="math inline">\(X\)</span>, whereas <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span> are parameters that define the model.</p>
+<p>In general, a <strong>parametric model</strong> takes the form</p>
+<p><span class="math display">\[\xi \equiv f(x; \theta) : \theta \in \Theta\]</span></p>
+<p>where <span class="math inline">\(\theta\)</span> is an unknown parameter (or vector of parameters) that can only take values in the parameter space <span class="math inline">\(\Theta\)</span>. If <span class="math inline">\(\theta\)</span> is a vector but we are only interested in one component of <span class="math inline">\(\theta\)</span>, then we call the remaining parameters <strong>nuisance parameters</strong>.</p>
+<p>A <strong>nonparametric model</strong> is a set <span class="math inline">\(\xi\)</span> that cannot be parameterized by a finite number of parameters.</p>
+<div id="examples-of-parametric-models" class="section level2">
+<h2>Examples of parametric models</h2>
+<div id="one-dimensional-parametric-estimation" class="section level3">
+<h3>One-dimensional parametric estimation</h3>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n\)</span> be independent observations drawn from a Bernoulli random variable with probability <span class="math inline">\(\pi\)</span> of success. The problem is to estiamte the parameter <span class="math inline">\(\pi\)</span>.</p>
+</div>
+<div id="two-dimensional-parametric-estimation" class="section level3">
+<h3>Two-dimensional parametric estimation</h3>
+<p>Suppose that <span class="math inline">\(X_1, \ldots, X_n \sim F\)</span> and we assume that the PDF <span class="math inline">\(f \in \xi\)</span> where <span class="math inline">\(\xi \equiv f(x; \mu, \sigma) = \frac{1}{\sigma \sqrt{2 \pi}} \exp \left[ -\frac{1}{2\sigma^2} (x - \mu)^2 \right], \quad \mu \in \Re, \sigma &gt; 0\)</span>. In this case, there are two parameters, <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>. The goal is to estimate the parameters from the data. If we are only interested in estimating <span class="math inline">\(\mu\)</span> (which is generally the case for inferential methods such as linear regression), then <span class="math inline">\(\mu\)</span> is the parameter of interest and <span class="math inline">\(\sigma\)</span> is a nuisance parameter.</p>
+</div>
+</div>
+<div id="nonparametric-density-estimation" class="section level2">
+<h2>Nonparametric density estimation</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n\)</span> be independent observations from a cumulative distribution function (CDF) <span class="math inline">\(F\)</span> and let <span class="math inline">\(f = F&#39;\)</span> be the probability density function (PDF)&gt; Suppose we want to estimate the PDF <span class="math inline">\(f\)</span>. It is not possible to estimate <span class="math inline">\(f\)</span> assuming only that <span class="math inline">\(F \in \xi_{\text{ALL}}\)</span> where <span class="math inline">\(\xi_{\text{ALL}} = \{\text{all CDF&#39;s} \}\)</span> – that is, the sample space includes an infinite range of possible functions for the CDF. Instead, we need to assume some smoothness on <span class="math inline">\(f\)</span>. We might assume that <span class="math inline">\(f \in \xi = \xi_{\text{DENS}} \cap \xi_{\text{SOB}}\)</span> where <span class="math inline">\(\xi_{\text{DENS}}\)</span> is the set of all PDFs and</p>
+<p><span class="math display">\[\xi_{\text{SOB}} \equiv f: \int (f&#39;&#39;(x))^2 dx &lt; \infty\]</span></p>
+<p><span class="math inline">\(\xi_{\text{SOB}}\)</span> is a class called a <strong>Sobolev space</strong>, which is a set of functions that are the antiderivative of the square of the second derivative of <span class="math inline">\(f\)</span>. In layman’s terms, these are a group of functions that are not “too wiggly”. The general form to calculate the density estimate is:</p>
+<p><span class="math display">\[g(x) = \frac{1}{nh} \sum_{i = 1}^n f(x)\]</span></p>
+<p>where <span class="math inline">\(n\)</span> is the number of observations, <span class="math inline">\(h\)</span> is the <strong>bandwidth</strong>, and <span class="math inline">\(f(z)\)</span> is a function drawn from the Sobolev space. There are many different functions that fall within the Sobolev space. For example, the <strong>Gaussian kernel</strong></p>
+<p><span class="math display">\[f(x) = \frac{1}{\sqrt{2 \pi}}\exp\left[-\frac{1}{2} x^2 \right]\]</span></p>
+<p>is one such function. Note its strong relation to the Guassian (Normal) distribution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">infant &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/infant.csv&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="co"># remove non-countries</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">is.na</span>(<span class="st">`</span><span class="dt">Value Footnotes</span><span class="st">`</span>) <span class="op">|</span><span class="st"> `</span><span class="dt">Value Footnotes</span><span class="st">`</span> <span class="op">!=</span><span class="st"> </span><span class="dv">1</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="st">`</span><span class="dt">Country or Area</span><span class="st">`</span>, Year, Value) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">country =</span> <span class="st">`</span><span class="dt">Country or Area</span><span class="st">`</span>,
+         <span class="dt">year =</span> Year,
+         <span class="dt">mortal =</span> Value)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   `Country or Area` = col_character(),
+##   Subgroup = col_character(),
+##   Year = col_integer(),
+##   Source = col_character(),
+##   Unit = col_character(),
+##   Value = col_integer(),
+##   `Value Footnotes` = col_integer()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(infant, <span class="kw">aes</span>(mortal)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">bins =</span> <span class="dv">30</span>, <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Histogram of infant mortality rate for 195 nations&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;30 bins, origin = 0&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Frequency&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/infant-hist-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>)
+
+{
+  <span class="kw">qplot</span>(x, <span class="dt">geom =</span> <span class="st">&quot;blank&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dnorm) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Gaussian (normal) kernel&quot;</span>,
+         <span class="dt">x =</span> <span class="ot">NULL</span>,
+         <span class="dt">y =</span> <span class="ot">NULL</span>)
+} <span class="op">+</span>
+{
+  <span class="kw">ggplot</span>(infant, <span class="kw">aes</span>(mortal)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_density</span>(<span class="dt">kernel =</span> <span class="st">&quot;gaussian&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Infant mortality rate for 195 nations&quot;</span>,
+         <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
+         <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
+}</code></pre></div>
+<p><img src="stat-inference_files/figure-html/gaussian-1.png" width="672" /></p>
+<p>Now we have a much smoother density function. Another such function is the <strong>rectangular (uniform) kernel</strong>:</p>
+<p><span class="math display">\[f(x) = \frac{1}{2} \mathbf{1}_{\{ |x| \leq 1 \} }\]</span></p>
+<p>where <span class="math inline">\(\mathbf{1}_{\{ |x| \leq 1 \} }\)</span> is an indicator function that takes on the value of 1 if the condition is true (<span class="math inline">\(|x| \leq 1\)</span>) or 0 if the condition is false. This is also known as the <strong>naive density estimator</strong>. Again, notice its similarities to the uniform distribution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1000</span>, <span class="op">-</span><span class="fl">1.5</span>, <span class="fl">1.5</span>)
+x_lines &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>x, <span class="op">~</span>y, <span class="op">~</span>xend, <span class="op">~</span>yend,
+  <span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>, .<span class="dv">5</span>,
+  <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, .<span class="dv">5</span>
+)
+
+{
+  <span class="kw">qplot</span>(x, <span class="dt">geom =</span> <span class="st">&quot;blank&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dunif, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="op">-</span><span class="dv">1</span>), <span class="dt">geom =</span> <span class="st">&quot;step&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="co"># geom_segment(data = x_lines, aes(x = x, y = y, xend = xend, yend = yend)) +</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Rectangular kernel&quot;</span>,
+         <span class="dt">x =</span> <span class="ot">NULL</span>,
+         <span class="dt">y =</span> <span class="ot">NULL</span>)
+} <span class="op">+</span>
+{
+  <span class="kw">ggplot</span>(infant, <span class="kw">aes</span>(mortal)) <span class="op">+</span>
+<span class="st">    </span><span class="kw">geom_density</span>(<span class="dt">kernel =</span> <span class="st">&quot;rectangular&quot;</span>) <span class="op">+</span>
+<span class="st">    </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Infant mortality rate for 195 nations&quot;</span>,
+         <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
+         <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)
+}</code></pre></div>
+<p><img src="stat-inference_files/figure-html/uniform-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># define custom kernel functions</span>
+triangular &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  (<span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">abs</span>(x)) <span class="op">*</span><span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">abs</span>(x) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+}
+
+biweight &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  (<span class="dv">15</span> <span class="op">/</span><span class="st"> </span><span class="dv">16</span>) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>x<span class="op">^</span><span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">abs</span>(x) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+}
+
+epanechnikov &lt;-<span class="st"> </span><span class="cf">function</span>(x) {
+  (<span class="dv">15</span> <span class="op">/</span><span class="st"> </span><span class="dv">16</span>) <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>x<span class="op">^</span><span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">ifelse</span>(<span class="kw">abs</span>(x) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>)
+}
+
+<span class="kw">qplot</span>(x, <span class="dt">geom =</span> <span class="st">&quot;blank&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gaussian&quot;</span>), <span class="dt">fun =</span> dnorm) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Epanechnikov&quot;</span>), <span class="dt">fun =</span> epanechnikov) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Rectangular&quot;</span>), <span class="dt">fun =</span> dunif,
+                <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">min =</span> <span class="op">-</span><span class="dv">1</span>), <span class="dt">geom =</span> <span class="st">&quot;step&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Triangular&quot;</span>), <span class="dt">fun =</span> triangular) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Biweight&quot;</span>), <span class="dt">fun =</span> biweight) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>,
+       <span class="dt">y =</span> <span class="ot">NULL</span>,
+       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.04</span>, <span class="dv">1</span>),
+        <span class="dt">legend.justification =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>))</code></pre></div>
+<p><img src="stat-inference_files/figure-html/kernels-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(infant, <span class="kw">aes</span>(mortal)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Gaussian&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;gaussian&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Epanechnikov&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;epanechnikov&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Rectangular&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;rectangular&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Triangular&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;triangular&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="st">&quot;Biweight&quot;</span>), <span class="dt">kernel =</span> <span class="st">&quot;biweight&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Density estimators of infant mortality rate for 195 nations&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Infant mortality rate (per 1,000)&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>,
+       <span class="dt">color =</span> <span class="st">&quot;Kernel&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.96</span>, <span class="dv">1</span>),
+        <span class="dt">legend.justification =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">1</span>),
+        <span class="dt">legend.background =</span> <span class="kw">element_rect</span>(<span class="dt">fill =</span> <span class="st">&quot;white&quot;</span>))</code></pre></div>
+<p><img src="stat-inference_files/figure-html/kernels-2.png" width="672" /></p>
+</div>
+<div id="parametric-vs.nonparametric-regression" class="section level2">
+<h2>Parametric vs. nonparametric regression</h2>
+<p>Suppose we observe pairs of data <span class="math inline">\((X_1, Y_1), \ldots, (X_n, Y_n)\)</span>. <span class="math inline">\(X\)</span> is called the <strong>predictor/regressor/feature/independent variable</strong>. <span class="math inline">\(Y\)</span> is the <strong>outcome/response variable/dependent variable</strong>. We call <span class="math inline">\(r(x) = \E(Y | X = x)\)</span> the <strong>regression function</strong>. If we assume that <span class="math inline">\(r \in \xi\)</span> where <span class="math inline">\(\xi\)</span> is finite dimensional, then we have a <strong>parametric regression model</strong>. OLS is a classic example of parametric regression, where we assume a monotonic, linear relationship between the features and outcome of interest and attempt to estimate the parameter values (coefficients) from the data. Nonparametric regression makes no assumptions about the functional form of <span class="math inline">\(r(x)\)</span>, so <span class="math inline">\(\xi\)</span> is infinite. While more flexible, this makes estimating the regression model far more difficult.</p>
+<p>Suppose we have detailed information on individuals’ wages and education. We don’t have data for the entire population, but we do have observations for one million employed Americans:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">1000000</span>
+wage &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">educ =</span> <span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">12</span>),
+                   <span class="dt">age =</span> <span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">40</span>),
+                   <span class="dt">prestige =</span> <span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">3</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">educ =</span> <span class="kw">ifelse</span>(educ <span class="op">&gt;</span><span class="st"> </span><span class="dv">25</span>, <span class="dv">25</span>, educ),
+         <span class="dt">wage =</span> <span class="dv">10</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>educ <span class="op">+</span><span class="st"> </span>.<span class="dv">5</span> <span class="op">*</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span><span class="dv">5</span> <span class="op">*</span><span class="st"> </span>prestige <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">3</span>))
+
+<span class="kw">ggplot</span>(wage, <span class="kw">aes</span>(wage)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Histogram of simulated income data&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;Binwidth = 5&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Income, in thousands of dollars&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Frequency count&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/np-data-1.png" width="672" /></p>
+<p>If we want to estimate the average income for any individual in the dataset, let <span class="math inline">\(X_1, \ldots, X_n \sim F\)</span> where <span class="math inline">\(X\)</span> is income and it follows some known distribution <span class="math inline">\(F\)</span>. The average value of that random variable <span class="math inline">\(\mu = \E (X) = \int x F(x) dx\)</span> assuming only that <span class="math inline">\(\mu\)</span> exists. The mean <span class="math inline">\(\mu\)</span> (also known as the <strong>first moment</strong>) can be thought of as a function of <span class="math inline">\(F\)</span>: we can write <span class="math inline">\(\mu = T(F) = \int x F(x) dx\)</span>. In general, any function of <span class="math inline">\(F\)</span> is called a <strong>statistical function</strong>. Because the method for calculating the statistical function does not depend on the form of <span class="math inline">\(F\)</span> itself, it is a nonparametric estimation technique.</p>
+<p>If we want to estimate the income for an individual given their education level <span class="math inline">\((0, 1, 2, \dots, 25)\)</span>, we could estimate the conditional distribution of income for each of these values:</p>
+<p><span class="math display">\[\mu = E(\text{Income}|\text{Education}) = f(\text{Income}|\text{Education})\]</span></p>
+<p>For each level of education, the conditional (or expected) income would be the mean or median of all individuals in the sample with the same level of education.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wage <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(educ) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(wage),
+            <span class="dt">sd =</span> <span class="kw">sd</span>(wage)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(educ, mean, <span class="dt">ymin =</span> mean <span class="op">-</span><span class="st"> </span>sd, <span class="dt">ymax =</span> mean <span class="op">+</span><span class="st"> </span>sd)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Conditional income, by education level&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;Plus/minus SD&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Education level&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Income, in thousands of dollars&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/np-wage-cond-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wage <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(educ <span class="op">==</span><span class="st"> </span><span class="dv">12</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(wage)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(wage<span class="op">$</span>wage[wage<span class="op">$</span>educ <span class="op">==</span><span class="st"> </span><span class="dv">12</span>]), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Conditional distribution of income for education = 12&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="kw">str_c</span>(<span class="st">&quot;Mean income = &quot;</span>, <span class="kw">formatC</span>(<span class="kw">mean</span>(wage<span class="op">$</span>wage[wage<span class="op">$</span>educ <span class="op">==</span><span class="st"> </span><span class="dv">12</span>]), <span class="dt">digits =</span> <span class="dv">3</span>)),
+       <span class="dt">x =</span> <span class="st">&quot;Income, in thousands of dollars&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Frequency count&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/np-wage-cond-2.png" width="672" /></p>
+<p>Imagine instead that we have <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, two continuous variables from a sample of a population, and we want to understand the relationship between the variables. Specifically, we want to use our knowledge of <span class="math inline">\(X\)</span> to predict <span class="math inline">\(Y\)</span>. Therefore what we want to know is the mean value of <span class="math inline">\(Y\)</span> as a function of <span class="math inline">\(X\)</span> in the population of individuals from whom the sample was drawn:</p>
+<p><span class="math display">\[\mu = E(Y|x) = f(x)\]</span></p>
+<p>Unfortunately because <span class="math inline">\(X\)</span> is continuous, it is unlikely that we would draw precisely the same values of <span class="math inline">\(X\)</span> for more than a single observation. Therefore we cannot directly calculate the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>, and therefore cannot calculate conditional means. Instead, we can divide <span class="math inline">\(X\)</span> into many narrow intervals (or <strong>bins</strong>), just like we would for a histogram. Within each bin we can estimate the conditional distribution of <span class="math inline">\(Y\)</span> and estimate the conditional mean of <span class="math inline">\(Y\)</span> with great precision.</p>
+<p>If we have fewer observations, then we have to settle for fewer bins and less precision in our estimates. Here we use data on the average income of 102 different occupations in Canada and their relationship to occupational prestige (measured continuously):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get data</span>
+prestige &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/prestige.csv&quot;</span>)</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   occupation = col_character(),
+##   education = col_double(),
+##   income = col_integer(),
+##   women = col_double(),
+##   prestige = col_double(),
+##   census = col_integer(),
+##   type = col_character()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bin into 5 and get means</span>
+prestige_bin &lt;-<span class="st"> </span>prestige <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">bin =</span> <span class="kw">cut_number</span>(income, <span class="dv">6</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(bin) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prestige =</span> <span class="kw">mean</span>(prestige),
+            <span class="dt">income =</span> <span class="kw">mean</span>(income))
+
+<span class="co"># get cutpoints</span>
+labs &lt;-<span class="st"> </span><span class="kw">levels</span>(prestige_bin<span class="op">$</span>bin)
+cutpoints &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.numeric</span>( <span class="kw">sub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">((.+),.*&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1&quot;</span>, labs) ),
+  <span class="kw">as.numeric</span>( <span class="kw">sub</span>(<span class="st">&quot;[^,]*,([^]]*)</span><span class="ch">\\</span><span class="st">]&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1&quot;</span>, labs) )) <span class="op">%&gt;%</span>
+<span class="st">  </span>unique <span class="op">%&gt;%</span>
+<span class="st">  </span>sort <span class="op">%&gt;%</span>
+<span class="st">  </span>.[<span class="dv">2</span><span class="op">:</span>(<span class="kw">length</span>(.)<span class="op">-</span><span class="dv">1</span>)] <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble</code></pre></div>
+<pre><code>## Warning in eval(lhs, parent, parent): NAs introduced by coercion</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(prestige, <span class="kw">aes</span>(income, prestige)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> prestige_bin) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> prestige_bin) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">data =</span> cutpoints, <span class="kw">aes</span>(<span class="dt">xintercept =</span> value), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Naive nonparametric regression&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;Bins = 5&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Average income (in dollars)&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Occupational prestige&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/prestige-5bins-1.png" width="672" /></p>
+<p>The <span class="math inline">\(X\)</span>-axis is carved into 5 bins with roughly 20 observations in each bin. The line is a <strong>naive nonparametric regression line</strong> that is calculated by connecting the points defined by the conditional variable means <span class="math inline">\(\bar{Y}\)</span> and the explanatory variable means <span class="math inline">\(\bar{X}\)</span> in the five intervals.</p>
+<p>Just like ordinary least squares regression (OLS), this regression line also suffers from <strong>bias</strong> and <strong>variance</strong>. If the actual relationship between prestige and income is non-linear <strong>within a bin</strong>, then our estimate of the conditional mean <span class="math inline">\(\bar{Y}\)</span> will be biased towards a linear relationship. We can minimize bias by making the bins as numerous and narrow as possible:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bin into 50 and get means</span>
+prestige_bin &lt;-<span class="st"> </span>prestige <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">bin =</span> <span class="kw">cut_number</span>(income, <span class="dv">51</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(bin) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">prestige =</span> <span class="kw">mean</span>(prestige),
+            <span class="dt">income =</span> <span class="kw">mean</span>(income))
+
+<span class="co"># get cutpoints</span>
+labs &lt;-<span class="st"> </span><span class="kw">levels</span>(prestige_bin<span class="op">$</span>bin)
+cutpoints &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">as.numeric</span>( <span class="kw">sub</span>(<span class="st">&quot;</span><span class="ch">\\</span><span class="st">((.+),.*&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1&quot;</span>, labs) ),
+  <span class="kw">as.numeric</span>( <span class="kw">sub</span>(<span class="st">&quot;[^,]*,([^]]*)</span><span class="ch">\\</span><span class="st">]&quot;</span>, <span class="st">&quot;</span><span class="ch">\\</span><span class="st">1&quot;</span>, labs) )) <span class="op">%&gt;%</span>
+<span class="st">  </span>unique <span class="op">%&gt;%</span>
+<span class="st">  </span>sort <span class="op">%&gt;%</span>
+<span class="st">  </span>.[<span class="dv">2</span><span class="op">:</span>(<span class="kw">length</span>(.)<span class="op">-</span><span class="dv">1</span>)] <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble</code></pre></div>
+<pre><code>## Warning in eval(lhs, parent, parent): NAs introduced by coercion</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(prestige, <span class="kw">aes</span>(income, prestige)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">data =</span> prestige_bin) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> prestige_bin) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">data =</span> cutpoints, <span class="kw">aes</span>(<span class="dt">xintercept =</span> value), <span class="dt">linetype =</span> <span class="dv">2</span>, <span class="dt">alpha =</span> .<span class="dv">25</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Naive nonparametric regression&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;Bins = 50&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Average income (in dollars)&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Occupational prestige&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/prestige-50bins-1.png" width="672" /></p>
+<p>But now we have introduced overfitting into the nonparametric regression estimates. In addition, we substantially increased our variance of the estimated conditional sample means <span class="math inline">\(\bar{Y}\)</span>. If we were to draw a new sample, the estimated conditional sample means <span class="math inline">\(\bar{Y}\)</span> could be widely different from the original model and our resulting estimates of the conditional sample means will be highly variable.</p>
+<p>Naive nonparametric regression is a consistent estimator of the population regression curve as the sample size increases. As <span class="math inline">\(n \rightarrow \infty\)</span>, we can shrink the size of the individual intervals and still have sizeable numbers of observations in each interval. In the limit, we have an infinite number of intervals and infinite number of observations in each interval, so the naive nonparametric regression line and the population regression line are identical.</p>
+<p>As a practical consideration, if our sample size <span class="math inline">\(n\)</span> is truly large, then naive nonparametric regression could be a good estimation procedure. However as we introduce multiple explanatory variables into the model, the problem starts to blow up. Assume we have three discrete explanatory variables each with 10 possible values:</p>
+<p><span class="math display">\[
+\begin{align}
+X_1 &amp;\in \{1, 2, \dots ,10 \} \\
+X_2 &amp;\in \{1, 2, \dots ,10 \} \\
+X_3 &amp;\in \{1, 2, \dots ,10 \}
+\end{align}
+\]</span></p>
+<p>There are then <span class="math inline">\(10^3 = 1000\)</span> possible combinations of the explanatory variables and <span class="math inline">\(1000\)</span> conditional expectations of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[\mu = E(Y|x_1, x_2, x_3) = f(x_1, x_2, x_3)\]</span></p>
+<p>In order to accurate estimate conditional expectations for each category, we would need substantial numbers of observations <strong>for every combination of <span class="math inline">\(X\)</span></strong>. This would require a sample size far greater than most social scientists have the resources to collect.</p>
+<p>Let’s return to our simulated wage data. Our dataset contains information on education, age, and job prestige:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(wage, <span class="kw">aes</span>(educ)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of simulated wage data&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Education&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Frequency count&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/wage-sim-describe-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(wage, <span class="kw">aes</span>(age)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of simulated wage data&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Age&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Frequency count&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/wage-sim-describe-2.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(wage, <span class="kw">aes</span>(prestige)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of simulated wage data&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Job prestige&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Frequency count&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/wage-sim-describe-3.png" width="672" /></p>
+<p>Can we estimate naive nonparametric regression on this dataset with <span class="math inline">\(N = 1,000,000\)</span>?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">wage_np &lt;-<span class="st"> </span>wage <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(educ, age, prestige) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">wage_mean =</span> <span class="kw">mean</span>(wage),
+            <span class="dt">wage_sd =</span> <span class="kw">sd</span>(wage),
+            <span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span>
+<span class="st">  </span>ungroup <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">complete</span>(educ, age, prestige, <span class="dt">fill =</span> <span class="kw">list</span>(<span class="dt">wage_mean =</span> <span class="ot">NA</span>,
+                                          <span class="dt">wage_sd =</span> <span class="ot">NA</span>,
+                                          <span class="dt">n =</span> <span class="dv">0</span>))
+
+<span class="co"># number of unique combos </span>
+wage_unique &lt;-<span class="st"> </span><span class="kw">nrow</span>(wage_np)
+
+<span class="co"># n for each unique combo</span>
+<span class="kw">ggplot</span>(wage_np, <span class="kw">aes</span>(n)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Naive nonparametric regression of simulated wage data&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Number of observations for each unique combination&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/wage-sim-np-1.png" width="672" /></p>
+<p>Even on a dataset with <span class="math inline">\(1,000,000\)</span> observations, for the vast majority of the potential combinations of variables we have zero observations from which to generate expected values. What if we instead drew <span class="math inline">\(10,000,000\)</span> observations from the same data generating process?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n &lt;-<span class="st"> </span><span class="dv">10000000</span>
+wage10 &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">educ =</span> <span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">12</span>),
+                   <span class="dt">age =</span> <span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">40</span>),
+                   <span class="dt">prestige =</span> <span class="kw">rpois</span>(n, <span class="dt">lambda =</span> <span class="dv">3</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">educ =</span> <span class="kw">ifelse</span>(educ <span class="op">&gt;</span><span class="st"> </span><span class="dv">25</span>, <span class="dv">25</span>, educ),
+         <span class="dt">wage =</span> <span class="dv">10</span> <span class="op">+</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>educ <span class="op">+</span><span class="st"> </span>.<span class="dv">5</span> <span class="op">*</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span><span class="dv">5</span> <span class="op">*</span><span class="st"> </span>prestige <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">3</span>))
+
+wage10_np &lt;-<span class="st"> </span>wage10 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(educ, age, prestige) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">wage_mean =</span> <span class="kw">mean</span>(wage),
+            <span class="dt">wage_sd =</span> <span class="kw">sd</span>(wage),
+            <span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span>
+<span class="st">  </span>ungroup <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">complete</span>(educ, age, prestige, <span class="dt">fill =</span> <span class="kw">list</span>(<span class="dt">wage_mean =</span> <span class="ot">NA</span>,
+                                          <span class="dt">wage_sd =</span> <span class="ot">NA</span>,
+                                          <span class="dt">n =</span> <span class="dv">0</span>))
+
+<span class="co"># number of unique combos </span>
+wage10_unique &lt;-<span class="st"> </span><span class="kw">nrow</span>(wage10_np)
+
+<span class="co"># n for each unique combo</span>
+<span class="kw">ggplot</span>(wage10_np, <span class="kw">aes</span>(n)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Naive nonparametric regression of simulated wage data&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Number of observations for each unique combination&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Density&quot;</span>)</code></pre></div>
+<p><img src="stat-inference_files/figure-html/wage-sim-np-ten-1.png" width="672" /></p>
+<p>Unless your dataset is extremely large or you have a small handful of variables with a low number of unique values, naive nonparametric estimation will not be effective.</p>
+</div>
+</div>
+<div id="point-estimates" class="section level1">
+<h1>Point estimates</h1>
+<p><strong>Point estimation</strong> refers to providing a single “best guess” of some quantity of interest. This quantity of interest could be a parameter in a parametric model, a CDF <span class="math inline">\(F\)</span>, a PDF <span class="math inline">\(f\)</span>, a regression function <span class="math inline">\(r\)</span>, or a prediction for a future value <span class="math inline">\(Y\)</span> of some random variable.</p>
+<p>We denote a point estimate of <span class="math inline">\(\theta\)</span> by <span class="math inline">\(\hat{\theta}\)</span> or <span class="math inline">\(\hat{\theta}_n\)</span>. Remember that <span class="math inline">\(\theta\)</span> is a fixed, unknown quantity. The estimate <span class="math inline">\(\hat{\theta}\)</span> depends on the data, so <span class="math inline">\(\hat{\theta}\)</span> is a random variable. More formally, let <span class="math inline">\(X_1, \ldots, X_n\)</span> be <span class="math inline">\(n\)</span> IID (independently and identically drawn) data points from some distribution <span class="math inline">\(F\)</span>. A point estimator <span class="math inline">\(\hat{\theta}_n\)</span> of a paramater <span class="math inline">\(\theta\)</span> is some function of <span class="math inline">\(X_1, \ldots, X_n\)</span>:</p>
+<p><span class="math display">\[\hat{\theta}_n = g($X_1, \ldots, X_n$)\]</span></p>
+<div id="properties-of-point-estimates" class="section level2">
+<h2>Properties of point estimates</h2>
+<p>The <strong>bias</strong> of an estimator is defined as</p>
+<p><span class="math display">\[\text{bias}(\hat{\theta}_n) = \E_\theta (\hat{\theta_n}) - \theta\]</span></p>
+<p>When <span class="math inline">\(\E (\hat{\theta_n}) = 0\)</span>, we say that <span class="math inline">\(\hat{\theta_n}\)</span> is <strong>unbiased</strong>. Many estimators in statistical inference are not unbiased – with modern approaches, this is sometimes justified. We will see examples of this in the winter quarter. A more preferable requirement for an estimator is <strong>consistency</strong>: as the number of observations <span class="math inline">\(n\)</span> increases, the estimator should converge towards the true parameter <span class="math inline">\(\theta\)</span>.</p>
+<p>The distribution of <span class="math inline">\(\hat{\theta}_n\)</span> is called the <strong>sampling distribution</strong>. The standard deviation of <span class="math inline">\(\hat{\theta}_n\)</span> is called the standard error:</p>
+<p><span class="math display">\[\se = \se(\hat{\theta}_n) = \sqrt{\Var (\hat{\theta}_n)}\]</span></p>
+<p>Frequently the standard error depends on the unknown <span class="math inline">\(F\)</span>. In those cases, we usually estimate it. The estimated standard error is denoted by <span class="math inline">\(\widehat{\se}\)</span>.</p>
+<p>The quality of the point estimate is sometimes assessed by the <strong>mean squared error</strong> (MSE) defined by</p>
+<p><span class="math display">\[
+\begin{align}
+\text{MSE} &amp;= \E_\theta (\hat{\theta}_n - \theta)^2 \\
+&amp;= \text{bias}^2(\hat{\theta}_n) + \Var_\theta (\hat{\theta}_n)
+\end{align}
+\]</span></p>
+<ul>
+<li>Remember that <span class="math inline">\(\E_\theta (\cdot)\)</span> refers to expectation with respect to the distribution <span class="math inline">\(f(x_1, \ldots, x_n; \theta)\)</span> that generated the data. <span class="math inline">\(\theta\)</span> does not have a distribution - it is a fixed, but unknown, value.</li>
+</ul>
+<p>Many estimators turn out to have, approximately, a Normal distribution – another reason why this continuous distribution is so important to statistical inference.</p>
+<p><span class="math display">\[\frac{\hat{\theta}_n - \theta}{\se} \leadsto N(0,1)\]</span></p>
+</div>
+<div id="example-bernoulli-distributed-random-variable" class="section level2">
+<h2>Example: Bernoulli distributed random variable</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n ~ \text{Bernoulli}(\pi)\)</span> and let <span class="math inline">\(\hat{\pi}_n = \frac{1}{n} \sum_{i=1}^n X_i\)</span>. Then</p>
+<p><span class="math display">\[\E(\hat{\pi}_n) = \frac{1}{n} \sum_{i=1}^n \E(X_i) = \pi\]</span></p>
+<p>so <span class="math inline">\(\hat{\pi}_n\)</span> is unbiased. The standard error is</p>
+<p><span class="math display">\[\se = \sqrt{\Var (\hat{\pi}_n)} = \sqrt{\frac{\pi (1 - \pi)}{n}}\]</span></p>
+<p>which can be estimated as</p>
+<p><span class="math display">\[\widehat{\se} = \sqrt{\frac{\hat{\pi} (1 - \hat{\pi})}{n}}\]</span></p>
+<p>Additionally, we have that <span class="math inline">\(\E_\pi (\hat{\pi}_n) = \pi\)</span> so <span class="math inline">\(\text{bias} = \pi - \pi = 0\)</span></p>
+<p><span class="math display">\[
+\begin{align}
+\text{bias}(\hat{\pi}_n) &amp;= \E_\pi (\hat{\pi}) - \pi \\
+&amp;= \pi - \pi \\
+&amp;= 0
+\end{align}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\se = \sqrt{\frac{\pi (1 - \pi)}{n}} \rightarrow 0\]</span></p>
+<p>as <span class="math inline">\(n\)</span> increases. Hence, <span class="math inline">\(\hat{\pi}_n\)</span> is a consistent estimator of <span class="math inline">\(\pi\)</span>.</p>
+</div>
+</div>
+<div id="confidence-sets" class="section level1">
+<h1>Confidence sets</h1>
+<p>A <span class="math inline">\(1 - \alpha\)</span> <strong>confidence interval</strong> for a parameter <span class="math inline">\(\theta\)</span> is an interval <span class="math inline">\(C_n = (a,b)\)</span> where <span class="math inline">\(a = a(X_1, \ldots, X_n)\)</span> and <span class="math inline">\(b = b(X_1, \ldots, X_n)\)</span> are functions of the data such that</p>
+<p><span class="math display">\[\Pr_{\theta} (\theta \in C_n) \geq 1 - \alpha, \quad \forall \theta \in \Theta\]</span></p>
+<p>In other words, <span class="math inline">\((a,b)\)</span> traps <span class="math inline">\(\theta\)</span> with probability <span class="math inline">\(1- \alpha\)</span>. We call <span class="math inline">\(1 - \alpha\)</span> the <strong>coverage</strong> of the confidence interval.</p>
+<div id="caution-interpreting-confidence-intervals" class="section level2">
+<h2>Caution interpreting confidence intervals</h2>
+<p><span class="math inline">\(C_n\)</span> is random and <span class="math inline">\(\theta\)</span> is fixed. This is a core assumption of statistical inference and especially critical for frequentist inference. Commonly people use 95% confidence intervals corresponding to <span class="math inline">\(\alpha = 0.05\)</span>. If <span class="math inline">\(\theta\)</span> is a vector then we use a <strong>confidence set</strong> (such as a sphere or an ellipse) instead of an interval.</p>
+<p>A confidence interval is not a probability statement about <span class="math inline">\(\theta\)</span> since <span class="math inline">\(\theta\)</span> is a fixed quantity, not a random variable. Either <span class="math inline">\(\theta\)</span> is or is not in the interval with probability <span class="math inline">\(1\)</span>. A better definition is:</p>
+<blockquote>
+<p>On day 1, you collect data and construct a 95% confidence interval for a parameter <span class="math inline">\(\theta_1\)</span>. On day 2, you collect new data and construct a 95% confidence interval for a parameter <span class="math inline">\(\theta_2\)</span>. You continue this way constructing confidence intervals for a sequence of unrelated parameters <span class="math inline">\(\theta_1, \theta_2, \ldots\)</span>. Then 95% of your intervals will trap the true parameter value.</p>
+</blockquote>
+</div>
+<div id="constructing-confidence-intervals" class="section level2">
+<h2>Constructing confidence intervals</h2>
+<p>Because point estimators have an approximate Normal distribution, we can use the Normal distribution to construct confidence intervals relatively easily for point estimates by relying directly on the Normal distribution.</p>
+<p>Suppose that <span class="math inline">\(\hat{\theta}_n \approx N(\theta, \widehat{\se}^2)\)</span>. Let <span class="math inline">\(\Phi\)</span> be the CDF of a standard Normal distribution and let</p>
+<p><span class="math display">\[z_{\frac{\alpha}{2}} = \Phi^{-1} \left(1 - \frac{\alpha}{2} \right)\]</span></p>
+<p>That is,</p>
+<p><span class="math display">\[\Pr (Z &gt; \frac{\alpha}{2}) = \frac{\alpha}{2}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\Pr (-z_{\frac{\alpha}{2}} \leq Z \leq z_{\frac{\alpha}{2}}) = 1 - \alpha\]</span></p>
+<p>where <span class="math inline">\(Z \sim N(0,1)\)</span>. Let</p>
+<p><span class="math display">\[C_n = (\hat{\theta}_n - z_{\frac{\alpha}{2}} \widehat{\se}, \hat{\theta}_n + z_{\frac{\alpha}{2}} \widehat{\se})\]</span></p>
+<p>Then</p>
+<p><span class="math display">\[
+\begin{align}
+\Pr_\theta (\theta \in C_n) &amp;= \Pr_\theta (\hat{\theta}_n - z_{\frac{\alpha}{2}} \widehat{\se} &lt; \theta &lt; \hat{\theta}_n + z_{\frac{\alpha}{2}} \widehat{\se}) \\
+&amp;= \Pr_\theta (- z_{\frac{\alpha}{2}} &lt; \frac{\hat{\theta}_n - \theta}{\widehat{\se}} &lt; z_{\frac{\alpha}{2}}) \\
+&amp;\rightarrow \Pr ( - z_{\frac{\alpha}{2}} &lt; Z &lt; z_{\frac{\alpha}{2}}) \\
+&amp;= 1 - \alpha
+\end{align}
+\]</span></p>
+<p>For 95% confidence intervals, <span class="math inline">\(\alpha = 0.05\)</span> and <span class="math inline">\(z_{\frac{\alpha}{2}} = 1.96 \approx 2\)</span> leading to the approximate 95% confidence interval <span class="math inline">\(\hat{\theta}_n \pm 2 \widehat{\se}\)</span>.</p>
+<div id="actual-vs.approximate-confidence-intervals" class="section level3">
+<h3>Actual vs. approximate confidence intervals</h3>
+<p>In the Bernoulli example, let <span class="math inline">\(C_n = (\hat{\pi}_n - \epsilon_n, \hat{\pi}_n + \epsilon_n)\)</span> where <span class="math inline">\(\epsilon_n^2 = \frac{\log(\frac{2}{\alpha})}{2n}\)</span>. From this,</p>
+<p><span class="math display">\[\Pr (\pi \in C_n \geq 1 - \alpha)\]</span></p>
+<p>for every <span class="math inline">\(\pi\)</span>. Hence, <span class="math inline">\(C_n\)</span> is a precise <span class="math inline">\(1 - \alpha\)</span> confidence interval.</p>
+<p>Compare this instead to an approximate confidence interval constructed using the Normal distribution.</p>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli}(\pi)\)</span> and let <span class="math inline">\(\hat{\pi}_n = \frac{1}{n} \sum_{i=1}^n X_i\)</span>. Then</p>
+<p><span class="math display">\[
+\begin{align}
+\Var (\hat{\pi}_n) &amp;= \frac{1}{n^2} \sum_{i=1}^n \Var(X_i) \\
+&amp;= \frac{1}{n^2} \sum_{i=1}^n \pi(1 - \pi) \\
+&amp;= \frac{1}{n^2} n\pi(1 - \pi) \\
+&amp;= \frac{\pi(1 - \pi)}{n} \\
+\se &amp;= \sqrt{\frac{\pi(1 - \pi)}{n}} \\
+\widehat{\se} &amp;= \sqrt{\frac{\hat{\pi}(1 - \hat{\pi})}{n}}
+\end{align}
+\]</span></p>
+<p>By the Central Limit Theorem, <span class="math inline">\(\hat{\pi}_n \approx N(\pi, \hat{\se}^2)\)</span>. Therefore the approximate <span class="math inline">\(1 - \alpha\)</span> confidence interval is</p>
+<p><span class="math display">\[\hat{\pi}_n \pm z_{\frac{\alpha}{2}} \widehat{\se} = \hat{\pi}_n \pm z_{\frac{\alpha}{2}} \sqrt{\frac{\hat{\pi}(1 - \hat{\pi})}{n}}\]</span></p>
+<p>Compared to the precise confidence interval, the Normal-based approximation is shorter but it only has approximately correct coverage. That coverage’s accuracy increases at <span class="math inline">\(n\)</span> increases.</p>
+</div>
+</div>
+</div>
+<div id="hypothesis-testing" class="section level1">
+<h1>Hypothesis testing</h1>
+<p>In <strong>hypothesis testing</strong>, we start with some default theory – called a <strong>null hypothesis</strong> – and we ask if the data provide sufficient evidence to reject the theory. If not, we fail to reject the null hypothesis. Frequently the default theory is that the parameter value <span class="math inline">\(\theta = 0\)</span>. This is very much a frequentist approach to evaluating hypotheses.</p>
+<p>For example, let</p>
+<p><span class="math display">\[X_1, \ldots, X_n \sim \text{Bernoulli}(\pi)\]</span></p>
+<p>be <span class="math inline">\(n\)</span> independent coin flips. Suppose we want to test if the coin is fair. Let <span class="math inline">\(H_0\)</span> denote the hypothesis that the coin is fair (<span class="math inline">\(H_0: \pi = 0.5\)</span>) and let <span class="math inline">\(H_1\)</span> denote the hypothesis that the coin is not fair (<span class="math inline">\(H_1: \pi \neq 0.5\)</span>). It seems reasonable to reject <span class="math inline">\(H_0\)</span> if</p>
+<p><span class="math display">\[T = | \hat{\pi}_n - 0.5|\]</span></p>
+<p>is large. The exact value necessary to reject the null hypothesis will be discussed when we focus more on specific hypothesis tests.</p>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <a href="https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9"><strong>All of Statistics</strong></a> by Larry Wasserman</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-13</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.18  2018-10-10 cran (@0.6.18)                      
+##  dplyr      * 0.7.6   2018-06-29 cran (@0.7.6)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.1.0   2018-10-25 cran (@3.1.0)                       
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr       0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.2.2   2017-06-17 CRAN (R 3.5.0)                      
+##  Rcpp         0.12.19 2018-10-01 cran (@0.12.19)                     
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.3.0.1 2018-10-25 cran (@0.3.0.1)                     
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.4   2018-02-26 CRAN (R 3.5.0)                      
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

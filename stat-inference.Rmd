@@ -20,7 +20,7 @@ set.seed(1234)
 theme_set(theme_minimal())
 ```
 
-$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}}$$
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}}$$
 
 # Statistical inference
 
@@ -409,13 +409,162 @@ Unless your dataset is extremely large or you have a small handful of variables 
 
 # Point estimates
 
+**Point estimation** refers to providing a single "best guess" of some quantity of interest. This quantity of interest could be a parameter in a parametric model, a CDF $F$, a PDF $f$, a regression function $r$, or a prediction for a future value $Y$ of some random variable.
+
+We denote a point estimate of $\theta$ by $\hat{\theta}$ or $\hat{\theta}_n$. Remember that $\theta$ is a fixed, unknown quantity. The estimate $\hat{\theta}$ depends on the data, so $\hat{\theta}$ is a random variable. More formally, let $X_1, \ldots, X_n$ be $n$ IID (independently and identically drawn) data points from some distribution $F$. A point estimator $\hat{\theta}_n$ of a paramater $\theta$ is some function of $X_1, \ldots, X_n$:
+
+$$\hat{\theta}_n = g($X_1, \ldots, X_n$)$$
+
+## Properties of point estimates
+
+The **bias** of an estimator is defined as
+
+$$\text{bias}(\hat{\theta}_n) = \E_\theta (\hat{\theta_n}) - \theta$$
+
+When $\E (\hat{\theta_n}) = 0$, we say that $\hat{\theta_n}$ is **unbiased**. Many estimators in statistical inference are not unbiased -- with modern approaches, this is sometimes justified. We will see examples of this in the winter quarter. A more preferable requirement for an estimator is **consistency**: as the number of observations $n$ increases, the estimator should converge towards the true parameter $\theta$.
+
+The distribution of $\hat{\theta}_n$ is called the **sampling distribution**. The standard deviation of $\hat{\theta}_n$ is called the standard error:
+
+$$\se = \se(\hat{\theta}_n) = \sqrt{\Var (\hat{\theta}_n)}$$
+
+Frequently the standard error depends on the unknown $F$. In those cases, we usually estimate it. The estimated standard error is denoted by $\widehat{\se}$.
+
+The quality of the point estimate is sometimes assessed by the **mean squared error** (MSE) defined by
+
+$$
+\begin{align}
+\text{MSE} &= \E_\theta (\hat{\theta}_n - \theta)^2 \\
+&= \text{bias}^2(\hat{\theta}_n) + \Var_\theta (\hat{\theta}_n)
+\end{align}
+$$
+
+* Remember that $\E_\theta (\cdot)$ refers to expectation with respect to the distribution $f(x_1, \ldots, x_n; \theta)$ that generated the data. $\theta$ does not have a distribution - it is a fixed, but unknown, value.
+
+Many estimators turn out to have, approximately, a Normal distribution -- another reason why this continuous distribution is so important to statistical inference.
+
+$$\frac{\hat{\theta}_n - \theta}{\se} \leadsto N(0,1)$$
+
+## Example: Bernoulli distributed random variable
+
+Let $X_1, \ldots, X_n ~ \text{Bernoulli}(\pi)$ and let $\hat{\pi}_n = \frac{1}{n} \sum_{i=1}^n X_i$. Then
+
+$$\E(\hat{\pi}_n) = \frac{1}{n} \sum_{i=1}^n \E(X_i) = \pi$$
+
+so $\hat{\pi}_n$ is unbiased. The standard error is
+
+$$\se = \sqrt{\Var (\hat{\pi}_n)} = \sqrt{\frac{\pi (1 - \pi)}{n}}$$
+
+which can be estimated as
+
+$$\widehat{\se} = \sqrt{\frac{\hat{\pi} (1 - \hat{\pi})}{n}}$$
+
+Additionally, we have that $\E_\pi (\hat{\pi}_n) = \pi$ so $\text{bias} = \pi - \pi = 0$
+
+$$
+\begin{align}
+\text{bias}(\hat{\pi}_n) &= \E_\pi (\hat{\pi}) - \pi \\
+&= \pi - \pi \\
+&= 0
+\end{align}
+$$
+
+and
+
+$$\se = \sqrt{\frac{\pi (1 - \pi)}{n}} \rightarrow 0$$
+
+as $n$ increases. Hence, $\hat{\pi}_n$ is a consistent estimator of $\pi$.
 
 # Confidence sets
 
+A $1 - \alpha$ **confidence interval** for a parameter $\theta$ is an interval $C_n = (a,b)$ where $a = a(X_1, \ldots, X_n)$ and $b = b(X_1, \ldots, X_n)$ are functions of the data such that
+
+$$\Pr_{\theta} (\theta \in C_n) \geq 1 - \alpha, \quad \forall \theta \in \Theta$$
+
+In other words, $(a,b)$ traps $\theta$ with probability $1- \alpha$. We call $1 - \alpha$ the **coverage** of the confidence interval.
+
+## Caution interpreting confidence intervals
+
+$C_n$ is random and $\theta$ is fixed. This is a core assumption of statistical inference and especially critical for frequentist inference. Commonly people use 95\% confidence intervals corresponding to $\alpha = 0.05$. If $\theta$ is a vector then we use a **confidence set** (such as a sphere or an ellipse) instead of an interval.
+
+A confidence interval is not a probability statement about $\theta$ since $\theta$ is a fixed quantity, not a random variable. Either $\theta$ is or is not in the interval with probability $1$. A better definition is:
+
+> On day 1, you collect data and construct a 95\% confidence interval for a parameter $\theta_1$. On day 2, you collect new data and construct a 95\% confidence interval for a parameter $\theta_2$. You continue this way constructing confidence intervals for a sequence of unrelated parameters $\theta_1, \theta_2, \ldots$. Then 95\% of your intervals will trap the true parameter value.
+
+## Constructing confidence intervals
+
+Because point estimators have an approximate Normal distribution, we can use the Normal distribution to construct confidence intervals relatively easily for point estimates by relying directly on the Normal distribution.
+
+Suppose that $\hat{\theta}_n \approx N(\theta, \widehat{\se}^2)$. Let $\Phi$ be the CDF of a standard Normal distribution and let
+
+$$z_{\frac{\alpha}{2}} = \Phi^{-1} \left(1 - \frac{\alpha}{2} \right)$$
+
+That is,
+
+$$\Pr (Z > \frac{\alpha}{2}) = \frac{\alpha}{2}$$
+
+and
+
+$$\Pr (-z_{\frac{\alpha}{2}} \leq Z \leq z_{\frac{\alpha}{2}}) = 1 - \alpha$$
+
+where $Z \sim N(0,1)$. Let
+
+$$C_n = (\hat{\theta}_n - z_{\frac{\alpha}{2}} \widehat{\se}, \hat{\theta}_n + z_{\frac{\alpha}{2}} \widehat{\se})$$
+
+Then
+
+$$
+\begin{align}
+\Pr_\theta (\theta \in C_n) &= \Pr_\theta (\hat{\theta}_n - z_{\frac{\alpha}{2}} \widehat{\se} < \theta < \hat{\theta}_n + z_{\frac{\alpha}{2}} \widehat{\se}) \\
+&= \Pr_\theta (- z_{\frac{\alpha}{2}} < \frac{\hat{\theta}_n - \theta}{\widehat{\se}} < z_{\frac{\alpha}{2}}) \\
+&\rightarrow \Pr ( - z_{\frac{\alpha}{2}} < Z < z_{\frac{\alpha}{2}}) \\
+&= 1 - \alpha
+\end{align}
+$$
+
+For 95\% confidence intervals, $\alpha = 0.05$ and $z_{\frac{\alpha}{2}} = 1.96 \approx 2$ leading to the approximate 95\% confidence interval $\hat{\theta}_n \pm 2 \widehat{\se}$.
+
+### Actual vs. approximate confidence intervals
+
+In the Bernoulli example, let $C_n = (\hat{\pi}_n - \epsilon_n, \hat{\pi}_n + \epsilon_n)$ where $\epsilon_n^2 = \frac{\log(\frac{2}{\alpha})}{2n}$. From this,
+
+$$\Pr (\pi \in C_n \geq 1 - \alpha)$$
+
+for every $\pi$. Hence, $C_n$ is a precise $1 - \alpha$ confidence interval.
+
+Compare this instead to an approximate confidence interval constructed using the Normal distribution.
+
+Let $X_1, \ldots, X_n \sim \text{Bernoulli}(\pi)$ and let $\hat{\pi}_n = \frac{1}{n} \sum_{i=1}^n X_i$. Then
+
+$$
+\begin{align}
+\Var (\hat{\pi}_n) &= \frac{1}{n^2} \sum_{i=1}^n \Var(X_i) \\
+&= \frac{1}{n^2} \sum_{i=1}^n \pi(1 - \pi) \\
+&= \frac{1}{n^2} n\pi(1 - \pi) \\
+&= \frac{\pi(1 - \pi)}{n} \\
+\se &= \sqrt{\frac{\pi(1 - \pi)}{n}} \\
+\widehat{\se} &= \sqrt{\frac{\hat{\pi}(1 - \hat{\pi})}{n}}
+\end{align}
+$$
+
+By the Central Limit Theorem, $\hat{\pi}_n \approx N(\pi, \hat{\se}^2)$. Therefore the approximate $1 - \alpha$ confidence interval is
+
+$$\hat{\pi}_n \pm z_{\frac{\alpha}{2}} \widehat{\se} = \hat{\pi}_n \pm z_{\frac{\alpha}{2}} \sqrt{\frac{\hat{\pi}(1 - \hat{\pi})}{n}}$$
+
+Compared to the precise confidence interval, the Normal-based approximation is shorter but it only has approximately correct coverage. That coverage's accuracy increases at $n$ increases.
 
 # Hypothesis testing
 
+In **hypothesis testing**, we start with some default theory -- called a **null hypothesis** -- and we ask if the data provide sufficient evidence to reject the theory. If not, we fail to reject the null hypothesis. Frequently the default theory is that the parameter value $\theta = 0$. This is very much a frequentist approach to evaluating hypotheses.
 
+For example, let
+
+$$X_1, \ldots, X_n \sim \text{Bernoulli}(\pi)$$
+
+be $n$ independent coin flips. Suppose we want to test if the coin is fair. Let $H_0$ denote the hypothesis that the coin is fair ($H_0: \pi = 0.5$) and let $H_1$ denote the hypothesis that the coin is not fair ($H_1: \pi \neq 0.5$). It seems reasonable to reject $H_0$ if
+
+$$T = | \hat{\pi}_n - 0.5|$$
+
+is large. The exact value necessary to reject the null hypothesis will be discussed when we focus more on specific hypothesis tests.
 
 # Acknowledgements {.toc-ignore}
 
