@@ -625,6 +625,74 @@ n \times 2\beta_0 &amp; = 2 \sum_{i=1}^n Y_i - 2\beta_1 \sum_{i=1}^n X_i\\
 </div>
 <div id="computational-calculation-of-the-mle" class="section level1">
 <h1>Computational calculation of the MLE</h1>
+<p>Analytical calculations of the MLE can prove to be intractable. Therefore we can use many of the same optimization approaches to find the MLE for a likelihood function. Consider the previous example with faculty salaries:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">mu_hat =</span> <span class="kw">seq</span>(<span class="dv">57</span>, <span class="dv">63</span>, <span class="dt">by =</span> .<span class="dv">05</span>),
+           <span class="dt">logLik =</span> <span class="kw">map_dbl</span>(mu_hat, likelihood.normal.mu, <span class="dt">x =</span> prof<span class="op">$</span>salary, <span class="dt">sig2 =</span> <span class="dv">4</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(mu_hat, logLik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(prof<span class="op">$</span>salary), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Log-likelihood function for Normal random variable&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="kw">expression</span>(sigma<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">4</span>),
+       <span class="dt">x =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(mu)),
+       <span class="dt">y =</span> <span class="kw">expression</span>(l[n](mu)))</code></pre></div>
+<p><img src="parametric-inference_files/figure-html/loglik-normal-diff-var-1.png" width="672" /></p>
+<p>We used a grid search to exhaustively search through the defined solution space to calculate the value for <span class="math inline">\(\hat{\mu}\)</span> which maximized the log-likelihood function. We could instead have used a standard optimization algorithm to determine this value.</p>
+<p>Or for a linear regression problem, write the appropriate likelihood function and optimize over it.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_lik_lm &lt;-<span class="st"> </span><span class="cf">function</span>(par, data.y, data.x) {
+  a.par &lt;-<span class="st"> </span>par[<span class="dv">1</span>]  <span class="co"># The current slope</span>
+  b.par &lt;-<span class="st"> </span>par[<span class="dv">2</span>]  <span class="co"># The current intercept</span>
+  err.sigma &lt;-<span class="st"> </span>par[<span class="dv">3</span>]  <span class="co"># The current error standard deviation</span>
+  
+  <span class="co"># Calculate the likelihood of each data point using dnorm</span>
+  likelihoods &lt;-<span class="st"> </span><span class="kw">suppressWarnings</span>(<span class="kw">dnorm</span>(data.y, <span class="dt">mean =</span> data.x <span class="op">*</span><span class="st"> </span>a.par <span class="op">+</span><span class="st"> </span>b.par, <span class="dt">sd =</span> err.sigma))
+  
+  <span class="co"># Calculate log-likelihoods of each data point</span>
+  log.likelihoods &lt;-<span class="st"> </span><span class="kw">log</span>(likelihoods)
+  
+  <span class="co"># return the sum of the log-likelihoods</span>
+  <span class="kw">sum</span>(log.likelihoods)
+}
+
+<span class="co"># optimize for professor salary</span>
+<span class="kw">optim</span>(<span class="dt">par =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">20</span>), <span class="dt">fn =</span> log_lik_lm, <span class="dt">data.y =</span> prof<span class="op">$</span>salary, <span class="dt">data.x =</span> prof<span class="op">$</span>years,
+      <span class="dt">control =</span> <span class="kw">list</span>(<span class="dt">fnscale =</span> <span class="op">-</span><span class="dv">1</span>))</code></pre></div>
+<pre><code>## $par
+## [1] 5.00e+00 4.50e+01 2.46e-10
+## 
+## $value
+## [1] 106
+## 
+## $counts
+## function gradient 
+##      502       NA 
+## 
+## $convergence
+## [1] 1
+## 
+## $message
+## NULL</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># compare to lm()</span>
+<span class="kw">summary</span>(<span class="kw">lm</span>(salary <span class="op">~</span><span class="st"> </span>years, <span class="dt">data =</span> prof))</code></pre></div>
+<pre><code>## Warning in summary.lm(lm(salary ~ years, data = prof)): essentially perfect
+## fit: summary may be unreliable</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = salary ~ years, data = prof)
+## 
+## Residuals:
+##         1         2         3         4         5 
+## -1.28e-14  3.34e-15  3.17e-15  3.10e-15  3.19e-15 
+## 
+## Coefficients:
+##             Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept) 4.50e+01   8.67e-15 5.19e+15   &lt;2e-16 ***
+## years       5.00e+00   2.61e-15 1.91e+15   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 8.27e-15 on 3 degrees of freedom
+## Multiple R-squared:     1,   Adjusted R-squared:     1 
+## F-statistic: 3.66e+30 on 1 and 3 DF,  p-value: &lt;2e-16</code></pre>
 </div>
 <div id="acknowledgements" class="section level1 toc-ignore">
 <h1>Acknowledgements</h1>
@@ -654,6 +722,7 @@ n \times 2\beta_0 &amp; = 2 \sum_{i=1}^n Y_i - 2\beta_1 \sum_{i=1}^n X_i\\
 ##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
 ##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
 ##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  codetools    0.2-15  2016-10-05 CRAN (R 3.5.1)                      
 ##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
 ##  compiler     3.5.1   2018-07-05 local                               
 ##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      

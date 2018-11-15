@@ -333,7 +333,38 @@ $\hat{\beta}_0, \hat{\beta}_1$ are the MLE for a least squares regression model.
 
 # Computational calculation of the MLE
 
+Analytical calculations of the MLE can prove to be intractable. Therefore we can use many of the same optimization approaches to find the MLE for a likelihood function. Consider the previous example with faculty salaries:
 
+```{r loglik-normal-diff-var}
+```
+
+We used a grid search to exhaustively search through the defined solution space to calculate the value for $\hat{\mu}$ which maximized the log-likelihood function. We could instead have used a standard optimization algorithm to determine this value.
+
+Or for a linear regression problem, write the appropriate likelihood function and optimize over it.
+
+```{r loglik-optim}
+log_lik_lm <- function(par, data.y, data.x) {
+  a.par <- par[1]  # The current slope
+  b.par <- par[2]  # The current intercept
+  err.sigma <- par[3]  # The current error standard deviation
+  
+  # Calculate the likelihood of each data point using dnorm
+  likelihoods <- suppressWarnings(dnorm(data.y, mean = data.x * a.par + b.par, sd = err.sigma))
+  
+  # Calculate log-likelihoods of each data point
+  log.likelihoods <- log(likelihoods)
+  
+  # return the sum of the log-likelihoods
+  sum(log.likelihoods)
+}
+
+# optimize for professor salary
+optim(par = c(1, 5, 20), fn = log_lik_lm, data.y = prof$salary, data.x = prof$years,
+      control = list(fnscale = -1))
+
+# compare to lm()
+summary(lm(salary ~ years, data = prof))
+```
 
 # Acknowledgements {.toc-ignore}
 
