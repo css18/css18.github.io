@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Parametric inference</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Parametric inference</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
+<div id="parametric-models" class="section level1">
+<h1>Parametric models</h1>
+<p>Recall the form of <strong>parametric models</strong></p>
+<p><span class="math display">\[\xi \equiv f(x; \theta) : \theta \in \Theta\]</span></p>
+<p>where <span class="math inline">\(\theta\)</span> is an unknown parameter (or vector of parameters) <span class="math inline">\(\theta = (\theta_1, \ldots, \theta_k)\)</span> that can only take values in the parameter space <span class="math inline">\(\Theta \subset \Re^k\)</span>. The problem of inference then reduces to the problem of estimating the parameter <span class="math inline">\(\theta\)</span>.</p>
+<p>How can we know the distribution that generated the data is in some parametric model? That is, how do we know a random variable was generated by a Normal distribution? Exponential distribution? Binomial distribution? In truth, we rarely have precise knowledge of this. In this way, nonparametric models can be superior since they do not impose any assumptions about the global form of a random variable or a function. However, many times we can use distributions of known random variables with well-understood properties to <strong>approximate</strong> a parametric model of the actual random variable. For example, counts of the occurrence of events are known from past experience to be reasonably approximated by a Poisson model.</p>
+</div>
+<div id="parameter-of-interest" class="section level1">
+<h1>Parameter of interest</h1>
+<p>Often we are only interested in some function <span class="math inline">\(T(\theta)\)</span>. For example, if <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span> then the parameter is <span class="math inline">\(\theta = (\mu, \sigma)\)</span>. If the goal is to estimate <span class="math inline">\(\mu\)</span>, then <span class="math inline">\(\mu = T(\theta)\)</span> is called the <strong>parameter of interest</strong> and <span class="math inline">\(\sigma\)</span> is called a <strong>nuisance parameter</strong>. The parameter of interest <span class="math inline">\(T(\theta)\)</span> is sometimes a simple function and sometimes complex.</p>
+<div id="example-normal-distribution" class="section level2">
+<h2>Example: Normal distribution</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim N(\mu, \sigma^2)\)</span>. The parameter is <span class="math inline">\(\theta = (\mu, \sigma)\)</span> and the parameter space is <span class="math inline">\(\Theta = \{(\mu, \sigma): \mu \in \Re, \sigma &lt; 0 \}\)</span>. Suppose that <span class="math inline">\(X_i\)</span> is average daily temperature in Chicago and suppose we are interested in <span class="math inline">\(\tau\)</span>, the fraction of days in the year which have an average temperature above 50 degrees F. Let <span class="math inline">\(Z\)</span> denote a standard Normal random variable. Then</p>
+<p><span class="math display">\[
+\begin{align}
+\tau &amp;= \Pr (X &gt; 50) = 1 - \Pr (X &lt; 50) = 1 - \Pr \left( \frac{X - \mu}{\sigma} &lt; \frac{50 - \mu}{\sigma} \right) \\
+&amp;= 1 - \Pr \left(Z &lt; \frac{50 - \mu}{\sigma} \right) = 1 - \Phi \left( \frac{50 - \mu}{\sigma} \right)
+\end{align}
+\]</span></p>
+<p>The parameter of interest is <span class="math inline">\(\tau = T(\mu, \sigma) = 1 - \Phi \left( \frac{50 - \mu}{\sigma} \right)\)</span>.</p>
+</div>
+</div>
+<div id="maximum-likelihood" class="section level1">
+<h1>Maximum likelihood</h1>
+<p>The most common method for estimating parameters in a parametric model is the <strong>maximum likelihood method</strong>. Let <span class="math inline">\(X_1, \ldots, X_n\)</span> be IID with PDF <span class="math inline">\(f(x; \theta)\)</span>. The <strong>likelihood function</strong> is defined by</p>
+<p><span class="math display">\[\Lagr_n(\theta) = \prod_{i=1}^n f(X_i; \theta)\]</span></p>
+<p>The <strong>log-likelihood function</strong> is defined by <span class="math inline">\(\lagr_n (\theta) = \log \Lagr_n(\theta)\)</span>. The likelihood function is the joint density of the data, except we treat it as a function of the parameter <span class="math inline">\(\theta\)</span>. However the likelihood function is not a density function – it is a likelihood function. In general, it is not true that <span class="math inline">\(\Lagr_n(\theta)\)</span> integrates to 1 (with respect to <span class="math inline">\(\theta\)</span>).</p>
+<p>The <strong>maximum likelihood estimator</strong> (MLE), denoted by <span class="math inline">\(\hat{\theta}_n\)</span>, is the value of <span class="math inline">\(\theta\)</span> that maximizes <span class="math inline">\(\Lagr_n(\theta)\)</span>. The maximum of <span class="math inline">\(\lagr_n(\theta)\)</span> occurs at the same place as the maximum of <span class="math inline">\(\Lagr_n(\theta)\)</span>, so maximizing the log-likelihood leads to the same answer as maximizing the likelihood. Often, it is just easier to work with the log-likelihood.</p>
+<blockquote>
+<p>If we multiply <span class="math inline">\(\Lagr_n(\theta)\)</span> by any positive constant <span class="math inline">\(c\)</span> (not depending on $) then this will not change the MLE. Thus we shall drop constants in the likelihood function.</p>
+</blockquote>
+<div id="example-bernoulli-distribution" class="section level2">
+<h2>Example: Bernoulli distribution</h2>
+<p>Suppose that <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli} (\pi)\)</span>. The probability function is</p>
+<p><span class="math display">\[f(x; \pi) = \pi^x (1 - \pi)^{1 - x}\]</span></p>
+<p>for <span class="math inline">\(x = 0,1\)</span>. The unknown parameter is <span class="math inline">\(\pi\)</span>. Then,</p>
+<p><span class="math display">\[
+\begin{align}
+\Lagr_n(\pi) &amp;= \prod_{i=1}^n f(X_i; \pi) \\
+&amp;= \prod_{i=1}^n \pi^{X_i} (1 - \pi)^{1 - X_i} \\
+&amp;= \pi^S (1 - \pi)^{n - S}
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(S = \sum_{i} X_i\)</span>. The log-likelihood function is therefore</p>
+<p><span class="math display">\[\lagr_n (\pi) = S \log(\pi) + (n - S) \log(1 - \pi)\]</span></p>
+<p>To analytically solve for <span class="math inline">\(\hat{\pi}_n\)</span>, take the derivative of <span class="math inline">\(\lagr_n (\pi)\)</span>, set it equal to 0, and solve for <span class="math inline">\(\hat{\pi}_n = \frac{S}{n}\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># loglikelihood function for plotting</span>
+lik_bern &lt;-<span class="st"> </span><span class="cf">function</span>(p, S, n){
+  p<span class="op">^</span>S <span class="op">*</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p)<span class="op">^</span>(n <span class="op">-</span><span class="st"> </span>S)
+}
+
+log_lik_bern &lt;-<span class="st"> </span><span class="cf">function</span>(p, S, n){
+  S <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(p) <span class="op">+</span><span class="st"> </span>(n <span class="op">-</span><span class="st"> </span>S) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>p)
+}
+
+
+<span class="co"># calculate likelihood values</span>
+bern &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dt">by =</span> <span class="fl">0.01</span>),
+           <span class="dt">lik =</span> <span class="kw">lik_bern</span>(x, <span class="dv">12</span>, <span class="dv">20</span>),
+           <span class="dt">loglik =</span> <span class="kw">log_lik_bern</span>(x, <span class="dv">12</span>, <span class="dv">20</span>))
+
+<span class="kw">ggplot</span>(bern, <span class="kw">aes</span>(x, lik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> (<span class="dv">12</span> <span class="op">/</span><span class="st"> </span><span class="dv">20</span>), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Likelihood function for Bernoulli random variable&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;20 trials and 12 successes&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(pi)),
+       <span class="dt">y =</span> <span class="kw">expression</span>(L[n](pi))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ggplot</span>(bern, <span class="kw">aes</span>(x, loglik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> (<span class="dv">12</span> <span class="op">/</span><span class="st"> </span><span class="dv">20</span>), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Log-likelihood function for Bernoulli random variable&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;20 trials and 12 successes&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(pi)),
+       <span class="dt">y =</span> <span class="kw">expression</span>(l[n](pi))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">plot_layout</span>(<span class="dt">ncol =</span> <span class="dv">1</span>)</code></pre></div>
+<p><img src="parametric-inference_files/figure-html/loglik-bern-1.png" width="672" /></p>
+</div>
+<div id="example-normal-distribution-1" class="section level2">
+<h2>Example: Normal distribution</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim N(\mu, \sigma^2)\)</span>. The parameter is <span class="math inline">\(\theta = (\mu, \sigma)\)</span> and the likelihood function (ignoring some constants) is:</p>
+<p><span class="math display">\[
+\begin{align}
+\Lagr_n (\mu, \sigma) &amp;= \prod_i \frac{1}{\sigma} \exp \left[ - \frac{1}{2\sigma^2} (X_i - \mu)^2 \right] \\
+&amp;= \frac{1}{\sigma^n} \exp \left[ - \frac{1}{2\sigma^2} \sum_i (X_i - \mu)^2 \right] \\
+&amp;= \frac{1}{\sigma^n} \exp \left[ \frac{n S^2}{2 \sigma^2} \right] \exp \left[ - \frac{n (\bar{X} - \mu)^2}{2 \sigma^2} \right]
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(\bar{X} = \frac{1}{n} \sum_i X_i\)</span> is the sample mean and <span class="math inline">\(S^2 = \frac{1}{n} \sum_i (X_i - \bar{X})^2\)</span>. The log-likelihood is</p>
+<p><span class="math display">\[\lagr_n (\mu, \sigma) = -n \log \sigma - \frac{nS^2}{2\sigma^2} - \frac{n(\bar{X} - \mu)^2}{2\sigma^2}\]</span></p>
+<p>Calculating the first derivatives with respect to <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, setting them equal to 0, and solving for <span class="math inline">\(\hat{\mu}, \hat{\sigma}\)</span> leads to <span class="math inline">\(\hat{\mu} = \bar{X} = \E [X]\)</span> and <span class="math inline">\(\hat{\sigma} = S = \sqrt{\Var[X]}\)</span>. So the mean and variance/standard deviation of a normal distribution are also maximum likelihood estimators.</p>
+</div>
+</div>
+<div id="properties-of-maximum-likelihood-estimators" class="section level1">
+<h1>Properties of maximum likelihood estimators</h1>
+<p>Under certain conditions, the maximum likelihood estimator <span class="math inline">\(\hat{\theta}_n\)</span> possesses many properties that make it an appealing choice of estimatory. The main properties are:</p>
+<ol style="list-style-type: decimal">
+<li>Consistency</li>
+<li>Equivariant</li>
+<li>Asymptotically Normal</li>
+<li>Asymptotically optimal or efficient</li>
+<li>Approximately the Bayes estimator</li>
+</ol>
+<p>These properties generally hold true for random variables with large sample sizes and smooth conditions for <span class="math inline">\(f(x; \theta)\)</span>. If these requirements are not met, then MLE may not be a good estimator for the parameter of interest.</p>
+<div id="consistency" class="section level2">
+<h2>Consistency</h2>
+<p>The MLE is consistent, in that <span class="math inline">\(\hat{\theta}_n \xrightarrow{P} \theta_*\)</span>, where <span class="math inline">\(\theta_*\)</span> denotes the true value of the parameter <span class="math inline">\(\theta\)</span>. Consistency means that the MLE converges in probability to the true value as the number of observations increases.</p>
+</div>
+<div id="equivariance" class="section level2">
+<h2>Equivariance</h2>
+<p>Equivariance indicates that if <span class="math inline">\(\hat{\theta}_n\)</span> is the MLE of <span class="math inline">\(\theta\)</span>, then <span class="math inline">\(g(\hat{\theta}_n)\)</span> is the MLE of <span class="math inline">\(g(\theta)\)</span>. Basically, the MLE estimator for a random variable transformed by a function <span class="math inline">\(g(x)\)</span> is also the MLE estimator for the new random variable <span class="math inline">\(g(x)\)</span>. For example, let <span class="math inline">\(X_1, \ldots, X_n \sim N(\theta,1)\)</span>. The MLE for <span class="math inline">\(\theta\)</span> is <span class="math inline">\(\hat{\theta}_n = \bar{X}_n\)</span>. Let <span class="math inline">\(\tau = e^\theta\)</span>. Then the MLE for <span class="math inline">\(\tau\)</span> is <span class="math inline">\(\hat{\tau} = e^{\hat{\theta}} = e^{\bar{X}}\)</span>.</p>
+</div>
+<div id="asymptotic-normality" class="section level2">
+<h2>Asymptotic normality</h2>
+<p>Asymptotic normality indicates that the distribution of the MLE estimator is asymptotically normal. That is, let <span class="math inline">\(\se = \sqrt{\Var (\hat{\sigma}_n)}\)</span>.</p>
+<p><span class="math display">\[\frac{\hat{\theta}_n - \theta_*}{\se} \leadsto N(0,1)\]</span></p>
+<p>The distribution of the true standard error of <span class="math inline">\(\hat{\theta}_n\)</span> is approximately a standard Normal distribution. Since we typically have to estimate the standard error from the data, it also holds true that</p>
+<p><span class="math display">\[\frac{\hat{\theta}_n - \theta_*}{\widehat{\se}} \leadsto N(0,1)\]</span></p>
+<p>The proof of this property is in the book. Informally, this means that the distribution of the MLE can be approximated with <span class="math inline">\(N(\theta, \widehat{\se}^2)\)</span>. This is what allows us to construct confidence intervals for point estimates like we saw previously. As long as the sample size is sufficiently large and <span class="math inline">\(f(x; \theta)\)</span> is sufficiently smooth, this property holds true and we do not need to estimate actual confidence intervals for the MLE – the Normal approximation is sufficient.</p>
+</div>
+<div id="optimality" class="section level2">
+<h2>Optimality</h2>
+<p>Suppose that <span class="math inline">\(X_1, \ldots, X_n \sim N(\theta, \sigma^2)\)</span>. The MLE is <span class="math inline">\(\hat{\sigma}_n = \bar{X}_n\)</span>. Another reasonable estimator of <span class="math inline">\(\theta\)</span> is the sample median <span class="math inline">\(\tilde{\theta}_n\)</span>. The MLE satisfies</p>
+<p><span class="math display">\[\sqrt{n} (\hat{\theta}_n - \theta) \leadsto N(0, \sigma^2)\]</span></p>
+<p>It can be shown that the median satisfies</p>
+<p><span class="math display">\[\sqrt{n} (\tilde{\theta}_n - \theta) \leadsto N \left(0, \sigma^2 \frac{\pi}{2} \right)\]</span></p>
+<p>This means the median converges to the right value but has a larger variance than the MLE.</p>
+<p>More generally, consider two estimators <span class="math inline">\(T_n\)</span> and <span class="math inline">\(U_n\)</span>, and suppose that</p>
+<p><span class="math display">\[
+\begin{align}
+\sqrt{n} (T_n - \theta) &amp;\leadsto N(0, t^2) \\
+\sqrt{n} (U_n - \theta) &amp;\leadsto N(0, u^2) \\
+\end{align}
+\]</span></p>
+<p>We define the asymptotic relative efficiency of <span class="math inline">\(U\)</span> to <span class="math inline">\(T\)</span> by <span class="math inline">\(\text{ARE}(U, T) = \frac{t^2}{u^2}\)</span>. In the Normal example, <span class="math inline">\(\text{ARE}(\tilde{\theta}_n, \hat{\theta}_n) = \frac{2}{\pi} \approx .63\)</span>. The interpretation is that if you use the median, you are effectively using only a fraction of the data and your estimate is not as optimal as the mean.</p>
+<p>Fundamentally, if <span class="math inline">\(\hat{\theta}_n\)</span> is the MLE and <span class="math inline">\(\tilde{\theta}_n\)</span> is any other estimator, then</p>
+<p><span class="math display">\[\text{ARE} (\tilde{\theta}_n, \hat{\theta}_n) \leq 1\]</span></p>
+<p>Thus, the MLE has the smallest (asymptotic) variance and we say the MLE is efficient or asymptotically optimal.</p>
+</div>
+</div>
+<div id="analytical-calculation-of-mle" class="section level1">
+<h1>Analytical calculation of MLE</h1>
+<div id="mean-of-the-normal-variable" class="section level2">
+<h2>Mean of the Normal variable</h2>
+<p>We presume the response variable <span class="math inline">\(Y\)</span> is drawn from a Gaussian (normal) distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>:</p>
+<p><span class="math display">\[\Pr(X_i = y_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="dt">fun =</span> dnorm, <span class="dt">args =</span> <span class="kw">list</span>(<span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Normal distribution&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="kw">expression</span>(<span class="kw">paste</span>(mu <span class="op">==</span><span class="st"> </span><span class="dv">0</span>, <span class="st">&quot; , &quot;</span>, sigma<span class="op">^</span>{<span class="dv">2</span>} <span class="op">==</span><span class="st"> </span><span class="dv">1</span>)))</code></pre></div>
+<p><img src="parametric-inference_files/figure-html/plot-normal-1.png" width="672" /></p>
+<p>This is the density, or probability density function (PDF) of the variable <span class="math inline">\(Y\)</span>.</p>
+<ul>
+<li>The probability that, for any one observation <span class="math inline">\(i\)</span>, <span class="math inline">\(Y\)</span> will take on the particular value <span class="math inline">\(y\)</span>.</li>
+<li>This is a function of <span class="math inline">\(\mu\)</span>, the expected value of the distribution, and <span class="math inline">\(\sigma^2\)</span>, the variability of the distribution around the mean.</li>
+</ul>
+<p>We want to generate estimates of the parameters <span class="math inline">\(\hat{\mu}_n\)</span> and <span class="math inline">\(\hat{\sigma}_n^2\)</span> based on the data. For the normal distribution, the log-likelihood function is:</p>
+<p><span class="math display">\[
+\begin{align}
+\lagr_n(\mu, \sigma^2 | X) &amp;= \log \prod_{i = 1}^{N}{\frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]} \\
+&amp;= \sum_{i=1}^{N}{\log\left(\frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]\right)} \\
+&amp;= -\frac{N}{2} \log(2\pi) - \left[ \sum_{i = 1}^{N} \ln{\sigma^2 - \frac{1}{2\sigma^2}} (X_i - \mu)^2 \right]
+\end{align}
+\]</span></p>
+<p>Suppose we had a sample of assistant professor salaries:</p>
+<table>
+<caption>Salaries of assistant professors</caption>
+<thead>
+<tr class="header">
+<th align="right">id</th>
+<th align="right">salary</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="right">60</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="right">55</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="right">65</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="right">50</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="right">70</td>
+</tr>
+</tbody>
+</table>
+<p>If we want to explain the distribution of possible assistant professor salaries given these data points, we could use maximum-likelihood estimation to find the <span class="math inline">\(\hat{\mu}\)</span> that maximizes the likelihood of the data. We are testing different values for <span class="math inline">\(\mu\)</span> to see what optimizes the function. If we have no regressors or predictors, <span class="math inline">\(\hat{\mu}\)</span> is a constant. Furthermore, we treat <span class="math inline">\(\sigma^2\)</span> as a nuisance parameter and hold it constant at <span class="math inline">\(\sigma^2 = 1\)</span>. The log-likelihood curve would look like this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">likelihood.normal.mu &lt;-<span class="st"> </span><span class="cf">function</span>(mu, <span class="dt">sig2 =</span> <span class="dv">1</span>, x) {
+  <span class="co"># mu      mean of normal distribution for given sig</span>
+  <span class="co"># x       vector of data</span>
+  n =<span class="st"> </span><span class="kw">length</span>(x)
+  a1 =<span class="st"> </span>(<span class="dv">2</span><span class="op">*</span>pi<span class="op">*</span>sig2)<span class="op">^-</span>(n<span class="op">/</span><span class="dv">2</span>)
+  a2 =<span class="st"> </span><span class="op">-</span><span class="dv">1</span><span class="op">/</span>(<span class="dv">2</span><span class="op">*</span>sig2)
+  y =<span class="st"> </span>(x<span class="op">-</span>mu)<span class="op">^</span><span class="dv">2</span>
+  ans =<span class="st"> </span>a1<span class="op">*</span><span class="kw">exp</span>(a2<span class="op">*</span><span class="kw">sum</span>(y))
+  <span class="kw">return</span>(<span class="kw">log</span>(ans))
+}
+
+<span class="kw">data_frame</span>(<span class="dt">mu_hat =</span> <span class="kw">seq</span>(<span class="dv">57</span>, <span class="dv">63</span>, <span class="dt">by =</span> .<span class="dv">05</span>),
+           <span class="dt">logLik =</span> <span class="kw">map_dbl</span>(mu_hat, likelihood.normal.mu, <span class="dt">x =</span> prof<span class="op">$</span>salary)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(mu_hat, logLik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(prof<span class="op">$</span>salary), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Log-likelihood function for Normal random variable&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="kw">expression</span>(sigma<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">1</span>),
+       <span class="dt">x =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(mu)),
+       <span class="dt">y =</span> <span class="kw">expression</span>(l[n](mu)))</code></pre></div>
+<p><img src="parametric-inference_files/figure-html/loglik-normal-1.png" width="672" /></p>
+<p>And the maximum is 60, which is the mean of the 5 sample observations. Notice our choice of value for <span class="math inline">\(\sigma^2\)</span> doesn’t change our estimate <span class="math inline">\(\hat{\mu}_n\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">mu_hat =</span> <span class="kw">seq</span>(<span class="dv">57</span>, <span class="dv">63</span>, <span class="dt">by =</span> .<span class="dv">05</span>),
+           <span class="dt">logLik =</span> <span class="kw">map_dbl</span>(mu_hat, likelihood.normal.mu, <span class="dt">x =</span> prof<span class="op">$</span>salary, <span class="dt">sig2 =</span> <span class="dv">4</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(mu_hat, logLik)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">mean</span>(prof<span class="op">$</span>salary), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Log-likelihood function for Normal random variable&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="kw">expression</span>(sigma<span class="op">^</span><span class="dv">2</span> <span class="op">==</span><span class="st"> </span><span class="dv">4</span>),
+       <span class="dt">x =</span> <span class="kw">expression</span>(<span class="kw">hat</span>(mu)),
+       <span class="dt">y =</span> <span class="kw">expression</span>(l[n](mu)))</code></pre></div>
+<p><img src="parametric-inference_files/figure-html/loglik-normal-diff-var-1.png" width="672" /></p>
+</div>
+<div id="least-squares-regression" class="section level2">
+<h2>Least squares regression</h2>
+<p>But more typically we want <span class="math inline">\(\mu\)</span> to be a function of some other variable <span class="math inline">\(X\)</span>. We can write this as:</p>
+<p><span class="math display">\[\E(Y) \equiv \mu = \beta_0 + \beta_{1}X_{i}\]</span></p>
+<p><span class="math display">\[\Var (Y) = \sigma^2\]</span></p>
+<p>Now we just substitute this equation for the systematic mean part (<span class="math inline">\(\mu\)</span>) in the previous equations:</p>
+<p><span class="math display">\[
+\begin{align}
+\lagr_n(\beta_0, \beta_1, \sigma^2 | Y, X) &amp;= \log \left[ \prod_{i = 1}^{N}{\frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(Y_i - \beta_0 - \beta_{1}X_{i})^2}{2\sigma^2}\right]} \right] \\
+&amp;= -\frac{N}{2} \log(2\pi) - \sum_{i = 1}^{N}\left[  \log{\sigma^2 - \frac{1}{2\sigma^2}} (Y_i - \beta_0 - \beta_{1}X_{i})^2 \right] \\
+&amp;\propto -  \sum_{i = 1}^{N} \left[ \log{\sigma^2 - \frac{1}{2\sigma^2}} (Y_i - \beta_0 - \beta_{1}X_{i})^2 \right]
+\end{align}
+\]</span></p>
+<p>If we are primarily concerned with estimating <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, we can drop all the constant terms related to <span class="math inline">\(\sigma^2\)</span>. Remember, it does not matter what that values is – the MLE will be the same regardless. So we can reduce the log-likelihood equation to</p>
+<p><span class="math display">\[\lagr_n(\beta_0, \beta_1 | Y, X) = - \sum_{i = 1}^{N} (Y_i - \beta_0 - \beta_{1}X_{i})^2\]</span></p>
+<p>Next we differentiate the equation with respect to <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>, set the equations to 0, and solve for the appropriate values.</p>
+<p><span class="math display">\[
+\begin{align}
+\dfrac{\partial{ \lagr_n(\beta_0, \beta_1 | Y, X)}}{\partial \beta_0} &amp; = -2 (\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i))\\
+&amp; = \sum_{i=1}^n -2Y_i + 2\beta_0 + 2\beta_1 X_i\\
+0 &amp; = \sum_{i=1}^n -2Y_{i} + 2\beta_0 + 2\beta_1 X_i\\
+0 &amp; = -2 \sum_{i=1}^n Y_{i} +  2\sum_{i=1}^n \beta_0 +  2\beta_1 \sum_{i=1}^n X_i\\
+0 &amp; = -2 \sum_{i=1}^n Y_{i} +  (n \times 2\beta_0) +  2\beta_1 \sum_{i=1}^n X_i\\
+n \times 2\beta_0 &amp; = 2 \sum_{i=1}^n Y_i - 2\beta_1 \sum_{i=1}^n X_i\\
+\hat \beta_0 &amp; = \dfrac{2 \sum_{i=1}^n Y_i}{2n} - \dfrac{2\beta_1 \sum_{i=1}^n X_i}{2n}\\
+&amp; =  \dfrac{\sum_{i=1}^n Y_i}{n} - \beta_1\dfrac{ \sum_{i=1}^n X_i}{n}\\
+ \hat \beta_0 &amp; = \bar{Y} - \beta_1 \bar{X}
+\end{align}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align}
+\dfrac{\partial{ \lagr_n(\beta_0, \beta_1 | Y, X)}}{\partial \beta_1} &amp; = \sum_{i=1}^n -2X_i(Y_i - \beta_0 - \beta_1 X_i) \\
+&amp; =  \sum_{i=1}^n -2Y_iX_i + 2\beta_0X_i + 2\beta_1 X_i^2\\
+0 &amp; =  \sum_{i=1}^n -2Y_iX_i + 2\beta_0 \sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+&amp; =  \sum_{i=1}^n -2Y_iX_i + 2 (\bar{Y} - \beta_1 \bar{X}) \sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+&amp; = \sum_{i=1}^n -2Y_iX_i + 2\bar{Y} \sum_{i=1}^nX_i - 2\beta_1 \bar{X}\sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+2\beta_1  \sum_{i=1}^n X_i^2 - 2\beta_1 \bar{X}\sum_{i=1}^nX_i  &amp; = \sum_{i=1}^n 2Y_iX_i  - 2\bar{Y} \sum_{i=1}^nX_i\\
+\beta_1 ( \sum_{i=1}^n X_i^2 - \bar{X}\sum_{i=1}^nX_i ) &amp; = \sum_{i=1}^n Y_iX_i  - \bar{Y} \sum_{i=1}^nX_i\\
+\hat \beta_1 &amp; = \dfrac{ \sum_{i=1}^n Y_iX_i  - \bar{Y} \sum_{i=1}^nX_i}{ \sum_{i=1}^n X_i^2 - \bar{X}\sum_{i=1}^nX_i}\\
+ \hat \beta_0 &amp; = \bar{Y} - \hat{\beta}_1 \bar{X}
+\end{align}
+\]</span></p>
+<p><span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span> are the MLE for a least squares regression model. These are the same values as obtained via OLS. Hence the OLS estimator is also the MLE.</p>
+</div>
+</div>
+<div id="computational-calculation-of-the-mle" class="section level1">
+<h1>Computational calculation of the MLE</h1>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <a href="https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9"><strong>All of Statistics</strong></a> by Larry Wasserman</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-15</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.18  2018-10-10 cran (@0.6.18)                      
+##  dplyr      * 0.7.8   2018-11-10 cran (@0.7.8)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.1.0   2018-10-25 cran (@3.1.0)                       
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr       0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.3.0   2018-10-04 cran (@2.3.0)                       
+##  Rcpp         1.0.0   2018-11-07 cran (@1.0.0)                       
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.3.0.1 2018-10-25 CRAN (R 3.5.0)                      
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.5   2018-10-11 cran (@0.2.5)                       
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
