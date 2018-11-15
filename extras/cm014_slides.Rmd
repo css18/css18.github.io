@@ -1,0 +1,398 @@
+---
+title: "Parametric inference"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 18))
+```
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
+## Parametric models
+
+$$\xi \equiv f(x; \theta) : \theta \in \Theta$$
+
+* $\theta$
+* Parameter space $\Theta \subset \Re^k$
+* How to estimate $\theta$?
+* Assume a parametric model
+    * Normal
+    * Geometric
+    * Bernoulli
+    * Binomial
+* Approximate the parametric model based on observed data
+
+## Parameter of interest
+
+* $T(\theta)$
+* If $X \sim N(\mu, \sigma^2)$ then the parameter is $\theta = (\mu, \sigma)$
+* Estimate $\mu$
+    * Parameter of interest: $\mu = T(\theta)$
+    * Nuisance parameter $\sigma$
+
+## Example: Normal distribution
+
+* Let $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$
+    * $\theta = (\mu, \sigma)$
+    * Parameter space $\Theta = \{(\mu, \sigma): \mu \in \Re, \sigma < 0 \}$
+* $X_i$ is average daily temperature in Chicago
+* Interested in $\tau$, the fraction of days in the year which have an average temperature above 50 degrees F
+* Let $Z$ denote a standard Normal random variable. Then
+
+    $$
+    \begin{align}
+    \tau &= \Pr (X > 50) = 1 - \Pr (X < 50) = 1 - \Pr \left( \frac{X - \mu}{\sigma} < \frac{50 - \mu}{\sigma} \right) \\
+    &= 1 - \Pr \left(Z < \frac{50 - \mu}{\sigma} \right) = 1 - \Phi \left( \frac{50 - \mu}{\sigma} \right)
+    \end{align}
+    $$
+
+* Parameter of interest is $\tau = T(\mu, \sigma) = 1 - \Phi \left( \frac{50 - \mu}{\sigma} \right)$
+
+## Maximum likelihood
+
+* Let $X_1, \ldots, X_n$ be IID with PDF $f(x; \theta)$
+* Likelihood function
+    $$\Lagr_n(\theta) = \prod_{i=1}^n f(X_i; \theta)$$
+* Log-likelihood function
+    $$\lagr_n (\theta) = \log \Lagr_n(\theta)$$
+* Joint density of the data, as a function of $\theta$
+* Likelihood function is not a density function 
+
+## Maximum likelihood estimator
+
+* $\hat{\theta}_n$
+* Value of $\theta$ that maximizes $\Lagr_n(\theta)$
+* $\max [\Lagr_n(\theta)] \equiv \max [\lagr_n(\theta)]$
+* Ignore positive constants $c$ in the likelihood function
+
+## Example: Bernoulli distribution {.scrollable}
+
+* Suppose that $X_1, \ldots, X_n \sim \text{Bernoulli} (\pi)$. The probability function is
+
+    $$f(x; \pi) = \pi^x (1 - \pi)^{1 - x}$$
+
+    for $x = 0,1$
+* Unknown parameter $\pi$
+    
+    $$
+    \begin{align}
+    \Lagr_n(\pi) &= \prod_{i=1}^n f(X_i; \pi) \\
+    &= \prod_{i=1}^n \pi^{X_i} (1 - \pi)^{1 - X_i} \\
+    &= \pi^S (1 - \pi)^{n - S}
+    \end{align}
+    $$
+    
+    where $S = \sum_{i} X_i$
+* Log-likelihood function is
+    
+    $$\lagr_n (\pi) = S \log(\pi) + (n - S) \log(1 - \pi)$$
+* Analytical solution
+
+## Example: Bernoulli distribution
+
+```{r loglik-bern}
+# loglikelihood function for plotting
+lik_bern <- function(p, S, n){
+  p^S * (1 - p)^(n - S)
+}
+
+log_lik_bern <- function(p, S, n){
+  S * log(p) + (n - S) * log(1 - p)
+}
+
+
+# calculate likelihood values
+bern <- data_frame(x = seq(0, 1, by = 0.01),
+           lik = lik_bern(x, 12, 20),
+           loglik = log_lik_bern(x, 12, 20))
+
+ggplot(bern, aes(x, lik)) +
+  geom_line() +
+  geom_vline(xintercept = (12 / 20), linetype = 2) +
+  labs(title = "Likelihood function for Bernoulli random variable",
+       subtitle = "20 trials and 12 successes",
+       x = expression(hat(pi)),
+       y = expression(L[n](pi))) +
+  ggplot(bern, aes(x, loglik)) +
+  geom_line() +
+  geom_vline(xintercept = (12 / 20), linetype = 2) +
+  labs(title = "Log-likelihood function for Bernoulli random variable",
+       subtitle = "20 trials and 12 successes",
+       x = expression(hat(pi)),
+       y = expression(l[n](pi))) +
+  plot_layout(ncol = 1)
+```
+
+## Example: Normal distribution {.scrollable}
+
+* Let $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$
+* $\theta = (\mu, \sigma)$
+* (Simplified) likelihood function
+
+    $$
+    \begin{align}
+    \Lagr_n (\mu, \sigma) &= \prod_i \frac{1}{\sigma} \exp \left[ - \frac{1}{2\sigma^2} (X_i - \mu)^2 \right] \\
+    &= \frac{1}{\sigma^n} \exp \left[ - \frac{1}{2\sigma^2} \sum_i (X_i - \mu)^2 \right] \\
+    &= \frac{1}{\sigma^n} \exp \left[ \frac{n S^2}{2 \sigma^2} \right] \exp \left[ - \frac{n (\bar{X} - \mu)^2}{2 \sigma^2} \right]
+    \end{align}
+    $$
+
+    * $\bar{X} = \frac{1}{n} \sum_i X_i$
+    * $S^2 = \frac{1}{n} \sum_i (X_i - \bar{X})^2$
+* Log-likelihood
+
+    $$\lagr_n (\mu, \sigma) = -n \log \sigma - \frac{nS^2}{2\sigma^2} - \frac{n(\bar{X} - \mu)^2}{2\sigma^2}$$
+    
+    * $\hat{\mu} = \bar{X} = \E [X]$
+    * $\hat{\sigma} = S = \sqrt{\Var[X]}$
+
+## Properties of maximum likelihood estimators
+
+1. Consistency
+1. Equivariant
+1. Asymptotically Normal
+1. Asymptotically optimal or efficient
+1. Approximately the Bayes estimator
+
+* Hold true for random variables with
+    * Large sample sizes
+    * Smooth conditions for $f(x; \theta)$
+
+## Consistency
+
+* $\hat{\theta}_n \xrightarrow{P} \theta_*$
+* MLE converges in probability to the true value as the number of observations increases
+
+## Equivariance
+
+* If $\hat{\theta}_n$ is the MLE of $\theta$, then $g(\hat{\theta}_n)$ is the MLE of $g(\theta)$
+* Functions applied to random variables
+* Let $X_1, \ldots, X_n \sim N(\theta,1)$
+    * MLE for $\theta$ is $\hat{\theta}_n = \bar{X}_n$
+* Let $\tau = e^\theta$
+    * MLE for $\tau$ is $\hat{\tau} = e^{\hat{\theta}} = e^{\bar{X}}$
+* Explains equivalence between likelihood and log-likelihood
+
+## Asymptotic normality
+
+* Distribution of the MLE estimator is asymptotically normal
+* $\se = \sqrt{\Var (\hat{\sigma}_n)}$
+
+    $$\frac{\hat{\theta}_n - \theta_*}{\se} \leadsto N(0,1)$$
+
+    $$\frac{\hat{\theta}_n - \theta_*}{\widehat{\se}} \leadsto N(0,1)$$
+* Used to construct confidence intervals for ML point estimates
+* Requires a large-ish sample size
+
+## Optimality
+
+* Suppose that $X_1, \ldots, X_n \sim N(\theta, \sigma^2)$
+* MLE is $\hat{\sigma}_n = \bar{X}_n$
+
+    $$\sqrt{n} (\hat{\theta}_n - \theta) \leadsto N(0, \sigma^2)$$
+    
+* $\theta = \tilde{\theta}_n$ : median
+
+    $$\sqrt{n} (\tilde{\theta}_n - \theta) \leadsto N \left(0, \sigma^2 \frac{\pi}{2} \right)$$
+
+* Consider two estimators $T_n$ and $U_n$
+
+    $$
+    \begin{align}
+    \sqrt{n} (T_n - \theta) &\leadsto N(0, t^2) \\
+    \sqrt{n} (U_n - \theta) &\leadsto N(0, u^2) \\
+    \end{align}
+    $$
+* Relative efficiency
+
+    $$\text{ARE}(U, T) = \frac{t^2}{u^2}$$
+
+## Optimality
+
+* Relative efficiency for Normal distribution
+
+    $$\text{ARE}(\tilde{\theta}_n, \hat{\theta}_n) = \frac{2}{\pi} \approx .63$$
+
+* If $\hat{\theta}_n$ is the MLE and $\tilde{\theta}_n$ is any other estimator, then
+
+    $$\text{ARE} (\tilde{\theta}_n, \hat{\theta}_n) \leq 1$$
+* MLE has the smallest (asymptotic) variance
+* MLE is efficient or asymptotically optimal
+
+## Normal random variable
+
+$$\Pr(X_i = x_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]$$
+
+```{r plot-normal, fig.asp = 0.7}
+data_frame(x = rnorm(1000, 0, 1)) %>%
+  ggplot(aes(x)) +
+  stat_function(fun = dnorm, args = list(mean = 0, sd = 1)) +
+  labs(title = "Normal distribution",
+       subtitle = expression(paste(mu == 0, " , ", sigma^{2} == 1)))
+```
+
+## MLE estimate
+
+$$
+\begin{align}
+\lagr_n(\mu, \sigma^2 | X) &= \log \prod_{i = 1}^{N}{\frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]} \\
+&= \sum_{i=1}^{N}{\log\left(\frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]\right)} \\
+&= -\frac{N}{2} \log(2\pi) - \left[ \sum_{i = 1}^{N} \ln{\sigma^2 - \frac{1}{2\sigma^2}} (X_i - \mu)^2 \right]
+\end{align}
+$$
+
+## Professor salaries
+
+```{r prof, echo = FALSE}
+prof <- data_frame(id = 1:5,
+                   years = c(3,2,4,1,5),
+                   salary = 45 + 5 * years)
+
+prof %>%
+  select(-years) %>%
+  knitr::kable(caption = "Salaries of assistant professors")
+```
+
+* MLE for $\hat{\mu}$ - average value of the random variable
+* Treat $\sigma^2$ as a nuisance parameter
+    * $\sigma^2 = c$
+
+## MLE estimate $\hat{\mu}$
+
+```{r loglik-normal}
+likelihood.normal.mu <- function(mu, sig2 = 1, x) {
+  # mu      mean of normal distribution for given sig
+  # x       vector of data
+  n = length(x)
+  a1 = (2*pi*sig2)^-(n/2)
+  a2 = -1/(2*sig2)
+  y = (x-mu)^2
+  ans = a1*exp(a2*sum(y))
+  return(log(ans))
+}
+
+data_frame(mu_hat = seq(57, 63, by = .05),
+           logLik = map_dbl(mu_hat, likelihood.normal.mu, x = prof$salary)) %>%
+  ggplot(aes(mu_hat, logLik)) +
+  geom_line() +
+  geom_vline(xintercept = mean(prof$salary), linetype = 2) +
+  labs(title = "Log-likelihood function for Normal random variable",
+       subtitle = expression(sigma^2 == 1),
+       x = expression(hat(mu)),
+       y = expression(l[n](mu)))
+```
+
+## MLE estimate $\hat{\mu}$
+
+```{r loglik-normal-diff-var}
+data_frame(mu_hat = seq(57, 63, by = .05),
+           logLik = map_dbl(mu_hat, likelihood.normal.mu, x = prof$salary, sig2 = 4)) %>%
+  ggplot(aes(mu_hat, logLik)) +
+  geom_line() +
+  geom_vline(xintercept = mean(prof$salary), linetype = 2) +
+  labs(title = "Log-likelihood function for Normal random variable",
+       subtitle = expression(sigma^2 == 4),
+       x = expression(hat(mu)),
+       y = expression(l[n](mu)))
+```
+
+## Least squares regression {.scrollable}
+
+$$\E(Y) \equiv \mu = \beta_0 + \beta_{1}X_{i}$$
+
+$$\Var (Y) = \sigma^2$$
+
+$$
+\begin{align}
+\lagr_n(\beta_0, \beta_1, \sigma^2 | Y, X) &= \log \left[ \prod_{i = 1}^{N}{\frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(Y_i - \beta_0 - \beta_{1}X_{i})^2}{2\sigma^2}\right]} \right] \\
+&= -\frac{N}{2} \log(2\pi)  \\
+&\quad- \sum_{i = 1}^{N}\left[  \log{\sigma^2 - \frac{1}{2\sigma^2}} (Y_i - \beta_0 - \beta_{1}X_{i})^2 \right] \\
+&\propto -  \sum_{i = 1}^{N} \left[ \log{\sigma^2 - \frac{1}{2\sigma^2}} (Y_i - \beta_0 - \beta_{1}X_{i})^2 \right]
+\end{align}
+$$
+
+* Drop $\sigma^2$
+    
+    $$\lagr_n(\beta_0, \beta_1 | Y, X) = - \sum_{i = 1}^{N} (Y_i - \beta_0 - \beta_{1}X_{i})^2$$
+
+## Least squares regression {.scrollable}
+
+$$
+\begin{align}
+\dfrac{\partial{ \lagr_n(\beta_0, \beta_1 | Y, X)}}{\partial \beta_0} & = -2 (\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i))\\
+& = \sum_{i=1}^n -2Y_i + 2\beta_0 + 2\beta_1 X_i\\
+0 & = \sum_{i=1}^n -2Y_{i} + 2\beta_0 + 2\beta_1 X_i\\
+0 & = -2 \sum_{i=1}^n Y_{i} +  2\sum_{i=1}^n \beta_0 +  2\beta_1 \sum_{i=1}^n X_i\\
+0 & = -2 \sum_{i=1}^n Y_{i} +  (n \times 2\beta_0) +  2\beta_1 \sum_{i=1}^n X_i\\
+n \times 2\beta_0 & = 2 \sum_{i=1}^n Y_i - 2\beta_1 \sum_{i=1}^n X_i\\
+\hat \beta_0 & = \dfrac{2 \sum_{i=1}^n Y_i}{2n} - \dfrac{2\beta_1 \sum_{i=1}^n X_i}{2n}\\
+& =  \dfrac{\sum_{i=1}^n Y_i}{n} - \beta_1\dfrac{ \sum_{i=1}^n X_i}{n}\\
+ \hat \beta_0 & = \bar{Y} - \beta_1 \bar{X}
+\end{align}
+$$
+
+## Least squares regression {.scrollable}
+
+$$
+\begin{align}
+\dfrac{\partial{ \lagr_n(\beta_0, \beta_1 | Y, X)}}{\partial \beta_1} & = \sum_{i=1}^n -2X_i(Y_i - \beta_0 - \beta_1 X_i) \\
+& =  \sum_{i=1}^n -2Y_iX_i + 2\beta_0X_i + 2\beta_1 X_i^2\\
+0 & =  \sum_{i=1}^n -2Y_iX_i + 2\beta_0 \sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+& =  \sum_{i=1}^n -2Y_iX_i + 2 (\bar{Y} - \beta_1 \bar{X}) \sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+& = \sum_{i=1}^n -2Y_iX_i + 2\bar{Y} \sum_{i=1}^nX_i - 2\beta_1 \bar{X}\sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+2\beta_1  \sum_{i=1}^n X_i^2 - 2\beta_1 \bar{X}\sum_{i=1}^nX_i  & = \sum_{i=1}^n 2Y_iX_i  - 2\bar{Y} \sum_{i=1}^nX_i\\
+\beta_1 ( \sum_{i=1}^n X_i^2 - \bar{X}\sum_{i=1}^nX_i ) & = \sum_{i=1}^n Y_iX_i  - \bar{Y} \sum_{i=1}^nX_i\\
+\hat \beta_1 & = \dfrac{ \sum_{i=1}^n Y_iX_i  - \bar{Y} \sum_{i=1}^nX_i}{ \sum_{i=1}^n X_i^2 - \bar{X}\sum_{i=1}^nX_i}\\
+ \hat \beta_0 & = \bar{Y} - \hat{\beta}_1 \bar{X}
+\end{align}
+$$
+
+## Computational calculation of the MLE
+
+* Optimization problem
+* Use optimization algorithms
+
+## Grid search
+
+```{r loglik-normal-diff-var}
+```
+
+## Computational calculation of the MLE {.scrollable}
+
+```{r loglik-optim, echo = TRUE}
+log_lik_lm <- function(par, data.y, data.x) {
+  a.par <- par[1]  # The current slope
+  b.par <- par[2]  # The current intercept
+  err.sigma <- par[3]  # The current error standard deviation
+  
+  # Calculate the likelihood of each data point using dnorm
+  likelihoods <- suppressWarnings(dnorm(data.y, mean = data.x * a.par + b.par, sd = err.sigma))
+  
+  # Calculate log-likelihoods of each data point
+  log.likelihoods <- log(likelihoods)
+  
+  # return the sum of the log-likelihoods
+  sum(log.likelihoods)
+}
+
+# optimize for professor salary
+optim(par = c(1, 5, 20), fn = log_lik_lm, data.y = prof$salary, data.x = prof$years,
+      control = list(fnscale = -1))
+
+# compare to lm()
+summary(lm(salary ~ years, data = prof))
+```

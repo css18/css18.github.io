@@ -201,7 +201,7 @@ Thus, the MLE has the smallest (asymptotic) variance and we say the MLE is effic
 
 We presume the response variable $Y$ is drawn from a Gaussian (normal) distribution with mean $\mu$ and variance $\sigma^2$:
 
-$$\Pr(X_i = y_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]$$
+$$\Pr(X_i = x_i) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp \left[\frac{(X_i - \mu)^2}{2\sigma^2}\right]$$
 
 ```{r plot-normal}
 data_frame(x = rnorm(1000, 0, 1)) %>%
