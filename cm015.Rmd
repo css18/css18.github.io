@@ -20,7 +20,7 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ## Before class
 
-* Read [chapter 9 (Parametric inference) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+* Read [chapter 10 (Hypothesis testing) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
 
 ## Slides and class materials
 
