@@ -26,7 +26,7 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
 
 In **hypothesis testing**, we start with some default theory -- called a **null hypothesis** -- and we ask if the data provide sufficient evidence to reject the theory. If not, we fail to reject the null hypothesis.
 
-Formally, suppose we partition the parameter space $\Theta$ into two disjoin sets $\Theta_0$ and $\Theta_1$ and that we wish to test
+Formally, suppose we partition the parameter space $\Theta$ into two disjoint sets $\Theta_0$ and $\Theta_1$ and that we wish to test
 
 $$H_0: \theta \in \Theta_0 \quad \text{versus} \quad H_1: \theta \in \Theta_1$$
 
@@ -446,7 +446,7 @@ Mendel bred peas with round yellow seeds and wrinkled green seeds. There are fou
 
 $$p_0 \equiv \left(\frac{9}{16}, \frac{3}{16}, \frac{3}{16}, \frac{1}{16} \right)$$
 
-The likelihood ratio test for $H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0$ is
+In $n = 556$ trials he observed $X = (315,101,108,32)$. The likelihood ratio test for $H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0$ is
 
 $$
 \begin{align}
@@ -538,8 +538,6 @@ By failing to correct for the fact that we conducted multiple hypothesis tests o
 **This happens all the time in social science.** All scholars and researchers do this. We form a theory, generate hypotheses, collect data to test the hypotheses, and explore multiple model formulations until we settle on the final form. This doesn't mean we are attempting to commit fraud, we are just using our knowledge to try and estimate a "good" model.
 
 ## Correcting $p$-values
-
-One approach is to correct the $p$-value and account for the fact that you are conducting multiple hypothesis tests and should therefore expect to have some amount of false discovery. The **family-wise error rate** (FWER) is the probability of making one or more false discoveries (false positives) when performing multiple hypotheses tests. By assuring $\text{FWER} \leq \alpha$, the probability of making one or more false positives in the family is controlled at level $\alpha$.
 
 Consider $m$ hypothesis tests:
 

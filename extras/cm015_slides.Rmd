@@ -1,0 +1,578 @@
+---
+title: "Hypothesis testing"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+base_size <- 18
+theme_set(theme_minimal(base_size = base_size))
+```
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
+## Hypothesis testing
+
+* Default theory
+* Null vs. alternative hypothesis
+* Sufficient evidence to reject the null hypothesis?
+
+## Hypothesis testing
+
+* Partition the parameter space $\Theta$ into two disjoint sets $\Theta_0$ and $\Theta_1$
+* Test
+
+    $$H_0: \theta \in \Theta_0 \quad \text{versus} \quad H_1: \theta \in \Theta_1$$
+    
+* Let $X$ be a random variable and let $\chi$ be the range of $X$
+* Find a subset of outcomes $R \subset \chi$ (rejection region)
+    * If $X \subset R$, reject the null
+    * Otherwise do not reject the null
+* Rejection region $R$
+
+    $$R = \left\{ x: T(x) > c \right\}$$
+
+    * Test statistic
+    * Critical value
+
+## Types of errors
+
+![](https://2378nh2nfow32gm3mb25krmuyy-wpengine.netdna-ssl.com/wp-content/uploads/2014/05/Type-I-and-II-errors1-625x468.jpg)
+
+## Power function
+
+$$\beta(\theta) = \Pr_\theta (X \in R)$$
+
+* The size of a test
+
+    $$\alpha = \text{sup}_{\theta \in \Theta_0} \beta(\theta)$$
+
+* Level $\alpha$
+
+## Sided tests
+
+* Two-sided test
+
+    $$H_0: \theta = \theta_0 \quad \text{versus} \quad H_1: \theta \neq \theta_0$$
+
+* One-sided test
+
+    $$H_0: \theta \leq \theta_0 \quad \text{versus} \quad H_1: \theta > \theta_0$$
+
+    or
+
+    $$H_0: \theta \geq \theta_0 \quad \text{versus} \quad H_1: \theta < \theta_0$$
+
+## Example hypothesis test {.scrollable}
+
+* Let $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$ where $\sigma$ is known
+
+    $$H_0: \mu \leq 0 \quad \text{versus} \quad H_1: \mu > 0$$
+    
+* $\Theta_0 = (-\infty, 0]$ and $\Theta_1 = (0, \infty]$
+* Consider the test
+
+    $$\text{reject } H_0 \text{ if } T>c$$
+
+    where $T = \bar{X}$
+* Rejection region
+    $$R = \left\{(x_1, \ldots, x_n): T(x_1, \ldots, x_n) > c \right\}$$
+
+* Power function
+
+    $$
+    \begin{align}
+    \beta(\mu) &= \Pr_\mu (\bar{X} > c) \\
+    &= \Pr_\mu \left(\frac{\sqrt{n} (\bar{X} - \mu)}{\sigma} > \frac{\sqrt{n} (c - \mu)}{\sigma} \right) \\
+    &= \Pr_\mu \left(Z > \frac{\sqrt{n} (c - \mu)}{\sigma} \right) \\
+    &= 1 - \Phi \left( \frac{\sqrt{n} (c - \mu)}{\sigma} \right)
+    \end{align}
+    $$
+
+## Example hypothesis test
+
+```{r normal-cdf}
+data_frame(x = seq(-3, 3, by = 0.01),
+           y = pnorm(x),
+           h = x > -0) %>%
+  ggplot(aes(x, y, color = h)) +
+  geom_line(size = 1) +
+  geom_vline(xintercept = 0) +
+  scale_color_brewer(type = "qual", labels = expression(H[0], H[1])) +
+  annotate(geom = "text", x = -0.25, y = .8, label = expression(beta(mu))) +
+  labs(title = "Power function for test statistic",
+       x = expression(mu),
+       y = expression(alpha),
+       color = NULL)
+```
+
+
+## Example hypothesis test
+
+$$\alpha = \text{sup}_{\mu \leq 0} \beta(\mu) = \beta(0) = 1 - \Phi \left( \frac{\sqrt{n} (c)}{\sigma} \right)$$
+
+* Solve for $c$
+
+    $$c = \frac{\sigma \Phi^{-1} (1 - \alpha)}{\sqrt{n}}$$
+
+* Reject $H_0$ when
+
+    $$\bar{X} > \frac{\sigma \Phi^{-1} (1 - \alpha)}{\sqrt{n}}$$
+
+    $$\frac{\sqrt{n}(\bar{X} - 0)}{\sigma} > z_\alpha$$
+
+    * $z_\alpha = \Phi^{-1} (1 - \alpha)$
+
+## Wald test
+
+* $\theta$
+* $\hat{\theta}$
+* $\widehat{\se}$
+* Consider testing
+
+    $$H_0: \theta = \theta_0 \quad \text{versus} \quad H_1: \theta \neq \theta_0$$
+
+* Assume that $\hat{\theta}$ is asymptotically Normal:
+
+    $$\frac{\hat{\theta} - \theta_0}{\widehat{\se}} \leadsto N(0,1)$$
+
+* Reject $H_0$ when $|W| > z_{\alpha / 2}$ where
+
+    $$W = \frac{\hat{\theta} - \theta_0}{\widehat{\se}}$$
+
+## Power of the Wald test
+
+* Suppose the true value of $\theta$ is $\theta_* \neq \theta_0$
+* Power $\beta(\theta_*)$
+
+    $$1 - \Phi \left( \frac{\hat{\theta} - \theta_0}{\widehat{\se}} + z_{\alpha/2} \right) + \Phi \left( \frac{\hat{\theta} - \theta_0}{\widehat{\se}} - z_{\alpha/2} \right)$$
+
+* Power is large if $\theta_*$ is far from $\theta_0$
+* Power is large if the sample size is large
+
+## Example: comparing two means
+
+* Let $X_1, \ldots, X_m$ and $Y_1, \ldots, Y_n$ be two independent samples from populations with means $\mu_1, \mu_2$ respectively
+
+    $$H_0: \delta = 0 \quad \text{versus} \quad H_1: \delta \neq 0$$
+
+    where $\delta = \mu_1 - \mu_2$
+* $\hat{\delta} = \bar{X} - \bar{Y}$
+
+    $$\widehat{\se} = \sqrt{\frac{s_1^2}{m} + \frac{s_2^2}{n}}$$
+
+* Size $\alpha$ Wald test rejects $H_0$ when $|W| > z_{\alpha / 2}$ where
+
+    $$W = \frac{\hat{\delta} - 0}{\widehat{\se}} = \frac{\bar{X} - \bar{Y}}{\sqrt{\frac{s_1^2}{m} + \frac{s_2^2}{n}}}$$
+
+## History of Student's $t$
+
+* William Sealy Gosset
+* Beermaking
+* $N=3$
+* New distribution for low $N$
+* Pseudonym "Student"
+
+## Differences from the Normal Distribution
+
+$$f(t) = \frac{\Gamma (\frac{k+1}{2})}{\sqrt{k\pi} \Gamma (\frac{k}{2}) } (1 + \frac{t^2}{k})^{-\frac{k + 1}{2}}$$
+
+* Normal distribution always has the same shape
+* Shape of the student's $t$-distribution changes depending on the sample size
+
+## Differences from the Normal Distribution
+
+```{r t-dist}
+expand.grid(x = seq(-4, 4, by = 0.01),
+            df = c(1, 3, 5, 10, 30, Inf)) %>%
+  as_tibble() %>%
+  mutate(y = dt(x, df),
+         df = factor(df, labels = c(1, 3, 5, 10, 30, "Normal"))) %>%
+  ggplot(aes(x, y, color = df)) +
+  geom_line() +
+  scale_color_brewer(type = "qual") +
+  labs(title = "t-Distribution",
+       x = expression(X),
+       y = "PDF",
+       color = "Degrees of freedom") +
+  theme(legend.position = "bottom")
+```
+
+## Relationship to confidence intervals
+
+* Wald test
+
+    Reject $H_0: \theta = \theta_0 \quad \text{versus} \quad \theta \neq \theta_0$ if and only if $\theta_0 \notin C$ where
+
+    $$C = (\hat{\theta} - \widehat{\se}z_{\alpha / 2}, \hat{\theta} + \widehat{\se}z_{\alpha / 2})$$
+    
+* Confidence interval: $\hat{\theta} \pm \widehat{\se} z_{\alpha/2}$
+    * Check whether the null value is in the CI
+
+## Statistical vs. scientific significance
+
+![](http://www.azquotes.com/picture-quotes/quote-the-absence-of-evidence-is-not-the-evidence-of-absence-carl-sagan-43-51-12.jpg)
+
+## $p$-values
+
+* If the test rejects at level $\alpha$ it will also reject at level $\alpha' > \alpha$
+* $p$-value - smallest $\alpha$ at which the test rejects the null
+* Function of power
+    * Magnitude of the difference between $\theta_*$ and $\theta_0$
+    * Sample size
+
+## Interpreting $p$-values
+
+$p$-value  | evidence
+-----------|-----------------------------------------
+$< .01$    | very strong evidence against $H_0$
+$.01 - .05$| strong evidence against $H_0$
+$.05 - .10$| weak evidence against $H_0$
+$> .1$     | little or no evidence against $H_0$
+
+* A large $p$-value is not strong evidence in favor of $H_0$
+    * $H_0$ could be true
+    * $H_0$ is false but the test has low power
+* $p$-value is not $\Pr (H_0 | \text{Data})$
+
+## Calculating $p$-values
+
+* Suppose that the size $\alpha$ test is of the form
+
+    $$\text{reject } H_0 \text{ if and only if } T(X_n) \geq c_\alpha$$
+
+* Then,
+
+    $$\text{p-value} = \text{sup}_{\theta \in \Theta_0} \Pr_\theta (T(X^n) \geq T(x^n))$$
+
+    where $x^n$ is the observed value of $X^n$
+    
+* If $\Theta_0 = \{ \theta_0 \}$ then
+
+    $$\text{p-value} = \Pr_{\theta_0} (T(X^n) \geq T(x^n))$$
+
+## $p$-value for Wald test
+
+* $w = \frac{\hat{\theta} - \theta_0}{\widehat{\se}}$
+* $p$-value is given by
+
+    $$\text{p-value} = \Pr_{\theta_0} (|W| > |w|) \approx \Pr (|Z| > |w| = 2 \Phi(-|w|)$$
+
+    where $Z \sim N(0,1)$
+
+## $p$-value for Wald test
+
+```{r wald-p-val}
+data_frame(x = seq(-3, 3, by = 0.01),
+           y = dnorm(x),
+           tails = x < qnorm(p = 0.025) | x > qnorm(p = 0.975)) %>%
+  ggplot(aes(x, y)) +
+  geom_linerange(aes(ymax = y, ymin = 0, color = tails)) +
+  scale_color_brewer(type = "qual", labels = expression(NULL, alpha/2)) +
+  geom_vline(xintercept = qnorm(p = c(0.025, 0.975)), linetype = 2) +
+  annotate(geom = "text", x = qnorm(p = c(0.025, 0.975)) - .25, y = .35, 
+           label = expression(paste("|", -w, "|"), paste("|", w, "|"))) +
+  labs(title = "P-value for the Wald test statistic",
+       x = NULL,
+       y = NULL,
+       color = NULL) +
+  theme_void(base_size = base_size)
+```
+
+## Example: cholesterol data
+
+* 371 individuals in a health study examining cholesterol levels (in mg/dl)
+* 320 individuals have narrowing of the arteries
+* 51 patients have no evidence of heart disease
+* Is the mean cholesterol different in the two groups?
+
+## $\chi^2$ distribution
+
+* Let $Z_1, \ldots, Z_k$ be independent, standard Normals
+* Let $V = \sum_{i=1}^k Z_i^2$
+* $V \sim \chi_k^2$ distribution with $k$ degrees of freedom
+
+    $$f(v) = \frac{v^{\frac{k}{2} - 1} e^{-\frac{v}{2}}}{2^{\frac{k}{2} \Gamma \left(\frac{k}{2} \right)}}$$
+
+    for $v>0$
+
+## $\chi^2$ distribution
+
+```{r chi-2}
+df <- c(1, 2, 3, 4, 6, 9)
+
+ggplot(data.frame(x = c(0, 8)), aes(x)) +
+  stat_function(aes(color = as.character(df[1])), fun=dchisq, args=list(df=df[1]), 
+                size=1, alpha=.8) +
+  stat_function(aes(color = as.character(df[2])), fun=dchisq, args=list(df=df[2]), 
+                size=1, alpha=.8) +
+  stat_function(aes(color = as.character(df[3])), fun=dchisq, args=list(df=df[3]), 
+                size=1, alpha=.8) +
+  stat_function(aes(color = as.character(df[4])), fun=dchisq, args=list(df=df[4]), 
+                size=1, alpha=.8) +
+  stat_function(aes(color = as.character(df[5])), fun=dchisq, args=list(df=df[5]), 
+                size=1, alpha=.8) +
+  stat_function(aes(color = as.character(df[6])), fun=dchisq, args=list(df=df[6]), 
+                size=1, alpha=.8) +
+  ylim(0,.5) +
+  scale_color_brewer(type = "qual") +
+  labs(title = expression(chi^2),
+       x = expression(X),
+       y = NULL,
+       color = expression(k))
+```
+
+## Pearson's $\chi^2$ test for multinomial data
+
+* Used for multinomial data
+* $X = (X_1, \ldots, X_k)$ has a multinomial $(n,p)$ distribution
+* MLE is $\hat{p} = (\hat{p}_1, \ldots, \hat{p}_k) = (x_1 / n, \ldots, x_k / n)$
+* $p_0 = (p_{01}, \ldots, p_{0k})$
+
+    $$H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0$$
+
+* Pearson's $\chi^2$ statistic
+
+    $$T = \sum_{j=1}^k \frac{(X_j - np_{0j})^2}{np_{0j}} = \sum_{j=1}^k \frac{(X_j - E_j)^2}{E_j}$$
+
+    where $E_j = \E[X_j] = np_{0j}$ is the expected value under $H_0$
+
+## Example: attitudes towards abortion
+
+* $H_A$ - In a comparison of individuals, liberals are more likely to favor allowing a woman to obtain an abortion for any reason than conservatives
+* $H_0$ - There is no difference in support between liberals and conservatives for allowing a woman to obtain an abortion for any reason. Any difference is the result of random sampling error.
+* What if $H_0$ is correct?
+
+## If null hypothesis is correct
+
+| Right to Abortion | Liberal | Moderate | Conservative | Total |
+|-------------------|----------|----------|--------------|--------|
+| Yes | 40.8\% | 40.8\% | 40.8\% | 40.8\% |
+|  | (206.45) | (289.68) | (271.32) | (768) |
+| No | 59.2\% | 59.2\% | 59.2\% | 59.2\% |
+|  | (299.55) | (420.32) | (393.68) | (1113) |
+| Total | 26.9\% | 37.7\% | 35.4\% | 100\% |
+|  | (506) | (710) | (665) | (1881) |
+
+## Observed data
+
+| Right to Abortion | Liberal | Moderate | Conservative | Total |
+|-------------------|---------|----------|--------------|--------|
+| Yes | 62.6\% | 36.6\% | 28.7\% | 40.8\% |
+|  | (317) | (260) | (191) | (768) |
+| No | 37.4\% | 63.4\% | 71.28\% | 59.2\% |
+|  | (189) | (450) | (474) | (1113) |
+| Total | 26.9\% | 37.7\% | 35.4\% | 100\% |
+|  | (506) | (710) | (665) | (1881) |
+
+## $\chi^2$ Test of Significance {.scrollable}
+
+| Right to Abortion |     | Liberal | Moderate | Conservative |
+|-------------------|---------------|---------|----------|--------------|
+|  Yes | Observed Frequency ($X_j$) | 317.0 | 260.0 | 191.0 |
+|     | Expected Frequency ($E_j$) | 206.6 | 289.9 | 271.5 |
+|     | $X_j - E_j$ | 110.4 | -29.9 | -80.5 |
+|     | $(X_j - E_j)^2$ | 12188.9 | 893.3 | 6482.7 |
+|     | $\frac{(X_j - E_j)^2}{E_j}$ | **59.0** | **4.1** | **23.9** |
+|  No   | Observed Frequency ($X_j$) | 189.0 | 450.0 | 474.0 |
+|     | Expected Frequency ($E_j$) | 299.4 | 420.1 | 393.5 |
+|     | $X_j - E_j$ | -110.4 | 29.9 | 80.5 |
+|     | $(X_j - E_j)^2$ | 12188.9 | 893.3 | 6482.7 |
+|     | $\frac{(X_j - E_j)^2}{E_j}$ | **40.7** | **2.1** | **16.5** |
+
+* Calculating test statistic
+    * $\chi^2=\sum{\frac{(X_j - E_j)^2}{E_j}}=145.27$
+    * $\text{Degrees of freedom} = (\text{number of rows}-1)(\text{number of columns-1})=2$
+* Calculating $p$-value
+    * $\text{p-value} = \Pr (\chi_2^2 > 145.27) = `r 1 - pchisq(q = 145.27, df = 2)`$
+    
+## Likelihood ratio test
+
+* Wald test is for scalar parameter
+* Generalization to vector-valued parameter
+* Consider testing
+
+    $$H_0: \theta \in \Theta_0 \quad \text{versus} \quad H_1: \theta \notin \Theta_0$$
+
+* Likelihood ratio test statistic
+
+    $$\lambda = 2 \log \left( \frac{\text{sup}_{\theta \in \Theta} \Lagr (\theta)}{\text{sup}_{\theta \in \Theta_0} \Lagr (\theta)} \right) = 2 \log \left( \frac{\Lagr(\hat{\theta})}{\Lagr (\hat{\theta}_0)} \right)$$
+
+    * $\hat{\theta}$
+    * $\hat{\theta}_0$
+
+## Likelihood ratio test
+
+* Useful when $\Theta_0$ consists of all parameter values $\theta$ such that some coordinates of $\theta$ are fixed at particular values
+* $\theta = (\theta_1, \ldots, \theta_q, \theta_{q + 1}, \ldots, \theta_r)$
+* $\Theta_0 = \left\{ \theta: (\theta_{q+ 1}, \ldots, \theta_r) = (\theta_{0,q+1}, \ldots, \theta_{0,r}) \right\}$
+* $\lambda$
+* Under $H_0: \theta \in \Theta_0$,
+
+    $$\lambda(x^n) \leadsto \chi_{r - q, \alpha}^2$$
+
+    * $r-q$
+    * $p$-value is $\Pr (\chi_{r-q}^2 > \lambda)$
+
+* $\theta = (\theta_1, \theta_2, \theta_3, \theta_4, \theta_5)$
+    * $H_0: \theta_4 = \theta_5 = 0$
+    * $5-3 = 2$ degrees of freedom
+
+## Example: Mendel's peas
+
+Mendel bred peas with round yellow seeds and wrinkled green seeds. There are four types of progeny: round yellow, wrinkled yellow, round green, and wrinkled green. The number of each type is multinomial with probability $p = (p_1, p_2, p_3, p_4)$. His history of inheritance predicts that $p$ is equal to
+
+$$p_0 \equiv \left(\frac{9}{16}, \frac{3}{16}, \frac{3}{16}, \frac{1}{16} \right)$$
+
+* In $n = 556$ trials he observed $X = (315,101,108,32)$
+* $H_0: p$
+* Likelihood ratio test
+
+## Multiple testing
+
+```{r pval-sim}
+n_obs <- 100
+
+pval_dist <- function(n_obs){
+  x <- replicate(10, rnorm(n_obs))
+  y <- rnorm(n_obs)
+  
+  mod <- lm(y ~ x[, sample(1:10, 1)])
+  
+  return(broom::tidy(mod)[2,])
+}
+
+pvals <- 1000 %>%
+  rerun(pval_dist(n_obs)) %>%
+  bind_rows %>%
+  as_tibble %>%
+  mutate(sig = p.value < .05)
+
+ggplot(pvals, aes(p.value, fill = sig)) +
+  geom_histogram(binwidth = .025, boundary = 0) +
+  labs(title = "Distribution of p-values when null is true",
+       x = expression(P),
+       y = NULL) +
+  theme(legend.position = "none")
+```
+
+## Multiple testing
+
+```{r pval-sim-mult-test}
+pval_dist_mult <- function(n_obs){
+  # generate simulated data
+  x <- replicate(10, rnorm(n_obs))
+  y <- rnorm(n_obs)
+  
+  # estimate a linear model for each column in x and find min pvalue
+  x %>%
+    as_tibble %>%
+    mutate(y = y) %>%
+    gather(i, x, -y) %>%
+    group_by(i) %>%
+    nest() %>%
+    mutate(mod = map(data, ~ lm(y ~ x, data = .x)),
+           results = map(mod, broom::tidy)) %>%
+    unnest(results) %>%
+    filter(term == "x") %>%
+    filter(p.value == min(p.value))
+}
+
+pvals_mult <- 1000 %>%
+  rerun(pval_dist_mult(n_obs)) %>%
+  bind_rows %>%
+  as_tibble %>%
+  mutate(sig = p.value < .05)
+
+ggplot(pvals_mult, aes(p.value, fill = sig)) +
+  geom_histogram(binwidth = .025, boundary = 0) +
+  labs(title = "Distribution of minimum p-values for\n10 tests when null is true",
+       x = expression(P),
+       y = NULL) +
+  theme(legend.position = "none")
+```
+
+## Bonferroni correction
+
+* Consider $m$ hypothesis tests
+
+    $$H_{0i} \quad \text{versus} \quad H_{1i}, i = 1, \ldots, m$$
+
+    * $P_1, \ldots, P_m$ 
+* Given $p$-values $P_1, \ldots, P_m$, reject null hypothesis $H_{0i}$ if
+
+    $$P_i \leq \frac{\alpha}{m}$$
+
+* Example
+    * $m=20$
+    * $\alpha = 0.05$ 
+    * Test each individual hypothesis at $\alpha = \frac{0.05}{20} = 0.0025$
+
+## Bonferroni correction
+
+```{r sim-norm-null}
+sim_norm_null <- 1000 %>%
+  rerun(rnorm(n_obs)) %>%
+  map(~ t.test(x = .x, mu = 0)) %>%
+  map_dbl(~ .x$p.value) %>%
+  as_tibble %>%
+  mutate(sig = value < .05)
+
+ggplot(sim_norm_null, aes(value, fill = sig)) +
+  geom_histogram(binwidth = .025, boundary = 0) +
+  labs(title = "Distribution of p-values for single test",
+       x = expression(P),
+       y = NULL) +
+  theme(legend.position = "none")
+```
+
+## Bonferroni correction
+
+```{r sim-norm-mult}
+sim_norm_mult <- 1000 %>%
+  rerun(5 %>%
+          rerun(rnorm(n_obs)) %>%
+          map(~ t.test(x = .x, mu = 0)) %>%
+          map_dbl(~ .x$p.value) %>%
+          as_tibble %>%
+          mutate(sig = value < .05)) %>%
+  bind_rows(.id = "sim") %>%
+  group_by(sim) %>%
+  rename(raw = value) %>%
+  mutate(correct = raw < (.05 / n()))
+
+sim_norm_mult %>%
+  filter(raw == min(raw)) %>%
+  ggplot(aes(raw, fill = sig)) +
+  geom_histogram(binwidth = .01, boundary = 0) +
+  labs(title = "Distribution of p-values for multiple tests",
+       x = expression(P),
+       y = NULL) +
+  theme(legend.position = "none")
+```
+
+## Bonferroni correction
+
+```{r bonferroni}
+sim_norm_mult %>%
+  filter(raw == min(raw)) %>%
+  ggplot(aes(raw, fill = correct)) +
+  geom_histogram(binwidth = .01, boundary = 0) +
+  labs(title = "Distribution of p-values for multiple tests",
+       subtitle = "With Bonferroni correction",
+       x = expression(P),
+       y = NULL) +
+  theme(legend.position = "none")
+```

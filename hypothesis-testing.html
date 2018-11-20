@@ -350,7 +350,7 @@ div.tocify {
 <div id="hypothesis-testing" class="section level1">
 <h1>Hypothesis testing</h1>
 <p>In <strong>hypothesis testing</strong>, we start with some default theory – called a <strong>null hypothesis</strong> – and we ask if the data provide sufficient evidence to reject the theory. If not, we fail to reject the null hypothesis.</p>
-<p>Formally, suppose we partition the parameter space <span class="math inline">\(\Theta\)</span> into two disjoin sets <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(\Theta_1\)</span> and that we wish to test</p>
+<p>Formally, suppose we partition the parameter space <span class="math inline">\(\Theta\)</span> into two disjoint sets <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(\Theta_1\)</span> and that we wish to test</p>
 <p><span class="math display">\[H_0: \theta \in \Theta_0 \quad \text{versus} \quad H_1: \theta \in \Theta_1\]</span></p>
 <ul>
 <li><span class="math inline">\(H_0\)</span> - null hypothesis</li>
@@ -886,7 +886,7 @@ div.tocify {
 <h2>Example: Mendel’s peas</h2>
 <p>Mendel bred peas with round yellow seeds and wrinkled green seeds. There are four types of progeny: round yellow, wrinkled yellow, round green, and wrinkled green. The number of each type is multinomial with probability <span class="math inline">\(p = (p_1, p_2, p_3, p_4)\)</span>. His history of inheritance predicts that <span class="math inline">\(p\)</span> is equal to</p>
 <p><span class="math display">\[p_0 \equiv \left(\frac{9}{16}, \frac{3}{16}, \frac{3}{16}, \frac{1}{16} \right)\]</span></p>
-<p>The likelihood ratio test for <span class="math inline">\(H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0\)</span> is</p>
+<p>In <span class="math inline">\(n = 556\)</span> trials he observed <span class="math inline">\(X = (315,101,108,32)\)</span>. The likelihood ratio test for <span class="math inline">\(H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0\)</span> is</p>
 <p><span class="math display">\[
 \begin{align}
 \lambda &amp;= 2 \log \left( \frac{\Lagr (\hat{p})}{\Lagr(p_0)} \right) \\
@@ -966,7 +966,6 @@ pvals_mult &lt;-<span class="st"> </span><span class="dv">1000</span> <span clas
 <p><strong>This happens all the time in social science.</strong> All scholars and researchers do this. We form a theory, generate hypotheses, collect data to test the hypotheses, and explore multiple model formulations until we settle on the final form. This doesn’t mean we are attempting to commit fraud, we are just using our knowledge to try and estimate a “good” model.</p>
 <div id="correcting-p-values" class="section level2">
 <h2>Correcting <span class="math inline">\(p\)</span>-values</h2>
-<p>One approach is to correct the <span class="math inline">\(p\)</span>-value and account for the fact that you are conducting multiple hypothesis tests and should therefore expect to have some amount of false discovery. The <strong>family-wise error rate</strong> (FWER) is the probability of making one or more false discoveries (false positives) when performing multiple hypotheses tests. By assuring <span class="math inline">\(\text{FWER} \leq \alpha\)</span>, the probability of making one or more false positives in the family is controlled at level <span class="math inline">\(\alpha\)</span>.</p>
 <p>Consider <span class="math inline">\(m\)</span> hypothesis tests:</p>
 <p><span class="math display">\[H_{0i} \quad \text{versus} \quad H_{1i}, i = 1, \ldots, m\]</span></p>
 <p>and let <span class="math inline">\(P_1, \ldots, P_m\)</span> denote the <span class="math inline">\(m\)</span> <span class="math inline">\(p\)</span>-values for these tests. The <strong>Bonferroni method</strong> approaches the problem as follows: given <span class="math inline">\(p\)</span>-values <span class="math inline">\(P_1, \ldots, P_m\)</span>, reject null hypothesis <span class="math inline">\(H_{0i}\)</span> if</p>
@@ -1060,75 +1059,72 @@ sim_norm_mult <span class="op">%&gt;%</span>
 ##  tz       America/Chicago             
 ##  date     2018-11-20</code></pre>
 <pre><code>## Packages -----------------------------------------------------------------</code></pre>
-<pre><code>##  package      * version date       source                              
-##  assertthat     0.2.0   2017-04-11 CRAN (R 3.5.0)                      
-##  backports      1.1.2   2017-12-13 CRAN (R 3.5.0)                      
-##  base         * 3.5.1   2018-07-05 local                               
-##  bindr          0.1.1   2018-03-13 CRAN (R 3.5.0)                      
-##  bindrcpp     * 0.2.2   2018-03-29 CRAN (R 3.5.0)                      
-##  broom        * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
-##  cellranger     1.1.0   2016-07-27 CRAN (R 3.5.0)                      
-##  cli            1.0.0   2017-11-05 CRAN (R 3.5.0)                      
-##  codetools      0.2-15  2016-10-05 CRAN (R 3.5.1)                      
-##  colorspace     1.3-2   2016-12-14 CRAN (R 3.5.0)                      
-##  compiler       3.5.1   2018-07-05 local                               
-##  crayon         1.3.4   2017-09-16 CRAN (R 3.5.0)                      
-##  datasets     * 3.5.1   2018-07-05 local                               
-##  devtools       1.13.6  2018-06-27 CRAN (R 3.5.0)                      
-##  digest         0.6.18  2018-10-10 cran (@0.6.18)                      
-##  dplyr        * 0.7.8   2018-11-10 cran (@0.7.8)                       
-##  evaluate       0.11    2018-07-17 CRAN (R 3.5.0)                      
-##  forcats      * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
-##  ggplot2      * 3.1.0   2018-10-25 cran (@3.1.0)                       
-##  glue           1.3.0   2018-07-17 CRAN (R 3.5.0)                      
-##  graphics     * 3.5.1   2018-07-05 local                               
-##  grDevices    * 3.5.1   2018-07-05 local                               
-##  grid           3.5.1   2018-07-05 local                               
-##  gtable         0.2.0   2016-02-26 CRAN (R 3.5.0)                      
-##  haven          1.1.2   2018-06-27 CRAN (R 3.5.0)                      
-##  hms            0.4.2   2018-03-10 CRAN (R 3.5.0)                      
-##  htmltools      0.3.6   2017-04-28 CRAN (R 3.5.0)                      
-##  httr           1.3.1   2017-08-20 CRAN (R 3.5.0)                      
-##  jsonlite       1.5     2017-06-01 CRAN (R 3.5.0)                      
-##  knitr          1.20    2018-02-20 CRAN (R 3.5.0)                      
-##  labeling       0.3     2014-08-23 CRAN (R 3.5.0)                      
-##  lattice        0.20-35 2017-03-25 CRAN (R 3.5.1)                      
-##  lazyeval       0.2.1   2017-10-29 CRAN (R 3.5.0)                      
-##  lubridate      1.7.4   2018-04-11 CRAN (R 3.5.0)                      
-##  magrittr       1.5     2014-11-22 CRAN (R 3.5.0)                      
-##  memoise        1.1.0   2017-04-21 CRAN (R 3.5.0)                      
-##  methods      * 3.5.1   2018-07-05 local                               
-##  modelr         0.1.2   2018-05-11 CRAN (R 3.5.0)                      
-##  munsell        0.5.0   2018-06-12 CRAN (R 3.5.0)                      
-##  nlme           3.1-137 2018-04-07 CRAN (R 3.5.1)                      
-##  patchwork    * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
-##  pillar         1.3.0   2018-07-14 CRAN (R 3.5.0)                      
-##  pkgconfig      2.0.2   2018-08-16 CRAN (R 3.5.1)                      
-##  plyr           1.8.4   2016-06-08 CRAN (R 3.5.0)                      
-##  purrr        * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
-##  R6             2.3.0   2018-10-04 cran (@2.3.0)                       
-##  RColorBrewer   1.1-2   2014-12-07 CRAN (R 3.5.0)                      
-##  Rcpp           1.0.0   2018-11-07 cran (@1.0.0)                       
-##  readr        * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
-##  readxl         1.1.0   2018-04-20 CRAN (R 3.5.0)                      
-##  rlang          0.3.0.1 2018-10-25 CRAN (R 3.5.0)                      
-##  rmarkdown      1.10    2018-06-11 CRAN (R 3.5.0)                      
-##  rprojroot      1.3-2   2018-01-03 CRAN (R 3.5.0)                      
-##  rstudioapi     0.7     2017-09-07 CRAN (R 3.5.0)                      
-##  rvest          0.3.2   2016-06-17 CRAN (R 3.5.0)                      
-##  scales         1.0.0   2018-08-09 CRAN (R 3.5.0)                      
-##  stats        * 3.5.1   2018-07-05 local                               
-##  stringi        1.2.4   2018-07-20 CRAN (R 3.5.0)                      
-##  stringr      * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
-##  tibble       * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
-##  tidyr        * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
-##  tidyselect     0.2.5   2018-10-11 cran (@0.2.5)                       
-##  tidyverse    * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
-##  tools          3.5.1   2018-07-05 local                               
-##  utils        * 3.5.1   2018-07-05 local                               
-##  withr          2.1.2   2018-03-15 CRAN (R 3.5.0)                      
-##  xml2           1.2.0   2018-01-24 CRAN (R 3.5.0)                      
-##  yaml           2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.18  2018-10-10 cran (@0.6.18)                      
+##  dplyr      * 0.7.8   2018-11-10 cran (@0.7.8)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.1.0   2018-10-25 cran (@3.1.0)                       
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr       0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.3.0   2018-10-04 cran (@2.3.0)                       
+##  Rcpp         1.0.0   2018-11-07 cran (@1.0.0)                       
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.3.0.1 2018-10-25 CRAN (R 3.5.0)                      
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.5   2018-10-11 cran (@0.2.5)                       
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
 </div>
 <div class="footnotes">
 <hr />
