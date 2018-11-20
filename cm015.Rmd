@@ -1,0 +1,33 @@
+---
+title: "Hypothesis testing"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm015 - November 20, 2018
+
+## Overview
+
+* Define hypothesis testing and $p$-value
+* Define and practice the Wald test
+* Relate the Wald test to a $t$-test
+* Summarize the $\chi^2$ distribution
+* Summarize the likelihood ratio test
+* Explain the importance of correcting for multiple testing
+
+## Before class
+
+* Read [chapter 9 (Parametric inference) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+
+## Slides and class materials
+
+* [Slides](extras/cm015_slides.html)
+* [Hypothesis testing](hypothesis-testing.html)
+
+## Additional resources
+
+## What you need to do
+
