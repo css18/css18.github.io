@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework 06: Statistical inference, parametric models, and hypothesis testing</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework 06: Statistical inference, parametric models, and hypothesis testing</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Due before class on November 27th.</p>
+</div>
+<div id="fork-the-hw06-repository" class="section level1">
+<h1>Fork the <code>hw06</code> repository</h1>
+<p>Go <a href="https://github.com/css18/hw06">here</a> to fork the repo for homework 06.</p>
+</div>
+<div id="exercises-15-points" class="section level1">
+<h1>Exercises (15 points)</h1>
+<p>Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate <span class="math inline">\(\LaTeX\)</span> mathematical notation.</p>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
+<ol style="list-style-type: decimal">
+<li>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Poisson}(\lambda)\)</span> and let <span class="math inline">\(\hat{\lambda} = \dfrac{\sum_{i=1}^n X_i}{n}\)</span>. Find the bias, standard error, and MSE of this estimator.</li>
+<li>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Uniform}(0, \theta)\)</span> and let <span class="math inline">\(\hat{\theta} = 2 \bar{X}_n\)</span>. Find the bias, standard error, and MSE of this estimator.</li>
+<li>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Uniform}(0,\theta)\)</span> where <span class="math inline">\(\theta &gt; 0\)</span>. Write a function to find the MLE <span class="math inline">\(\hat{\theta}\)</span>. Test the function by simulating 10 observations drawn from a standard uniform distribution <span class="math inline">\(\text{Uniform}(0, \theta = 1)\)</span> and use your likelihood function and an optimizer to verify <span class="math inline">\(\hat{\theta} = 1\)</span>.</li>
+<li>Demonstrate the consistency and asymptotic normality of the MLE.
+<ol style="list-style-type: lower-alpha">
+<li>Simulate each of the following distributions 1000 times for varying <span class="math inline">\(k = (10, 30, 100, 1000, 10000)\)</span>:
+<ol style="list-style-type: lower-alpha">
+<li><span class="math inline">\(\text{Normal}(\mu = 0, \sigma^2 = 1)\)</span></li>
+<li><span class="math inline">\(\text{Poisson}(\lambda = 8.5)\)</span></li>
+<li><span class="math inline">\(\text{Bernoulli}(\pi = 0.6)\)</span></li>
+</ol></li>
+<li>Calculate the maximum likelihood estimator <span class="math inline">\(\hat{\theta}\)</span> for each simulated dataset, where <span class="math inline">\(\theta = (\mu, \sigma^2), \lambda, \pi\)</span> respectively.</li>
+<li>For each <span class="math inline">\(k_j\)</span> and type of distribution (i.e. Normal, Poisson, Bernoulli), compare <span class="math inline">\(\theta\)</span> to <span class="math inline">\(\hat{\theta}\)</span>. Examine both the expected value <span class="math inline">\(\E[\hat{\theta}]\)</span> and the distribution of <span class="math inline">\(\hat{\theta}_i\)</span>, using a combination of statistics and visualizations. For which <span class="math inline">\(n\)</span> are the estimates closest to <span class="math inline">\(\theta\)</span>? How does the value for <span class="math inline">\(n\)</span> effect this shape?</li>
+</ol></li>
+<li>There is a theory that people can postpone their death until after an important event. To test the theory, Phillips and King (1988) collected data on deaths around the Jewish holiday Passover. Of 1919 deaths, 922 died the week before the holiday and 997 dies the week after. Think of this as a binomial and test the null hypothesis that <span class="math inline">\(\theta = \frac{1}{2}\)</span>. Report and interpret the <span class="math inline">\(p\)</span>-value. Also construct a confidence interval for <span class="math inline">\(\theta\)</span>. You can calculate these measures by hand, writing your own function(s) in R, or using a pre-written function.</li>
+<li>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Poisson} (\lambda)\)</span>.
+<ol style="list-style-type: lower-alpha">
+<li><p>Let <span class="math inline">\(\lambda_0 &gt; 0\)</span>. Find the size <span class="math inline">\(\alpha\)</span> Wald test for</p>
+<p><span class="math display">\[H_0: \lambda = \lambda_0 \quad \text{versus} \quad H_1: \lambda \neq \lambda_0\]</span></p></li>
+<li><p>Let <span class="math inline">\(\lambda_0 = 1, n = 20, \alpha = 0.05\)</span>. Simulate <span class="math inline">\(X_1, \ldots, X_n \sim \text{Poisson} (\lambda_0)\)</span> 1000 times and perform the Wald test on each sample. Repeat many times and count how often you reject the null. How close is the type I error rate to <span class="math inline">\(0.05\)</span>?</p></li>
+</ol></li>
+</ol>
+</div>
+<div id="submit-the-assignment" class="section level1">
+<h1>Submit the assignment</h1>
+<p>Your assignment should be submitted as an R Markdown document rendered as an HTML/PDF document. <strong>Don’t know what an R Markdown document is? <a href="http://rmarkdown.rstudio.com/lesson-1.html">Read this!</a> Or <a href="http://r4ds.had.co.nz/r-markdown.html">this!</a></strong> I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.</p>
+<p>Follow instructions on <a href="https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow">homework workflow</a>. As part of the pull request, you’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.</p>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

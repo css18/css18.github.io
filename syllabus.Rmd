@@ -48,3 +48,4 @@ cdat %>%
 * [Homework 03: Probability](hw03-probability.html)
 * [Homework 04: Discrete random variables](hw04-rv-discrete.html)
 * [Homework 05: Continuous random variables and optimization](hw05-rv-continuous-optimize.html)
+* [Homework 06: Statistical inference, parametric models, and hypothesis testing](hw06-stat-inference.html)

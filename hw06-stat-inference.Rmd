@@ -1,0 +1,42 @@
+---
+title: "Homework 06: Statistical inference, parametric models, and hypothesis testing"
+output: html_document
+---
+
+# Overview
+
+Due before class on November 27th.
+
+# Fork the `hw06` repository
+
+Go [here](https://github.com/css18/hw06) to fork the repo for homework 06.
+
+# Exercises (15 points)
+
+Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate $\LaTeX$ mathematical notation.
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
+1. Let $X_1, \ldots, X_n \sim \text{Poisson}(\lambda)$ and let $\hat{\lambda} = \dfrac{\sum_{i=1}^n X_i}{n}$. Find the bias, standard error, and MSE of this estimator.
+1. Let $X_1, \ldots, X_n \sim \text{Uniform}(0, \theta)$ and let $\hat{\theta} = 2 \bar{X}_n$. Find the bias, standard error, and MSE of this estimator.
+1. Let $X_1, \ldots, X_n \sim \text{Uniform}(0,\theta)$ where $\theta > 0$. Write a function to find the MLE $\hat{\theta}$. Test the function by simulating 10 observations drawn from a standard uniform distribution $\text{Uniform}(0, \theta = 1)$ and use your likelihood function and an optimizer to verify $\hat{\theta} = 1$.
+1. Demonstrate the consistency and asymptotic normality of the MLE.
+    a. Simulate each of the following distributions 1000 times for varying $k = (10, 30, 100, 1000, 10000)$:
+        a. $\text{Normal}(\mu = 0, \sigma^2 = 1)$
+        a. $\text{Poisson}(\lambda = 8.5)$
+        a. $\text{Bernoulli}(\pi = 0.6)$
+    a. Calculate the maximum likelihood estimator $\hat{\theta}$ for each simulated dataset, where $\theta = (\mu, \sigma^2), \lambda, \pi$ respectively.
+    a. For each $k_j$ and type of distribution (i.e. Normal, Poisson, Bernoulli), compare $\theta$ to $\hat{\theta}$. Examine both the expected value $\E[\hat{\theta}]$ and the distribution of $\hat{\theta}_i$, using a combination of statistics and visualizations. For which $n$ are the estimates closest to $\theta$? How does the value for $n$ effect this shape?
+1. There is a theory that people can postpone their death until after an important event. To test the theory, Phillips and King (1988) collected data on deaths around the Jewish holiday Passover. Of 1919 deaths, 922 died the week before the holiday and 997 dies the week after. Think of this as a binomial and test the null hypothesis that $\theta = \frac{1}{2}$. Report and interpret the $p$-value. Also construct a confidence interval for $\theta$. You can calculate these measures by hand, writing your own function(s) in R, or using a pre-written function.
+1. Let $X_1, \ldots, X_n \sim \text{Poisson} (\lambda)$.
+    a. Let $\lambda_0 > 0$. Find the size $\alpha$ Wald test for
+    
+        $$H_0: \lambda = \lambda_0 \quad \text{versus} \quad H_1: \lambda \neq \lambda_0$$
+        
+    a. Let $\lambda_0 = 1, n = 20, \alpha = 0.05$. Simulate $X_1, \ldots, X_n \sim \text{Poisson} (\lambda_0)$ 1000 times and perform the Wald test on each sample. Repeat many times and count how often you reject the null. How close is the type I error rate to $0.05$?
+    
+# Submit the assignment
+
+Your assignment should be submitted as an R Markdown document rendered as an HTML/PDF document. **Don't know what an R Markdown document is? [Read this!](http://rmarkdown.rstudio.com/lesson-1.html) Or [this!](http://r4ds.had.co.nz/r-markdown.html)** I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.
+
+Follow instructions on [homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow). As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.
