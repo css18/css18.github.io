@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Hypothesis testing</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Hypothesis testing</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
+<div id="hypothesis-testing" class="section level1">
+<h1>Hypothesis testing</h1>
+<p>In <strong>hypothesis testing</strong>, we start with some default theory – called a <strong>null hypothesis</strong> – and we ask if the data provide sufficient evidence to reject the theory. If not, we fail to reject the null hypothesis.</p>
+<p>Formally, suppose we partition the parameter space <span class="math inline">\(\Theta\)</span> into two disjoin sets <span class="math inline">\(\Theta_0\)</span> and <span class="math inline">\(\Theta_1\)</span> and that we wish to test</p>
+<p><span class="math display">\[H_0: \theta \in \Theta_0 \quad \text{versus} \quad H_1: \theta \in \Theta_1\]</span></p>
+<ul>
+<li><span class="math inline">\(H_0\)</span> - null hypothesis</li>
+<li><span class="math inline">\(H_1\)</span> - alternative hypothesis</li>
+</ul>
+<p>Let <span class="math inline">\(X\)</span> be a random variable and let <span class="math inline">\(\chi\)</span> be the range of <span class="math inline">\(X\)</span>. We test a hypothesis by finding an appropriate subset of outcomes <span class="math inline">\(R \subset \chi\)</span> called the <strong>rejection region</strong>. If <span class="math inline">\(X \subset R\)</span> we reject the null hypothesis, otherwise we do not reject the null hypothesis. Usually the rejection region <span class="math inline">\(R\)</span> is of the form</p>
+<p><span class="math display">\[R = \left\{ x: T(x) &gt; c \right\}\]</span></p>
+<p>where <span class="math inline">\(T\)</span> is a <strong>test statistic</strong> and <span class="math inline">\(c\)</span> is a <strong>critical value</strong>. Hypothesis testing requires us to find an appropriate test statistic <span class="math inline">\(T\)</span> and an appropriate critical value <span class="math inline">\(c\)</span> to test a given hypothesis. Different hypotheses require different test statistics.</p>
+<div id="types-of-errors" class="section level2">
+<h2>Types of errors</h2>
+<div class="figure">
+<img src="https://2378nh2nfow32gm3mb25krmuyy-wpengine.netdna-ssl.com/wp-content/uploads/2014/05/Type-I-and-II-errors1-625x468.jpg" />
+
+</div>
+<p>Hypothesis testing is not error-proof. We start from the assumption that <span class="math inline">\(H_0\)</span> is true unless there is strong evidence to reject <span class="math inline">\(H_0\)</span>. Rejecting <span class="math inline">\(H_0\)</span> when <span class="math inline">\(H_0\)</span> is true is a <strong>type I error</strong> (<strong>false positive</strong>), while retaining <span class="math inline">\(H_0\)</span> when <span class="math inline">\(H_1\)</span> is true is called a <strong>type II error</strong> (<strong>false negative</strong>).</p>
+</div>
+<div id="power-function" class="section level2">
+<h2>Power function</h2>
+<p>The <strong>power function</strong> of a test with rejection region <span class="math inline">\(R\)</span> is defined by</p>
+<p><span class="math display">\[\beta(\theta) = \Pr_\theta (X \in R)\]</span></p>
+<p>The size of a test is defined to be</p>
+<p><span class="math display">\[\alpha = \text{sup}_{\theta \in \Theta_0} \beta(\theta)\]</span></p>
+<ul>
+<li><span class="math inline">\(\text{sup}\)</span> - <strong>supremum</strong>, or the largest value that <span class="math inline">\(\beta(\theta)\)</span> could take on in the given <span class="math inline">\(\theta \in \Theta_0\)</span></li>
+</ul>
+<p>A test is said to have <strong>level</strong> <span class="math inline">\(\alpha\)</span> if its size is less than or equal to <span class="math inline">\(\alpha\)</span>.</p>
+</div>
+<div id="sided-tests" class="section level2">
+<h2>Sided tests</h2>
+<p>A test of the form</p>
+<p><span class="math display">\[H_0: \theta = \theta_0 \quad \text{versus} \quad H_1: \theta \neq \theta_0\]</span></p>
+<p>is called a <strong>two-sided test</strong>, or a simple hypothesis. A test of the form</p>
+<p><span class="math display">\[H_0: \theta \leq \theta_0 \quad \text{versus} \quad H_1: \theta &gt; \theta_0\]</span></p>
+<p>or</p>
+<p><span class="math display">\[H_0: \theta \geq \theta_0 \quad \text{versus} \quad H_1: \theta &lt; \theta_0\]</span></p>
+<p>is called a <strong>one-sided test</strong>, or a composite hypothesis.</p>
+</div>
+<div id="example-hypothesis-test" class="section level2">
+<h2>Example hypothesis test</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim N(\mu, \sigma^2)\)</span> where <span class="math inline">\(\sigma\)</span> is known. We want to test <span class="math inline">\(H_0: \mu \leq 0\)</span> versus <span class="math inline">\(H_1: \mu &gt; 0\)</span>. Hence, <span class="math inline">\(\Theta_0 = (-\infty, 0]\)</span> and <span class="math inline">\(\Theta_1 = (0, \infty]\)</span>. Consider the test</p>
+<p><span class="math display">\[\text{reject } H_0 \text{ if } T&gt;c\]</span></p>
+<p>where <span class="math inline">\(T = \bar{X}\)</span>. The rejection region is</p>
+<p><span class="math display">\[R = \left\{(x_1, \ldots, x_n): T(x_1, \ldots, x_n) &gt; c \right\}\]</span></p>
+<p>Let <span class="math inline">\(Z\)</span> denote the standard Normal random variable. The power function is</p>
+<p><span class="math display">\[
+\begin{align}
+\beta(\mu) &amp;= \Pr_\mu (\bar{X} &gt; c) \\
+&amp;= \Pr_\mu \left(\frac{\sqrt{n} (\bar{X} - \mu)}{\sigma} &gt; \frac{\sqrt{n} (c - \mu)}{\sigma} \right) \\
+&amp;= \Pr_\mu \left(Z &gt; \frac{\sqrt{n} (c - \mu)}{\sigma} \right) \\
+&amp;= 1 - \Phi \left( \frac{\sqrt{n} (c - \mu)}{\sigma} \right)
+\end{align}
+\]</span></p>
+<p>This function is increasing in <span class="math inline">\(\mu\)</span>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">by =</span> <span class="fl">0.01</span>),
+           <span class="dt">y =</span> <span class="kw">pnorm</span>(x),
+           <span class="dt">h =</span> x <span class="op">&gt;</span><span class="st"> </span><span class="op">-</span><span class="dv">0</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y, <span class="dt">color =</span> h)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">size =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>, <span class="dt">labels =</span> <span class="kw">expression</span>(H[<span class="dv">0</span>], H[<span class="dv">1</span>])) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="op">-</span><span class="fl">0.25</span>, <span class="dt">y =</span> .<span class="dv">8</span>, <span class="dt">label =</span> <span class="kw">expression</span>(<span class="kw">beta</span>(mu))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Power function for test statistic&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(mu),
+       <span class="dt">y =</span> <span class="kw">expression</span>(alpha),
+       <span class="dt">color =</span> <span class="ot">NULL</span>)</code></pre></div>
+<pre><code>## Warning in is.na(x): is.na() applied to non-(list or vector) of type
+## &#39;expression&#39;</code></pre>
+<p><img src="hypothesis-testing_files/figure-html/normal-cdf-1.png" width="672" /></p>
+<p>Hence</p>
+<p><span class="math display">\[\alpha = \text{sup}_{\mu \leq 0} \beta(\mu) = \beta(0) = 1 - \Phi \left( \frac{\sqrt{n} (c)}{\sigma} \right)\]</span></p>
+<p>For a size <span class="math inline">\(\alpha\)</span> test, we set this equal to <span class="math inline">\(\alpha\)</span> and solve for <span class="math inline">\(c\)</span> to get</p>
+<p><span class="math display">\[c = \frac{\sigma \Phi^{-1} (1 - \alpha)}{\sqrt{n}}\]</span></p>
+<p>We reject <span class="math inline">\(H_0\)</span> when</p>
+<p><span class="math display">\[\bar{X} &gt; \frac{\sigma \Phi^{-1} (1 - \alpha)}{\sqrt{n}}\]</span></p>
+<p>Equivalently, we reject when</p>
+<p><span class="math display">\[\frac{\sqrt{n}(\bar{X} - 0)}{\sigma} &gt; z_\alpha\]</span></p>
+<p>where <span class="math inline">\(z_\alpha = \Phi^{-1} (1 - \alpha)\)</span>.</p>
+<p>Ideally we find the test with the highest power under <span class="math inline">\(H_1\)</span> among all size <span class="math inline">\(\alpha\)</span> tests. In practice, we use many of the same commonly used tests.</p>
+</div>
+</div>
+<div id="wald-test" class="section level1">
+<h1>Wald test</h1>
+<p>Let <span class="math inline">\(\theta\)</span> be a scalar parameter, let <span class="math inline">\(\hat{\theta}\)</span> be an estimate of <span class="math inline">\(\theta\)</span>, and let <span class="math inline">\(\widehat{\se}\)</span> be the estimated standard error of <span class="math inline">\(\hat{\theta}\)</span>. Consider testing</p>
+<p><span class="math display">\[H_0: \theta = \theta_0 \quad \text{versus} \quad H_1: \theta \neq \theta_0\]</span></p>
+<p>Assume that <span class="math inline">\(\hat{\theta}\)</span> is asymptotically Normal:</p>
+<p><span class="math display">\[\frac{\hat{\theta} - \theta_0}{\widehat{\se}} \leadsto N(0,1)\]</span></p>
+<p>The size <span class="math inline">\(\alpha\)</span> Wald test is: reject <span class="math inline">\(H_0\)</span> when <span class="math inline">\(|W| &gt; z_{\alpha / 2}\)</span> where</p>
+<p><span class="math display">\[W = \frac{\hat{\theta} - \theta_0}{\widehat{\se}}\]</span></p>
+<div id="power-of-the-wald-test" class="section level2">
+<h2>Power of the Wald test</h2>
+<p>Suppose the true value of <span class="math inline">\(\theta\)</span> is <span class="math inline">\(\theta_* \neq \theta_0\)</span>. The power <span class="math inline">\(\beta(\theta_*)\)</span> – the probability of correctly rejecting the null hypothesis – is given (approximately) by</p>
+<p><span class="math display">\[1 - \Phi \left( \frac{\hat{\theta} - \theta_0}{\widehat{\se}} + z_{\alpha/2} \right) + \Phi \left( \frac{\hat{\theta} - \theta_0}{\widehat{\se}} - z_{\alpha/2} \right)\]</span></p>
+<blockquote>
+<p>Remember this is a two-tailed test. Essentially we are collecting the probability mass in the center of the standard normal distribution and subtracting that from 1, to get the area in the tails of the distribution. Hence, two-tailed test.</p>
+</blockquote>
+<p>Recall that <span class="math inline">\(\widehat{\se}\)</span> tends to 0 as the sample size increases. So we can note that:</p>
+<ul>
+<li>The power is large if <span class="math inline">\(\theta_*\)</span> is far from <span class="math inline">\(\theta_0\)</span></li>
+<li>The power is large if the sample size is large</li>
+</ul>
+</div>
+<div id="example-comparing-two-means" class="section level2">
+<h2>Example: comparing two means</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_m\)</span> and <span class="math inline">\(Y_1, \ldots, Y_n\)</span> be two independent samples from populations with means <span class="math inline">\(\mu_1, \mu_2\)</span> respectively. Let’s test the null hypothesis that <span class="math inline">\(\mu_1 = \mu_2\)</span>. Write this as</p>
+<p><span class="math display">\[H_0: \delta = 0 \quad \text{versus} \quad H_1: \delta \neq 0\]</span></p>
+<p>where <span class="math inline">\(\delta = \mu_1 - \mu_2\)</span>. The estimate of <span class="math inline">\(\delta\)</span> is <span class="math inline">\(\hat{\delta} = \bar{X} - \bar{Y}\)</span> with estimated standard error</p>
+<p><span class="math display">\[\widehat{\se} = \sqrt{\frac{s_1^2}{m} + \frac{s_2^2}{n}}\]</span></p>
+<p>where <span class="math inline">\(s_1^2\)</span> and <span class="math inline">\(s_2^2\)</span> are the sample variances. The size <span class="math inline">\(\alpha\)</span> Wald test rejects <span class="math inline">\(H_0\)</span> when <span class="math inline">\(|W| &gt; z_{\alpha / 2}\)</span> where</p>
+<p><span class="math display">\[W = \frac{\hat{\delta} - 0}{\widehat{\se}} = \frac{\bar{X} - \bar{Y}}{\sqrt{\frac{s_1^2}{m} + \frac{s_2^2}{n}}}\]</span></p>
+</div>
+<div id="t-test" class="section level2">
+<h2><span class="math inline">\(t\)</span>-test</h2>
+<div id="history-of-students-t" class="section level3">
+<h3>History of Student’s <span class="math inline">\(t\)</span></h3>
+<ul>
+<li>William Sealy Gosset was a researcher who worked for the Guinness brewery</li>
+<li>Gosset was part of a revolution applying statistics to beermaking
+<ul>
+<li>How do the chemical properties of barley effect beer taste?</li>
+<li>What fertilizer produces the best crop yield?</li>
+</ul></li>
+<li>Gosset’s problem was that his experiments typically had an <span class="math inline">\(N\)</span> as low as 3</li>
+<li>The properties of the normal distribution break down at these low sample sizes - how could Gosset determine if the estimated mean was statistically distinguishable from zero?</li>
+<li>In order to solve the problem, Gosset applied a new distribution which accounts for sample size</li>
+<li>Because he worked for Guinness, Gosset could not publish this distribution under his real name</li>
+<li>The resulting paper was published under the pseudonym “Student”, and it became known as Student’s <span class="math inline">\(t\)</span>-distribution</li>
+</ul>
+</div>
+<div id="differences-from-the-normal-distribution" class="section level3">
+<h3>Differences from the Normal Distribution</h3>
+<p><span class="math display">\[f(t) = \frac{\Gamma (\frac{k+1}{2})}{\sqrt{k\pi} \Gamma (\frac{k}{2}) } (1 + \frac{t^2}{k})^{-\frac{k + 1}{2}}\]</span></p>
+<ul>
+<li>The normal distribution always has the same shape</li>
+<li>The <span class="math inline">\(Z\)</span>-scores of <span class="math inline">\(-1.96\)</span> and <span class="math inline">\(+1.96\)</span> always mark the boundaries of the 95% confidence interval</li>
+<li>The shape of the student’s <span class="math inline">\(t\)</span>-distribution changes depending on the sample size</li>
+<li>When sample sizes are low, the student’s <span class="math inline">\(t\)</span>-distribution expands the boundaries on random sampling error, creating a larger confidence interval</li>
+<li>Avoids being overconfident in our sample statistic</li>
+<li>As sample size increases, the confidence bounds shrink</li>
+<li>As sample size approaches infinite size, student’s <span class="math inline">\(t\)</span>-distribution takes on the same shape as the normal distribution</li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">expand.grid</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="dt">by =</span> <span class="fl">0.01</span>),
+            <span class="dt">df =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="ot">Inf</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">as_tibble</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">dt</span>(x, df),
+         <span class="dt">df =</span> <span class="kw">factor</span>(df, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="st">&quot;Normal&quot;</span>))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y, <span class="dt">color =</span> df)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;t-Distribution&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(X),
+       <span class="dt">y =</span> <span class="st">&quot;PDF&quot;</span>,
+       <span class="dt">color =</span> <span class="st">&quot;Degrees of freedom&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/t-dist-1.png" width="672" /></p>
+<p>When the degrees of freedom <span class="math inline">\(k \rightarrow \infty\)</span>, this tends to a Normal distribution.</p>
+</div>
+<div id="hypothesis-testing-1" class="section level3">
+<h3>Hypothesis testing</h3>
+<p>To test <span class="math inline">\(H_0: \mu = \mu_0\)</span> where <span class="math inline">\(\mu = \E[X_i]\)</span> is the mean, we can use the Wald test. When the data are assumed to be Normal and the sample size is small, it is common to use the <span class="math inline">\(t\)</span>-test.</p>
+</div>
+</div>
+<div id="relationship-to-confidence-intervals" class="section level2">
+<h2>Relationship to confidence intervals</h2>
+<p>There is a relationship between the Wald test and the <span class="math inline">\(1 - \alpha\)</span> asymptotic confidence interval <span class="math inline">\(\hat{\theta} \pm \widehat{\se} z_{\alpha/2}\)</span>. The size <span class="math inline">\(\alpha\)</span> Wald test rejects <span class="math inline">\(H_0: \theta = \theta_0 \quad \text{versus} \quad \theta \neq \theta_0\)</span> if and only if <span class="math inline">\(\theta_0 \notin C\)</span> where</p>
+<p><span class="math display">\[C = (\hat{\theta} - \widehat{\se}z_{\alpha / 2}, \hat{\theta} + \widehat{\se}z_{\alpha / 2})\]</span></p>
+<p>Thus, testing the hypothesis is equivalent to checking whether the null value is in the confidence interval.</p>
+</div>
+<div id="statistical-vs.scientific-significance" class="section level2">
+<h2>Statistical vs. scientific significance</h2>
+<div class="figure">
+<img src="http://www.azquotes.com/picture-quotes/quote-the-absence-of-evidence-is-not-the-evidence-of-absence-carl-sagan-43-51-12.jpg" />
+
+</div>
+<p>Rejecting <span class="math inline">\(H_0\)</span> indicates the result is <strong>statistically significant</strong>. That is, we have strong evidence to reject <span class="math inline">\(H_0\)</span>. The result or effect size can still be small if our test is powerful. In that situation, we have statistical significance but not necessarily scientific/substantive/practical significance. You should always be concerned with both of these types of significance. Statistical significance alone is not necessarily a useful or informative finding.</p>
+</div>
+</div>
+<div id="p-values" class="section level1">
+<h1><span class="math inline">\(p\)</span>-values</h1>
+<p>We could use a more fine-grained measure of the evidence against the null hypothesis. Generally, if the test rejects at level <span class="math inline">\(\alpha\)</span> it will also reject at level <span class="math inline">\(\alpha&#39; &gt; \alpha\)</span>. Hence, there is the smallest <span class="math inline">\(\alpha\)</span> at which the test rejects and we call this number the <span class="math inline">\(p\)</span>-value. Informally, the smaller the <span class="math inline">\(p\)</span>-value, the stronger the evidence against <span class="math inline">\(H_0\)</span>. Remember that this <span class="math inline">\(\alpha\)</span> will be a function of the power of the test, so both the magnitude of the difference between <span class="math inline">\(\theta_*\)</span> and <span class="math inline">\(\theta_0\)</span> and the sample size will influence this value.</p>
+<div id="interpreting-p-values" class="section level2">
+<h2>Interpreting <span class="math inline">\(p\)</span>-values</h2>
+<table>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(p\)</span>-value</th>
+<th>evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(&lt; .01\)</span></td>
+<td>very strong evidence against <span class="math inline">\(H_0\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(.01 - .05\)</span></td>
+<td>strong evidence against <span class="math inline">\(H_0\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(.05 - .10\)</span></td>
+<td>weak evidence against <span class="math inline">\(H_0\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(&gt; .1\)</span></td>
+<td>little or no evidence against <span class="math inline">\(H_0\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>These values are informal standards. There is no rhyme or reason they have to be so</li>
+<li>A large <span class="math inline">\(p\)</span>-value is not strong evidence in favor of <span class="math inline">\(H_0\)</span>
+<ul>
+<li><span class="math inline">\(H_0\)</span> could be true</li>
+<li><span class="math inline">\(H_0\)</span> is false but the test has low power</li>
+</ul></li>
+<li><span class="math inline">\(p\)</span>-value is not <span class="math inline">\(\Pr (H_0 | \text{Data})\)</span>. The <span class="math inline">\(p\)</span>-value is not the probability that the null hypothesis is true</li>
+</ul>
+</div>
+<div id="calculating-p-values" class="section level2">
+<h2>Calculating <span class="math inline">\(p\)</span>-values</h2>
+<p>Suppose that the size <span class="math inline">\(\alpha\)</span> test is of the form</p>
+<p><span class="math display">\[\text{reject } H_0 \text{ if and only if } T(X_n) \geq c_\alpha\]</span></p>
+<p>Then,</p>
+<p><span class="math display">\[\text{p-value} = \text{sup}_{\theta \in \Theta_0} \Pr_\theta (T(X^n) \geq T(x^n))\]</span></p>
+<p>where <span class="math inline">\(x^n\)</span> is the observed value of <span class="math inline">\(X^n\)</span>. If <span class="math inline">\(\Theta_0 = \{ \theta_0 \}\)</span> then</p>
+<p><span class="math display">\[\text{p-value} = \Pr_{\theta_0} (T(X^n) \geq T(x^n))\]</span></p>
+<p>Informally, the <span class="math inline">\(p\)</span>-value is the probability under <span class="math inline">\(H_0\)</span> of observing a value of the test statistic the same as or more extreme then what was actually observed.</p>
+<div id="p-value-for-wald-test" class="section level3">
+<h3><span class="math inline">\(p\)</span>-value for Wald test</h3>
+<p>Let</p>
+<p><span class="math display">\[w = \frac{\hat{\theta} - \theta_0}{\widehat{\se}}\]</span></p>
+<p>denote the observed value of the Wald statistic <span class="math inline">\(W\)</span>. The <span class="math inline">\(p\)</span>-value is given by</p>
+<p><span class="math display">\[\text{p-value} = \Pr_{\theta_0} (|W| &gt; |w|) \approx \Pr (|Z| &gt; |w| = 2 \Phi(-|w|)\]</span></p>
+<p>where <span class="math inline">\(Z \sim N(0,1)\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">seq</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="dt">by =</span> <span class="fl">0.01</span>),
+           <span class="dt">y =</span> <span class="kw">dnorm</span>(x),
+           <span class="dt">tails =</span> x <span class="op">&lt;</span><span class="st"> </span><span class="kw">qnorm</span>(<span class="dt">p =</span> <span class="fl">0.025</span>) <span class="op">|</span><span class="st"> </span>x <span class="op">&gt;</span><span class="st"> </span><span class="kw">qnorm</span>(<span class="dt">p =</span> <span class="fl">0.975</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_linerange</span>(<span class="kw">aes</span>(<span class="dt">ymax =</span> y, <span class="dt">ymin =</span> <span class="dv">0</span>, <span class="dt">color =</span> tails)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>, <span class="dt">labels =</span> <span class="kw">expression</span>(<span class="ot">NULL</span>, alpha<span class="op">/</span><span class="dv">2</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="kw">qnorm</span>(<span class="dt">p =</span> <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)), <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">annotate</span>(<span class="dt">geom =</span> <span class="st">&quot;text&quot;</span>, <span class="dt">x =</span> <span class="kw">qnorm</span>(<span class="dt">p =</span> <span class="kw">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)) <span class="op">-</span><span class="st"> </span>.<span class="dv">25</span>, <span class="dt">y =</span> .<span class="dv">35</span>, 
+           <span class="dt">label =</span> <span class="kw">expression</span>(<span class="kw">paste</span>(<span class="st">&quot;|&quot;</span>, <span class="op">-</span>w, <span class="st">&quot;|&quot;</span>), <span class="kw">paste</span>(<span class="st">&quot;|&quot;</span>, w, <span class="st">&quot;|&quot;</span>))) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;P-value for the Wald test statistic&quot;</span>,
+       <span class="dt">x =</span> <span class="ot">NULL</span>,
+       <span class="dt">y =</span> <span class="ot">NULL</span>,
+       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme_void</span>()</code></pre></div>
+<pre><code>## Warning in is.na(x): is.na() applied to non-(list or vector) of type
+## &#39;expression&#39;</code></pre>
+<p><img src="hypothesis-testing_files/figure-html/wald-p-val-1.png" width="672" /></p>
+</div>
+</div>
+<div id="example-cholesterol-data" class="section level2">
+<h2>Example: cholesterol data</h2>
+<p>Consider a set of 371 individuals in a health study examining cholesterol levels (in mg/dl). 320 individuals have narrowing of the arteries, while 51 patients have no evidence of heart disease. Is the mean cholesterol different in the two groups?</p>
+<p>Let the estimated mean cholesterol levels for the first group be <span class="math inline">\(\bar{X} = 216.2\)</span> and for the second group <span class="math inline">\(\bar{Y} = 195.3\)</span>. Let the estimated standard error for each group be <span class="math inline">\(\widehat{\se}(\hat{\mu}_1) = 5.0\)</span> and <span class="math inline">\(\widehat{\se}(\hat{\mu}_2) = 2.4\)</span>. The Wald test statistic is</p>
+<p><span class="math display">\[W = \frac{\hat{\delta} - 0}{\widehat{\se}} = \frac{\bar{X} - \bar{Y}}{\sqrt{\widehat{\se}_1^2 + \widehat{\se}_2^2}} = \frac{216.2 - 195.3}{\sqrt{5^2 + 2.4^2}} = 3.78\]</span></p>
+<p>To compute the <span class="math inline">\(p\)</span>-value, let <span class="math inline">\(Z \sim N(0,1)\)</span> denote a standard Normal random variable. Then</p>
+<p><span class="math display">\[\text{p-value} = \Pr (|Z| &gt; 3.78) = 2 \Pr(Z &lt; -3.78) = 0.0002\]</span></p>
+<p>which is very strong evidence against the null hypothesis.</p>
+</div>
+</div>
+<div id="chi2-distribution" class="section level1">
+<h1><span class="math inline">\(\chi^2\)</span> distribution</h1>
+<p>Let <span class="math inline">\(Z_1, \ldots, Z_k\)</span> be independent, standard Normals. Let <span class="math inline">\(V = \sum_{i=1}^k Z_i^2\)</span>. Then we say that <span class="math inline">\(V\)</span> has a <span class="math inline">\(\chi^2\)</span> distribution with <span class="math inline">\(k\)</span> degrees of freedom, written <span class="math inline">\(V \sim \chi_k^2\)</span>. The pdf of <span class="math inline">\(V\)</span> is</p>
+<p><span class="math display">\[f(v) = \frac{v^{\frac{k}{2} - 1} e^{-\frac{v}{2}}}{2^{\frac{k}{2} \Gamma \left(\frac{k}{2} \right)}}\]</span></p>
+<p>for <span class="math inline">\(v&gt;0\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">df &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">9</span>)
+
+<span class="kw">ggplot</span>(<span class="kw">data.frame</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">8</span>)), <span class="kw">aes</span>(x)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">as.character</span>(df[<span class="dv">1</span>])), <span class="dt">fun=</span>dchisq, <span class="dt">args=</span><span class="kw">list</span>(<span class="dt">df=</span>df[<span class="dv">1</span>]), 
+                <span class="dt">size=</span><span class="dv">1</span>, <span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">as.character</span>(df[<span class="dv">2</span>])), <span class="dt">fun=</span>dchisq, <span class="dt">args=</span><span class="kw">list</span>(<span class="dt">df=</span>df[<span class="dv">2</span>]), 
+                <span class="dt">size=</span><span class="dv">1</span>, <span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">as.character</span>(df[<span class="dv">3</span>])), <span class="dt">fun=</span>dchisq, <span class="dt">args=</span><span class="kw">list</span>(<span class="dt">df=</span>df[<span class="dv">3</span>]), 
+                <span class="dt">size=</span><span class="dv">1</span>, <span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">as.character</span>(df[<span class="dv">4</span>])), <span class="dt">fun=</span>dchisq, <span class="dt">args=</span><span class="kw">list</span>(<span class="dt">df=</span>df[<span class="dv">4</span>]), 
+                <span class="dt">size=</span><span class="dv">1</span>, <span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">as.character</span>(df[<span class="dv">5</span>])), <span class="dt">fun=</span>dchisq, <span class="dt">args=</span><span class="kw">list</span>(<span class="dt">df=</span>df[<span class="dv">5</span>]), 
+                <span class="dt">size=</span><span class="dv">1</span>, <span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">stat_function</span>(<span class="kw">aes</span>(<span class="dt">color =</span> <span class="kw">as.character</span>(df[<span class="dv">6</span>])), <span class="dt">fun=</span>dchisq, <span class="dt">args=</span><span class="kw">list</span>(<span class="dt">df=</span>df[<span class="dv">6</span>]), 
+                <span class="dt">size=</span><span class="dv">1</span>, <span class="dt">alpha=</span>.<span class="dv">8</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>,.<span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(chi<span class="op">^</span><span class="dv">2</span>),
+       <span class="dt">x =</span> <span class="kw">expression</span>(X),
+       <span class="dt">y =</span> <span class="ot">NULL</span>,
+       <span class="dt">color =</span> <span class="kw">expression</span>(k))</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/chi-2-1.png" width="672" /></p>
+<p>It can be shown that <span class="math inline">\(\E[V] = k\)</span> and <span class="math inline">\(\Var (V) = 2k\)</span>. We define the upper <span class="math inline">\(\alpha\)</span> quantile <span class="math inline">\(\chi_{k,\alpha}^2 = F^{-1} (1 - \alpha)\)</span> where <span class="math inline">\(F\)</span> is the CDF. That is, <span class="math inline">\(\Pr(\chi_k^2 &gt; \chi_{k,\alpha}^2) = \alpha\)</span>.</p>
+</div>
+<div id="pearsons-chi2-test-for-multinomial-data" class="section level1">
+<h1>Pearson’s <span class="math inline">\(\chi^2\)</span> test for multinomial data</h1>
+<p>Pearson’s <span class="math inline">\(\chi^2\)</span> test is used for multinomial data. Recall that if <span class="math inline">\(X = (X_1, \ldots, X_k)\)</span> has a multinomial <span class="math inline">\((n,p)\)</span> distribution, then the MLE of <span class="math inline">\(p\)</span> is <span class="math inline">\(\hat{p} = (\hat{p}_1, \ldots, \hat{p}_k) = (x_1 / n, \ldots, x_k / n)\)</span>.</p>
+<p>Let <span class="math inline">\(p_0 = (p_{01}, \ldots, p_{0k})\)</span> be some fixed vector and suppose we want to test</p>
+<p><span class="math display">\[H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0\]</span></p>
+<p>Pearson’s <span class="math inline">\(\chi^2\)</span> statistic is</p>
+<p><span class="math display">\[T = \sum_{j=1}^k \frac{(X_j - np_{0j})^2}{np_{0j}} = \sum_{j=1}^k \frac{(X_j - E_j)^2}{E_j}\]</span></p>
+<p>where <span class="math inline">\(E_j = \E[X_j] = np_{0j}\)</span> is the expected value under <span class="math inline">\(H_0\)</span>.</p>
+<div id="example-attitudes-towards-abortion" class="section level2">
+<h2>Example: attitudes towards abortion</h2>
+<ul>
+<li><span class="math inline">\(H_A\)</span> - In a comparison of individuals, liberals are more likely to favor allowing a woman to obtain an abortion for any reason than conservatives</li>
+<li><span class="math inline">\(H_0\)</span> - There is no difference in support between liberals and conservatives for allowing a woman to obtain an abortion for any reason. Any difference is the result of random sampling error.</li>
+<li>Unlike in previous examples, we want to account for moderates</li>
+<li><p>Say the null hypothesis is correct - there are no differences between ideological groups and attitudes towards abortion. What would the table look like?</p>
+<table>
+<thead>
+<tr class="header">
+<th>Right to Abortion</th>
+<th>Liberal</th>
+<th>Moderate</th>
+<th>Conservative</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Yes</td>
+<td>40.8%</td>
+<td>40.8%</td>
+<td>40.8%</td>
+<td>40.8%</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(206.45)</td>
+<td>(289.68)</td>
+<td>(271.32)</td>
+<td>(768)</td>
+</tr>
+<tr class="odd">
+<td>No</td>
+<td>59.2%</td>
+<td>59.2%</td>
+<td>59.2%</td>
+<td>59.2%</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(299.55)</td>
+<td>(420.32)</td>
+<td>(393.68)</td>
+<td>(1113)</td>
+</tr>
+<tr class="odd">
+<td>Total</td>
+<td>26.9%</td>
+<td>37.7%</td>
+<td>35.4%</td>
+<td>100%</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(506)</td>
+<td>(710)</td>
+<td>(665)</td>
+<td>(1881)</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>In truth, what does our table actually look like?</p>
+<table>
+<thead>
+<tr class="header">
+<th>Right to Abortion</th>
+<th>Liberal</th>
+<th>Moderate</th>
+<th>Conservative</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Yes</td>
+<td>62.6%</td>
+<td>36.6%</td>
+<td>28.7%</td>
+<td>40.8%</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(317)</td>
+<td>(260)</td>
+<td>(191)</td>
+<td>(768)</td>
+</tr>
+<tr class="odd">
+<td>No</td>
+<td>37.4%</td>
+<td>63.4%</td>
+<td>71.28%</td>
+<td>59.2%</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(189)</td>
+<td>(450)</td>
+<td>(474)</td>
+<td>(1113)</td>
+</tr>
+<tr class="odd">
+<td>Total</td>
+<td>26.9%</td>
+<td>37.7%</td>
+<td>35.4%</td>
+<td>100%</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>(506)</td>
+<td>(710)</td>
+<td>(665)</td>
+<td>(1881)</td>
+</tr>
+</tbody>
+</table></li>
+<li><p>How can we test if these differences are statistically significant? That is, how do we test to see if we can reject the null hypothesis?</p></li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>Right to Abortion</th>
+<th></th>
+<th>Liberal</th>
+<th>Moderate</th>
+<th>Conservative</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Yes</td>
+<td>Observed Frequency (<span class="math inline">\(X_j\)</span>)</td>
+<td>317.0</td>
+<td>260.0</td>
+<td>191.0</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>Expected Frequency (<span class="math inline">\(E_j\)</span>)</td>
+<td>206.6</td>
+<td>289.9</td>
+<td>271.5</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><span class="math inline">\(X_j - E_j\)</span></td>
+<td>110.4</td>
+<td>-29.9</td>
+<td>-80.5</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><span class="math inline">\((X_j - E_j)^2\)</span></td>
+<td>12188.9</td>
+<td>893.3</td>
+<td>6482.7</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><span class="math inline">\(\frac{(X_j - E_j)^2}{E_j}\)</span></td>
+<td><strong>59.0</strong></td>
+<td><strong>4.1</strong></td>
+<td><strong>23.9</strong></td>
+</tr>
+<tr class="even">
+<td>No</td>
+<td>Observed Frequency (<span class="math inline">\(X_j\)</span>)</td>
+<td>189.0</td>
+<td>450.0</td>
+<td>474.0</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>Expected Frequency (<span class="math inline">\(E_j\)</span>)</td>
+<td>299.4</td>
+<td>420.1</td>
+<td>393.5</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><span class="math inline">\(X_j - E_j\)</span></td>
+<td>-110.4</td>
+<td>29.9</td>
+<td>80.5</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td><span class="math inline">\((X_j - E_j)^2\)</span></td>
+<td>12188.9</td>
+<td>893.3</td>
+<td>6482.7</td>
+</tr>
+<tr class="even">
+<td></td>
+<td><span class="math inline">\(\frac{(X_j - E_j)^2}{E_j}\)</span></td>
+<td><strong>40.7</strong></td>
+<td><strong>2.1</strong></td>
+<td><strong>16.5</strong></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Calculating test statistic
+<ul>
+<li><span class="math inline">\(\chi^2=\sum{\frac{(X_j - E_j)^2}{E_j}}=145.27\)</span></li>
+<li><span class="math inline">\(\text{Degrees of freedom} = (\text{number of rows}-1)(\text{number of columns-1})=2\)</span></li>
+</ul></li>
+<li>Calculating <span class="math inline">\(p\)</span>-value
+<ul>
+<li><span class="math inline">\(\text{p-value} = \Pr (\chi_2^2 &gt; 145.27) = 0\)</span></li>
+<li>The probability that the null hypothesis is true and the observed frequencies are the result of random sampling error is less than 1 in a quintillion. Extremely extremely unlikely the null hypothesis is true.</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="likelihood-ratio-test" class="section level1">
+<h1>Likelihood ratio test</h1>
+<p>The Wald test is useful for testing a scalar parameter. The <strong>likelihood ratio test</strong> is more general and can be used for testing a vector-valued parameter.</p>
+<p>Consider testing</p>
+<p><span class="math display">\[H_0: \theta \in \Theta_0 \quad \text{versus} \quad H_1: \theta \notin \Theta_0\]</span></p>
+<p>The <strong>likelihood ratio statistic</strong> is</p>
+<p><span class="math display">\[\lambda = 2 \log \left( \frac{\text{sup}_{\theta \in \Theta} \Lagr (\theta)}{\text{sup}_{\theta \in \Theta_0} \Lagr (\theta)} \right) = 2 \log \left( \frac{\Lagr(\hat{\theta})}{\Lagr (\hat{\theta}_0)} \right)\]</span></p>
+<p>where <span class="math inline">\(\hat{\theta}\)</span> is the MLE and <span class="math inline">\(\hat{\theta}_0\)</span> is the MLE when <span class="math inline">\(\theta\)</span> is restricted to line in <span class="math inline">\(\Theta_0\)</span>.</p>
+<p>The likelihood ratio test is most useful when <span class="math inline">\(\Theta_0\)</span> consists of all parameter values <span class="math inline">\(\theta\)</span> such that some coordinates of <span class="math inline">\(\theta\)</span> are fixed at particular values.</p>
+<p>Suppose that <span class="math inline">\(\theta = (\theta_1, \ldots, \theta_q, \theta_{q + 1}, \ldots, \theta_r)\)</span>. Let</p>
+<p><span class="math display">\[\Theta_0 = \left\{ \theta: (\theta_{q+ 1}, \ldots, \theta_r) = (\theta_{0,q+1}, \ldots, \theta_{0,r}) \right\}\]</span></p>
+<p>Let <span class="math inline">\(\lambda\)</span> be the likelihood ratio test statistic. Under <span class="math inline">\(H_0: \theta \in \Theta_0\)</span>,</p>
+<p><span class="math display">\[\lambda(x^n) \leadsto \chi_{r - q, \alpha}^2\]</span></p>
+<p>where <span class="math inline">\(r-q\)</span> is the dimension of <span class="math inline">\(\Theta\)</span> minus the dimension of <span class="math inline">\(\Theta_0\)</span>. The <span class="math inline">\(p\)</span>-value for the test is <span class="math inline">\(\Pr (\chi_{r-q}^2 &gt; \lambda)\)</span>.</p>
+<p>For example, if <span class="math inline">\(\theta = (\theta_1, \theta_2, \theta_3, \theta_4, \theta_5)\)</span> and we want to test the null hypothesis that <span class="math inline">\(\theta_4 = \theta_5 = 0\)</span> then the limiting distribution has <span class="math inline">\(5-3 = 2\)</span> degrees of freedom.</p>
+<div id="example-mendels-peas" class="section level2">
+<h2>Example: Mendel’s peas</h2>
+<p>Mendel bred peas with round yellow seeds and wrinkled green seeds. There are four types of progeny: round yellow, wrinkled yellow, round green, and wrinkled green. The number of each type is multinomial with probability <span class="math inline">\(p = (p_1, p_2, p_3, p_4)\)</span>. His history of inheritance predicts that <span class="math inline">\(p\)</span> is equal to</p>
+<p><span class="math display">\[p_0 \equiv \left(\frac{9}{16}, \frac{3}{16}, \frac{3}{16}, \frac{1}{16} \right)\]</span></p>
+<p>The likelihood ratio test for <span class="math inline">\(H_0: p = p_0 \quad \text{versus} \quad H_1: p \neq p_0\)</span> is</p>
+<p><span class="math display">\[
+\begin{align}
+\lambda &amp;= 2 \log \left( \frac{\Lagr (\hat{p})}{\Lagr(p_0)} \right) \\
+&amp;= 2 \sum_{i=1}^4 X_j \log \left( \frac{\hat{p}_j}{p_{0j}} \right) \\
+&amp;= 2 \left[ 315 \log \left( \frac{\dfrac{315}{556}}{\dfrac{9}{16}} \right) + 101 \log \left( \frac{\dfrac{101}{556}}{\dfrac{3}{16}} \right) + 108 \log \left( \frac{\dfrac{108}{556}}{\dfrac{3}{16}} \right) + 32 \log \left( \frac{\dfrac{32}{556}}{\dfrac{1}{16}} \right)\right] \\
+&amp;= 0.48
+\end{align}
+\]</span></p>
+<p>Under <span class="math inline">\(H_1\)</span> there are four parameters. However, three parameters must sum to one so the dimension of the parameter space is three. Under <span class="math inline">\(H_0\)</span> there are no free parameters so the dimension of the restricted parameter space is zero. The difference of these dimension is three. Therefore the limiting distribution of <span class="math inline">\(\lambda\)</span> under <span class="math inline">\(H_0\)</span> is <span class="math inline">\(\chi_3^2\)</span> and the p-value is</p>
+<p><span class="math display">\[\text{p-value} = \Pr (\chi_3^2 &gt; 0.48) = 0.923\]</span></p>
+<p>A similar result is achieved using the <span class="math inline">\(\chi^2\)</span> test. When both tests are applicable, they will lead to similar results as long as the sample size is large.</p>
+</div>
+</div>
+<div id="multiple-testing" class="section level1">
+<h1>Multiple testing</h1>
+<p>Consider a sample of 100 observations of a continuous outcome of interest <span class="math inline">\(Y\)</span> measured with 10 continuous covariates <span class="math inline">\(X_1, \ldots, X_k\)</span>. In truth, none of the variables are actually predictive of <span class="math inline">\(Y\)</span> in the population. That is, all the covariates <span class="math inline">\(\mathbf{X}\)</span> and the outcome <span class="math inline">\(Y\)</span> are drawn independently from a normal distribution <span class="math inline">\(\sim N(0,1)\)</span>. If we use ordinary least squares regression and focus on just a single variable as a predictor, a test of significance will yield <span class="math inline">\(p &lt; .05\)</span> in approximately 5% of the samples. Below I simulate this process 1000 times, and in each simulation estimate a single regression model between <span class="math inline">\(Y\)</span> and a randomly selected <span class="math inline">\(X_k\)</span>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_obs &lt;-<span class="st"> </span><span class="dv">100</span>
+
+pval_dist &lt;-<span class="st"> </span><span class="cf">function</span>(n_obs){
+  x &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">10</span>, <span class="kw">rnorm</span>(n_obs))
+  y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_obs)
+  
+  mod &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x[, <span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>, <span class="dv">1</span>)])
+  
+  <span class="kw">return</span>(<span class="kw">tidy</span>(mod)[<span class="dv">2</span>,])
+}
+
+pvals &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rerun</span>(<span class="kw">pval_dist</span>(n_obs)) <span class="op">%&gt;%</span>
+<span class="st">  </span>bind_rows <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sig =</span> p.value <span class="op">&lt;</span><span class="st"> </span>.<span class="dv">05</span>)
+
+<span class="kw">ggplot</span>(pvals, <span class="kw">aes</span>(p.value, <span class="dt">fill =</span> sig)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">025</span>, <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of p-values when null is true&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(P),
+       <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/pval-sim-1.png" width="672" /></p>
+<p>The distribution of the p-values is approximately uniform and on average 5% of the p-values are <span class="math inline">\(&lt; .05\)</span>. In this situation, the p-value and our inferences drawn from the p-value are as we would expect because we conducted exactly one null hypothesis test against the sample of data.</p>
+<p>What happens instead if we evaluate multiple variables during each test? That is, in each iteration of our simulation we regress all 10 predictors individually against <span class="math inline">\(Y\)</span>. What is the chance that we will find <span class="math inline">\(p &lt; .05\)</span> for at least one of the predictors?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pval_dist_mult &lt;-<span class="st"> </span><span class="cf">function</span>(n_obs){
+  <span class="co"># generate simulated data</span>
+  x &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">10</span>, <span class="kw">rnorm</span>(n_obs))
+  y &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_obs)
+  
+  <span class="co"># estimate a linear model for each column in x and find min pvalue</span>
+  x <span class="op">%&gt;%</span>
+<span class="st">    </span>as_tibble <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">y =</span> y) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">gather</span>(i, x, <span class="op">-</span>y) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">group_by</span>(i) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">nest</span>() <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">mutate</span>(<span class="dt">mod =</span> <span class="kw">map</span>(data, <span class="op">~</span><span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> .x)),
+           <span class="dt">results =</span> <span class="kw">map</span>(mod, tidy)) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">unnest</span>(results) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(term <span class="op">==</span><span class="st"> &quot;x&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">    </span><span class="kw">filter</span>(p.value <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(p.value))
+}
+
+pvals_mult &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rerun</span>(<span class="kw">pval_dist_mult</span>(n_obs)) <span class="op">%&gt;%</span>
+<span class="st">  </span>bind_rows <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sig =</span> p.value <span class="op">&lt;</span><span class="st"> </span>.<span class="dv">05</span>)
+
+<span class="kw">ggplot</span>(pvals_mult, <span class="kw">aes</span>(p.value, <span class="dt">fill =</span> sig)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">025</span>, <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of minimum p-values for 10 tests when null is true&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(P),
+       <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/pval-sim-mult-test-1.png" width="672" /></p>
+<p>Now we have a 40% chance of finding a predictor with <span class="math inline">\(p &lt; .05\)</span>, and the distribution of the minimum p-values is not uniform. When we search for the most significant result, we do not have a fixed null hypothesis. Instead, we are conducting 10 null hypothesis tests using the same sample of data. The distribution of the minimum of 10 random uniform distributions has a density <span class="math inline">\(k(1 - x)^{k-1}\)</span> for <span class="math inline">\(k\)</span> independent tests. When <span class="math inline">\(k=10\)</span>, the probability of observing <span class="math inline">\(p &lt; .05\)</span> is <span class="math inline">\(1 - (1 - 0.05)^{10} = 0.40\)</span>.</p>
+<p>By failing to correct for the fact that we conducted multiple hypothesis tests on the same sample of data, we risk <strong>false discovery</strong> and is a form of selection bias. Even if the tests were not actually performed, we still risk selection bias when any choice of results is based on the outcome, rather than the prespecified hypotheses.</p>
+<p><strong>This happens all the time in social science.</strong> All scholars and researchers do this. We form a theory, generate hypotheses, collect data to test the hypotheses, and explore multiple model formulations until we settle on the final form. This doesn’t mean we are attempting to commit fraud, we are just using our knowledge to try and estimate a “good” model.</p>
+<div id="correcting-p-values" class="section level2">
+<h2>Correcting <span class="math inline">\(p\)</span>-values</h2>
+<p>One approach is to correct the <span class="math inline">\(p\)</span>-value and account for the fact that you are conducting multiple hypothesis tests and should therefore expect to have some amount of false discovery. The <strong>family-wise error rate</strong> (FWER) is the probability of making one or more false discoveries (false positives) when performing multiple hypotheses tests. By assuring <span class="math inline">\(\text{FWER} \leq \alpha\)</span>, the probability of making one or more false positives in the family is controlled at level <span class="math inline">\(\alpha\)</span>.</p>
+<p>Consider <span class="math inline">\(m\)</span> hypothesis tests:</p>
+<p><span class="math display">\[H_{0i} \quad \text{versus} \quad H_{1i}, i = 1, \ldots, m\]</span></p>
+<p>and let <span class="math inline">\(P_1, \ldots, P_m\)</span> denote the <span class="math inline">\(m\)</span> <span class="math inline">\(p\)</span>-values for these tests. The <strong>Bonferroni method</strong> approaches the problem as follows: given <span class="math inline">\(p\)</span>-values <span class="math inline">\(P_1, \ldots, P_m\)</span>, reject null hypothesis <span class="math inline">\(H_{0i}\)</span> if</p>
+<p><span class="math display">\[P_i \leq \frac{\alpha}{m}\]</span></p>
+<p>For example, if a study tested <span class="math inline">\(m=20\)</span> hypotheses with a desired <span class="math inline">\(\alpha = 0.05\)</span> (the standard threshold), then the Bonferroni correction would test each individual hypothesis at <span class="math inline">\(\alpha = \frac{0.05}{20} = 0.0025\)</span>.</p>
+<p>For example, draw 100 observations from a normal distribution <span class="math inline">\(N(0,1)\)</span> and test the null hypothesis <span class="math inline">\(H_0: \mu = 0\)</span> using a t-test.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> If we simulate this process multiple times, we should reject <span class="math inline">\(H_0\)</span> approximately 5% of the time.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_norm_null &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rerun</span>(<span class="kw">rnorm</span>(n_obs)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map</span>(<span class="op">~</span><span class="st"> </span><span class="kw">t.test</span>(<span class="dt">x =</span> .x, <span class="dt">mu =</span> <span class="dv">0</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">map_dbl</span>(<span class="op">~</span><span class="st"> </span>.x<span class="op">$</span>p.value) <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">sig =</span> value <span class="op">&lt;</span><span class="st"> </span>.<span class="dv">05</span>)
+
+<span class="kw">mean</span>(sim_norm_null<span class="op">$</span>value)</code></pre></div>
+<pre><code>## [1] 0.498</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(sim_norm_null, <span class="kw">aes</span>(value, <span class="dt">fill =</span> sig)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">025</span>, <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of p-values for single test&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(P),
+       <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/sim-norm-null-1.png" width="672" /></p>
+<p>Now let’s simulate 5 random variables and test the null hypothesis that all means are simultaneously 0, then the probability of at least one significant result is <span class="math inline">\(1 - (1 - 0.05)^5 = 0.226\)</span>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_norm_mult &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rerun</span>(<span class="dv">5</span> <span class="op">%&gt;%</span>
+<span class="st">          </span><span class="kw">rerun</span>(<span class="kw">rnorm</span>(n_obs)) <span class="op">%&gt;%</span>
+<span class="st">          </span><span class="kw">map</span>(<span class="op">~</span><span class="st"> </span><span class="kw">t.test</span>(<span class="dt">x =</span> .x, <span class="dt">mu =</span> <span class="dv">0</span>)) <span class="op">%&gt;%</span>
+<span class="st">          </span><span class="kw">map_dbl</span>(<span class="op">~</span><span class="st"> </span>.x<span class="op">$</span>p.value) <span class="op">%&gt;%</span>
+<span class="st">          </span>as_tibble <span class="op">%&gt;%</span>
+<span class="st">          </span><span class="kw">mutate</span>(<span class="dt">sig =</span> value <span class="op">&lt;</span><span class="st"> </span>.<span class="dv">05</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_rows</span>(<span class="dt">.id =</span> <span class="st">&quot;sim&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">group_by</span>(sim) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">rename</span>(<span class="dt">raw =</span> value) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">correct =</span> raw <span class="op">&lt;</span><span class="st"> </span>(.<span class="dv">05</span> <span class="op">/</span><span class="st"> </span><span class="kw">n</span>()))
+
+sim_norm_mult <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sig =</span> <span class="kw">any</span>(raw <span class="op">&lt;</span><span class="st"> </span>.<span class="dv">05</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span>ungroup <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="kw">mean</span>(sig))</code></pre></div>
+<pre><code>## # A tibble: 1 x 1
+##   `mean(sig)`
+##         &lt;dbl&gt;
+## 1       0.239</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_norm_mult <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(raw <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(raw)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(raw, <span class="dt">fill =</span> sig)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">01</span>, <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of p-values for multiple tests&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(P),
+       <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/sim-norm-mult-1.png" width="672" /></p>
+<p>But if we use the Bonferroni correction:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_norm_mult <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">sig =</span> <span class="kw">any</span>(correct)) <span class="op">%&gt;%</span>
+<span class="st">  </span>ungroup <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">summarize</span>(<span class="kw">mean</span>(sig))</code></pre></div>
+<pre><code>## # A tibble: 1 x 1
+##   `mean(sig)`
+##         &lt;dbl&gt;
+## 1       0.052</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_norm_mult <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(raw <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(raw)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(raw, <span class="dt">fill =</span> correct)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">binwidth =</span> .<span class="dv">01</span>, <span class="dt">boundary =</span> <span class="dv">0</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Distribution of p-values for multiple tests&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;With Bonferroni correction&quot;</span>,
+       <span class="dt">x =</span> <span class="kw">expression</span>(P),
+       <span class="dt">y =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="hypothesis-testing_files/figure-html/bonferroni-1.png" width="672" /></p>
+<p>The Bonferroni correction is a conservative adjustment, and errs on the side of caution. You minimize the risk of a false positive, but therefore increase the risk of a false negative. Alternative correction methods such as the Benjamini–Hochberg procedure are less conservative.</p>
+</div>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <a href="https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9"><strong>All of Statistics</strong></a> by Larry Wasserman</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-20</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package      * version date       source                              
+##  assertthat     0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports      1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base         * 3.5.1   2018-07-05 local                               
+##  bindr          0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     * 0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom        * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger     1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli            1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  codetools      0.2-15  2016-10-05 CRAN (R 3.5.1)                      
+##  colorspace     1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler       3.5.1   2018-07-05 local                               
+##  crayon         1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets     * 3.5.1   2018-07-05 local                               
+##  devtools       1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest         0.6.18  2018-10-10 cran (@0.6.18)                      
+##  dplyr        * 0.7.8   2018-11-10 cran (@0.7.8)                       
+##  evaluate       0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats      * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2      * 3.1.0   2018-10-25 cran (@3.1.0)                       
+##  glue           1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics     * 3.5.1   2018-07-05 local                               
+##  grDevices    * 3.5.1   2018-07-05 local                               
+##  grid           3.5.1   2018-07-05 local                               
+##  gtable         0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven          1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms            0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools      0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr           1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite       1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr          1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  labeling       0.3     2014-08-23 CRAN (R 3.5.0)                      
+##  lattice        0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval       0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate      1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr       1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise        1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods      * 3.5.1   2018-07-05 local                               
+##  modelr         0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell        0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme           3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork    * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar         1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig      2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr           1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr        * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6             2.3.0   2018-10-04 cran (@2.3.0)                       
+##  RColorBrewer   1.1-2   2014-12-07 CRAN (R 3.5.0)                      
+##  Rcpp           1.0.0   2018-11-07 cran (@1.0.0)                       
+##  readr        * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl         1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang          0.3.0.1 2018-10-25 CRAN (R 3.5.0)                      
+##  rmarkdown      1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot      1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi     0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest          0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales         1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats        * 3.5.1   2018-07-05 local                               
+##  stringi        1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr      * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble       * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr        * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect     0.2.5   2018-10-11 cran (@0.2.5)                       
+##  tidyverse    * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools          3.5.1   2018-07-05 local                               
+##  utils        * 3.5.1   2018-07-05 local                               
+##  withr          2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2           1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml           2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Example drawn from <a href="https://stats.stackexchange.com/questions/135279/simulating-a-multiple-comparisons-problem-using-r-and-bonferroni-correction">this StackOverflow question</a>.<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
