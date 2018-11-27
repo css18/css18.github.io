@@ -1,0 +1,31 @@
+---
+title: "Bayesian inference"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm017 - November 27, 2018
+
+## Overview
+
+* Define the Bayesian philosophy and distinguish from frequentist inference
+* Define core concepts for Bayesian methods
+* Discuss the importance of simulation to estimate density functions
+* Assess methods for defining priors
+* Identify the strengths and weaknesses of Bayesian inference
+
+## Before class
+
+* Read [chapter 11 (Bayesian inference) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+
+## Slides and class materials
+
+* [Slides](extras/cm017_slides.html)
+
+## Additional resources
+
+## What you need to do
+
