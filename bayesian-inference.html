@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Bayesian inference</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Bayesian inference</h1>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
+<div id="bayesian-philosophy" class="section level1">
+<h1>Bayesian philosophy</h1>
+<p><strong>Frequentist methods</strong> are the major methods we’ve employed thus far. The frequentist point of view is based on the following postulates:</p>
+<ol style="list-style-type: decimal">
+<li>Probabilty refers to limiting relative frequencies. Probabilities are objective properties of the real world.</li>
+<li>Parameters are fixed, unknown constants. Because they are not fluctuating, no useful probability statements can be made about parameters.</li>
+<li>Statistical procedures should be designed to have well-defined long run frequency properties. For example, a 95% confidence interval should trap the true value of the parameter with limiting frequency at least 95 percent.</li>
+</ol>
+<p>An alternative approach to inference is called <strong>Bayesian inference</strong>. The Bayesian approach is based on the following postulates:</p>
+<ol style="list-style-type: decimal">
+<li>Probability describes degree of belief, not limiting frequency. As such, we can make probability statements about lots of things, not just data which are subject to random variables. For example, I might say “the probability that Donald Trump offended someone on November 25, 2018” is <span class="math inline">\(0.99\)</span>. This does not refer to any limiting frequency. It reflects my strength of belief that the proposition is true.</li>
+<li>We can make probability statements about parameters, even though they are fixed constants.</li>
+<li>We make inferences about a parameter <span class="math inline">\(\theta\)</span> by producing a probability distribution for <span class="math inline">\(\theta\)</span>. Inferences, such as point estimates and interval estimates, may then be extracted from this distribution.</li>
+</ol>
+</div>
+<div id="bayes-theorem" class="section level1">
+<h1>Bayes’ theorem</h1>
+<p><strong>Bayes’ theorem</strong> is a fundamental component of both probability and statistics and is central to understanding the differences between frequentist and Bayesian inference. For two events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, Bayes’ theorem states that:</p>
+<p><span class="math display">\[\Pr(B|A) = \frac{\Pr(A|B) \times \Pr(B)}{\Pr(A)}\]</span></p>
+<p>Bayes’ rule tells us how to <strong>invert</strong> conditional probabilities. That is, to find <span class="math inline">\(\Pr(B|A)\)</span> from <span class="math inline">\(\Pr(A|B)\)</span>. Let’s walk through this with a few examples.</p>
+<div id="coin-tossing" class="section level2">
+<h2>Coin tossing</h2>
+<p>Toss a coin 5 times. Let <span class="math inline">\(H_1 =\)</span> “first toss is heads” and let <span class="math inline">\(H_A =\)</span> “all 5 tosses are heads”. Therefore <span class="math inline">\(\Pr(H_1 | H_A) = 1\)</span> (if all five tosses are heads, then the first one must by definition also be heads) and <span class="math inline">\(\Pr(H_A | H_1) = \frac{1}{16}\)</span> (<span class="math inline">\(\frac{1}{2^4} = \frac{1}{16}\)</span>).</p>
+<p>However we can also use Bayes’ theorem to calculate <span class="math inline">\(\Pr(H_1 | H_A)\)</span> using <span class="math inline">\(\Pr(H_A | H_1)\)</span>. The terms we need are:</p>
+<ul>
+<li><span class="math inline">\(\Pr(H_A | H_1) = \frac{1}{16}\)</span></li>
+<li><span class="math inline">\(\Pr(H_1) = \frac{1}{2}\)</span></li>
+<li><span class="math inline">\(\Pr(H_A) = \frac{1}{32}\)</span></li>
+</ul>
+<p>So,</p>
+<p><span class="math display">\[\Pr(H_A | H_1) = \frac{\Pr(H_A | H_1) \times \Pr(H_1)}{\Pr(H_A)} = \frac{\frac{1}{16} \times \frac{1}{2}}{\frac{1}{32}} = 1\]</span></p>
+</div>
+<div id="false-positive-fallacy" class="section level2">
+<h2>False positive fallacy</h2>
+<p>A test for a certain rare disease is assumed to be correct 95% of the time:</p>
+<ul>
+<li>If a person has the disease, then the test results are positive with probability <span class="math inline">\(0.95\)</span></li>
+<li>If the person does not have the disease, then the test results are negative with probability <span class="math inline">\(0.95\)</span></li>
+</ul>
+<p>A random person drawn from a certain population has probability <span class="math inline">\(0.001\)</span> of having the disease. Given that the person just tested positive, what is the probability of having the disease?</p>
+<ul>
+<li><span class="math inline">\(A = {\text{person has the disease}}\)</span></li>
+<li><span class="math inline">\(B = {\text{test result is positive for the disease}}\)</span></li>
+<li><span class="math inline">\(\Pr(A) = 0.001\)</span></li>
+<li><span class="math inline">\(\Pr(B | A) = 0.95\)</span></li>
+<li><span class="math inline">\(\Pr(B | A = 0) = 0.05\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{align}
+\Pr(\text{person has the disease} | \text{test is positive}) &amp;= \Pr(A|B) \\
+&amp; = \frac{\Pr(A) \times \Pr(B|A)}{\Pr(B)} \\
+&amp; = \frac{\Pr(A) \times \Pr(B|A)}{\Pr(A) \times \Pr(B|A) + \Pr(A = 0) \times(B | A = 0)} \\
+&amp; = \frac{0.001 \times 0.95}{0.001 \times 0.95 + 0.999 \times 0.05} \\
+&amp; = 0.0187
+\end{align}
+\]</span></p>
+<p>Even though the test is fairly accurate, a person who has tested positive is still very unlikely (less than 2%) to have the disease. Because the base rate of the disease in the population is so low, the vast majority of people taking the test are healthy and even with an accurate test most of the positives will be healthy people.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+</div>
+</div>
+<div id="bayesian-method" class="section level1">
+<h1>Bayesian method</h1>
+<p>Bayesian inference is usually carried out in the following way:</p>
+<ol style="list-style-type: decimal">
+<li>Choose a probability density <span class="math inline">\(f(\theta)\)</span> – called the <strong>prior distribution</strong> – that expresses our beliefs about a parameter <span class="math inline">\(\theta\)</span> before we see any data.</li>
+<li>Choose a statistical model <span class="math inline">\(f(x|\theta)\)</span> that reflects our beliefs about <span class="math inline">\(x\)</span> given <span class="math inline">\(\theta\)</span>. Note that we now write this as <span class="math inline">\(f(x|\theta)\)</span>, not <span class="math inline">\(f(x; \theta)\)</span>.</li>
+<li>After observing data <span class="math inline">\(X_1, \ldots, X_n\)</span>, we update our beliefs and calculate the <strong>posterior distribution</strong> <span class="math inline">\(f(\theta | X_1, \ldots, X_n)\)</span>.</li>
+</ol>
+<p>To calculate the posterior, suppose that <span class="math inline">\(\theta\)</span> is discrete and that there is a single, discrete observation <span class="math inline">\(X\)</span>. We should use a capital letter to denote the parameter since we now treat it like a random variable, so let <span class="math inline">\(\Theta\)</span> denote the parameter. In this discrete setting,</p>
+<p><span class="math display">\[
+\begin{align}
+\Pr(\Theta = \theta | X = x) &amp;= \frac{\Pr(X = x, \Theta = \theta)}{\Pr(X = x)} \\
+&amp;= \frac{\Pr(X = x | \Theta = \theta) \Pr(\Theta = \theta)}{\sum_\theta \Pr (X = x| \Theta = \theta) \Pr (\Theta = \theta)}
+\end{align}
+\]</span></p>
+<p>which is a basic application of Bayes’ theorem. The version for continuous variables is obtained using density functions</p>
+<p><span class="math display">\[f(\theta | x) = \frac{f(x | \theta) f(\theta)}{\int f(x | \theta) f(\theta) d\theta}\]</span></p>
+<p>If we have <span class="math inline">\(n\)</span> IID observations <span class="math inline">\(X_1, \ldots, X_n\)</span>, we replae <span class="math inline">\(f(x | \theta)\)</span> with</p>
+<p><span class="math display">\[f(x_1, \ldots, x_n | \theta) = \prod_{i = 1}^n f(x_i | \theta) = \Lagr_n(\theta)\]</span></p>
+<p>We will now write <span class="math inline">\(X^n\)</span> to mean <span class="math inline">\((X_1, \ldots, X_n)\)</span> and <span class="math inline">\(x^n\)</span> to mean <span class="math inline">\((x_1, \ldots, x_n)\)</span>. Now,</p>
+<p><span class="math display">\[
+\begin{align}
+f(\theta | x^n) &amp;= \frac{f(x^n | \theta) f(\theta)}{\int f(x^n | \theta) f(\theta) d\theta} \\
+&amp;= \frac{\Lagr_n(\theta) f(\theta)}{c_n} \\
+&amp;\propto \Lagr_n(\theta) f(\theta)
+\end{align}
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[c_n = \int f(x^n | \theta) f(\theta) d\theta\]</span></p>
+<p>is called the <strong>normalizing constant</strong>. We can summarize this by stating the <strong>posterior is proportional to Likelihood times Prior</strong>:</p>
+<p><span class="math display">\[f(\theta | x^n) \propto \Lagr_n(\theta) f(\theta)\]</span></p>
+<p>Since <span class="math inline">\(c_n\)</span> does not depend on <span class="math inline">\(\theta\)</span>, we can safely ignore it at this point, and in fact can recover the constant later on if we need it.</p>
+<p>With the posterior distribution, we can get a point estimate by summarizing the center of the posterior. Typically this is the mean or mode of the posterior. The posterior mean is</p>
+<p><span class="math display">\[\bar{\theta}_n = \int \theta f(\theta | x^n) d\theta = \frac{\int \theta \Lagr_n(\theta) f(\theta)}{\int \Lagr_n(\theta) f(\theta) d\theta}\]</span></p>
+<p>We can also obtain a Bayesian interval estimate. We find <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> such that</p>
+<p><span class="math display">\[\int_{-\infty}^a f(\theta | x^n) d\theta = \int_b^\infty f(\theta | x^n) d\theta = \frac{\alpha}{2}\]</span></p>
+<p>Let <span class="math inline">\(C = (a,b)\)</span>. Then</p>
+<p><span class="math display">\[\Pr (\theta \in C | x^n) = \int_a^b f(\theta | x^n) d\theta = 1 - \alpha\]</span></p>
+<p>So <span class="math inline">\(C\)</span> is a <span class="math inline">\(1 - \alpha\)</span> <strong>posterior</strong> (or <strong>credible</strong>) <strong>interval</strong>.</p>
+<div id="example-bernoulli-random-variable" class="section level2">
+<h2>Example: Bernoulli random variable</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli} (p)\)</span>. Suppose we take the uniform distribution <span class="math inline">\(f(p) = 1\)</span> as a prior. By Bayes’ theorem, the posterior has the form</p>
+<p><span class="math display">\[
+\begin{align}
+f(p | x^n) &amp;\propto f(p) \Lagr_n(p) \\
+&amp;= p^s (1 - p)^{n - s} \\
+&amp;= p^{s + 1 - 1} (1 - p)^{n - s + 1 - 1}
+\end{align}
+\]</span></p>
+<p>where <span class="math inline">\(s = \sum_{i=1}^n x_i\)</span> is the number of successes. Importantly, a random variable has a Beta distribution with parameters <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> if its density is</p>
+<p><span class="math display">\[f(p; \alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}p^{\alpha - 1} (1 - p)^{\beta - 1}\]</span></p>
+<p>We can see that the posterior for <span class="math inline">\(p\)</span> is a Beta distribution with parameters <span class="math inline">\(s + 1\)</span> and <span class="math inline">\(n - s + 1\)</span>. That is,</p>
+<p><span class="math display">\[f(p | x^n) = \frac{\Gamma(n + 2)}{\Gamma(s + 1) \Gamma(n - s + 1)}p^{(s + 1) - 1} (1 - p)^{(n - s + 1) - 1}\]</span></p>
+<p>We write this as</p>
+<p><span class="math display">\[p | x^n \sim \text{Beta} (s + 1, n - s + 1)\]</span></p>
+<p>Notice that we have figured out the normalizing constant <span class="math inline">\(c_n = \frac{\Gamma(n + 2)}{\Gamma(s + 1) \Gamma(n - s + 1)}\)</span> without actually doing the integral <span class="math inline">\(\int \Lagr_n(p) f(p) dp\)</span>. The mean of a <span class="math inline">\(\text{Beta}(\alpha, \beta)\)</span> distribution is <span class="math inline">\(\frac{\alpha}{\alpha + \beta}\)</span>, so the Bayes estimator is</p>
+<p><span class="math display">\[\bar{p} = \frac{s + 1}{n + 2}\]</span></p>
+<p>We can rewrite the estimator as</p>
+<p><span class="math display">\[\bar{p} = \lambda_n \hat{p} + (1 - \lambda_n) \tilde{p}\]</span></p>
+<p>wheer <span class="math inline">\(\hat{p} = \frac{s}{n}\)</span> is the MLE, <span class="math inline">\(\tilde{p} = \frac{1}{2}\)</span> is the prior mean, and <span class="math inline">\(\lambda_n = \frac{n}{n + 2} \approx 1\)</span>. So we can think of the MLE as the estimate for <span class="math inline">\(p\)</span> with a flat prior. If we have a non-flat prior, then our estimate <span class="math inline">\(\bar{p}\)</span> is a weighted average between the prior and the MLE.</p>
+<p>A 95% credible interval can be obtained by numerically finding <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> such that <span class="math inline">\(\int_a^b f(p | x^n) dp = 0.95\)</span>.</p>
+<p>Suppose that instead of a uniform prior, we use the prior <span class="math inline">\(p \sim \text{Beta} (\alpha, \beta)\)</span>. If we repeat the calculations from before, we see that <span class="math inline">\(p | x^n \sim \text{Beta} (\alpha + s, \beta + n - s)\)</span>. The flat prior is the special case with <span class="math inline">\(\alpha = \beta = 1\)</span>. The posterior mean is</p>
+<p><span class="math display">\[\bar{p} = \frac{\alpha + s}{\alpha + \beta + n} = \left( \frac{n}{\alpha + \beta + n} \right) \hat{p} + \left( \frac{\alpha + \beta}{\alpha + \beta + n} \right) p_0\]</span></p>
+<p>where <span class="math inline">\(p_0 = \frac{\alpha}{\alpha + \beta}\)</span> is the prior mean.</p>
+</div>
+<div id="example-coin-tossing" class="section level2">
+<h2>Example: coin tossing</h2>
+<p>Now let’s look at a coin tossing problem. There are three types of coins with different probabilities of landing heads when tossed.</p>
+<ul>
+<li>Type <span class="math inline">\(A\)</span> coins are fair, with <span class="math inline">\(p = 0.5\)</span> of heads</li>
+<li>Type <span class="math inline">\(B\)</span> coins are bent, with <span class="math inline">\(p = 0.6\)</span> of heads</li>
+<li>Type <span class="math inline">\(C\)</span> coins are bent, with <span class="math inline">\(p = 0.9\)</span> of heads</li>
+</ul>
+<p>Suppose I have a drawer containing 5 coins: 2 of type <span class="math inline">\(A\)</span>, 2 of type <span class="math inline">\(B\)</span>, and 1 of type <span class="math inline">\(C\)</span>. I reach into the drawer and pick a coin at random. Without showing you the coin I flip it once and get heads. What is the probability it is type <span class="math inline">\(A\)</span>? Type <span class="math inline">\(B\)</span>? Type <span class="math inline">\(C\)</span>?</p>
+<div id="terminology" class="section level3">
+<h3>Terminology</h3>
+<p>Let <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, and <span class="math inline">\(C\)</span> be the event the chosen coin was of the respective type. Let <span class="math inline">\(D\)</span> be the event that the toss is heads. The problem then asks us to find:</p>
+<p><span class="math display">\[\Pr(A|D), \Pr(B|D), \Pr(C|D)\]</span></p>
+<p>Before applying Bayes’ theorem, we need to define a few things:</p>
+<ul>
+<li>Experiment - pick a coin from the drawer at random, flip it, and record the result</li>
+<li>Data - the result of the experiment. Here, <span class="math inline">\(D = \text{heads}\)</span>. <span class="math inline">\(D\)</span> is data that provides evidence for or against each hypothesis</li>
+<li>Hypotheses - we are testing three hypotheses: the coin is type <span class="math inline">\(A\)</span>, <span class="math inline">\(B\)</span>, or <span class="math inline">\(C\)</span></li>
+<li><p>Prior probability - the probability of each hypothesis prior to tossing the coin (collecting data). Since the drawer has 2 coins of type <span class="math inline">\(A\)</span>, 2 of type <span class="math inline">\(B\)</span>, and 1 of type <span class="math inline">\(C\)</span>, we have:</p>
+<p><span class="math display">\[\Pr(A) = 0.4, \Pr(B) = 0.4, \Pr(C) = 0.2\]</span></p></li>
+<li><p>Likelihood - the likelihood function is <span class="math inline">\(\Pr(D|H)\)</span>, the probability of the data assuming that the hypothesis is true. Most often we will consider the data as fixed and let the hypothesis vary. For example, <span class="math inline">\(\Pr(D|A) =\)</span> probability of heads if the coin is type <span class="math inline">\(A\)</span>. In our case, the likelihoods are:</p>
+<p><span class="math display">\[\Pr(D|A) = 0.5, \Pr(D|B) = 0.6, \Pr(D|C) = 0.9\]</span></p>
+<p>We can think of these as parameters for a series of Bernoulli distributions.</p></li>
+<li><p>Posterior probability - the probability (posterior to) of each hypothesis given the data from tossing the coin:</p>
+<p><span class="math display">\[\Pr(A|D), \Pr(B|D), \Pr(C|D)\]</span></p>
+<p>These posterior probabilities are what we want to find.</p></li>
+</ul>
+<p>We can now use Bayes’ theorem to compute each of the posterior probabilities. The theorem says:</p>
+<p><span class="math display">\[\Pr(A|D) = \frac{\Pr(D|A) \times \Pr(A)}{\Pr(D)}\]</span> <span class="math display">\[\Pr(B|D) = \frac{\Pr(D|B) \times \Pr(B)}{\Pr(D)}\]</span> <span class="math display">\[\Pr(C|D) = \frac{\Pr(D|C) \times \Pr(C)}{\Pr(D)}\]</span></p>
+<p><span class="math inline">\(\Pr(D)\)</span> can be computed using the law of total probability:</p>
+<p><span class="math display">\[
+\begin{align}
+\Pr(D) &amp; = \Pr(D|A) \times \Pr(A) + \Pr(D|B) \times \Pr(B) + \Pr(D|C) \times \Pr(C) \\
+&amp; = 0.5 \times 0.4 + 0.6 \times 0.4 + 0.9 \times 0.2 = 0.62
+\end{align}
+\]</span></p>
+<p>So each of the posterior probabilities are:</p>
+<p><span class="math display">\[\Pr(A|D) = \frac{\Pr(D|A) \times \Pr(A)}{\Pr(D)} = \frac{0.5 \times 0.4}{0.62} = \frac{0.2}{0.62}\]</span></p>
+<p><span class="math display">\[\Pr(B|D) = \frac{\Pr(D|B) \times \Pr(B)}{\Pr(D)} = \frac{0.6 \times 0.4}{0.62} = \frac{0.24}{0.62}\]</span></p>
+<p><span class="math display">\[\Pr(C|D) = \frac{\Pr(D|C) \times \Pr(C)}{\Pr(D)} = \frac{0.9 \times 0.2}{0.62} = \frac{0.18}{0.62}\]</span></p>
+<p>Notice that the total probability <span class="math inline">\(\Pr(D)\)</span> is the same in each of the denominators and is the sum of the three numerators.</p>
+<table>
+<thead>
+<tr class="header">
+<th>hypothesis</th>
+<th>prior</th>
+<th>likelihood</th>
+<th>Bayes numerator</th>
+<th>posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(H\)</span></td>
+<td><span class="math inline">\(\Pr(H)\)</span></td>
+<td><span class="math inline">\(\Pr(D\mid H)\)</span></td>
+<td><span class="math inline">\(\Pr(D \mid H) \times \Pr(H)\)</span></td>
+<td><span class="math inline">\(\Pr(H \mid D)\)</span></td>
+</tr>
+<tr class="even">
+<td>A</td>
+<td>0.4</td>
+<td>0.5</td>
+<td>0.2</td>
+<td>0.3226</td>
+</tr>
+<tr class="odd">
+<td>B</td>
+<td>0.4</td>
+<td>0.6</td>
+<td>0.24</td>
+<td>0.3871</td>
+</tr>
+<tr class="even">
+<td>C</td>
+<td>0.2</td>
+<td>0.9</td>
+<td>0.18</td>
+<td>0.2903</td>
+</tr>
+<tr class="odd">
+<td>total</td>
+<td>1</td>
+<td></td>
+<td>0.62</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>Bayes numerator</strong> is the product of the prior and the likelihood. The posterior probability is obtained by dividing the Bayes numerator by <span class="math inline">\(\Pr(D) = 0.625\)</span>.</p>
+<p>The process of going from the prior probability <span class="math inline">\(\Pr(H)\)</span> to the posterior <span class="math inline">\(\Pr(H|D)\)</span> is called <strong>Bayesian updating</strong>. Bayesian updating uses the data to alter our understanding of the probability of each hypothesis.</p>
+</div>
+<div id="things-to-notice" class="section level3">
+<h3>Things to notice</h3>
+<ol style="list-style-type: decimal">
+<li>The posterior probabilities for each hypothesis are in the last column. Coin <span class="math inline">\(B\)</span> is the most probable, even with the decrease from the prior to the posterior. <span class="math inline">\(C\)</span> has increased from 0.2 to 0.29.</li>
+<li>The Bayes numerator determines the posterior probability. To compute the posterior probability, simply rescale the Bayes numerator so that it sums to 1.</li>
+<li>If all we care about is finding the most likely hypothesis, the Bayes numerator works as well as the normalized posterior.</li>
+<li>The posterior probability represents the outcome of a tug-of-war between the likelihood and the prior. When calculating the posterior, a large prior may be deflated by a small likelihood, and a small prior may be inflated by a large likelihood.</li>
+</ol>
+<p>Therefore we can express Bayes’ theorem as:</p>
+<p><span class="math display">\[\Pr(\text{hypothesis}| \text{data}) = \frac{\Pr(\text{data} | \text{hypothesis}) \times \Pr(\text{hypothesis})}{\Pr(\text{data})}\]</span></p>
+<p><span class="math display">\[\Pr(H|D) = \frac{\Pr(D | H) \times \Pr(H)}{\Pr(D)}\]</span></p>
+<p>With the data fixed, the denominator <span class="math inline">\(\Pr(D)\)</span> just serves to normalize the total posterior probability to 1. So we could express Bayes’ theorem as a statement about the proportionality of two functions of <span class="math inline">\(H\)</span>:</p>
+<p><span class="math display">\[\Pr(\text{hypothesis}| \text{data}) \propto \Pr(\text{data} | \text{hypothesis}) \times \Pr(\text{hypothesis})\]</span> <span class="math display">\[\text{Posterior} \propto \text{Likelihood} \times \text{Prior}\]</span></p>
+</div>
+</div>
+</div>
+<div id="simulation" class="section level1">
+<h1>Simulation</h1>
+<p>The posterior can often be approximated by simulation. Suppose we draw <span class="math inline">\(\theta_1, \ldots, \theta_B \sim p(\theta | x^n)\)</span>. Then a histogram of <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span> approximates the posterior density <span class="math inline">\(p(\theta | x^n)\)</span>. An approximation to the posterior mean <span class="math inline">\(\bar{\theta}_n = \E (\theta | x^n)\)</span> is <span class="math inline">\(\frac{\sum_{j=1}^B \theta_j}{B}\)</span>. The posterior <span class="math inline">\(1 - \alpha\)</span> interval can be approximated by <span class="math inline">\((\theta_{\alpha / 2}, \theta_{1 - \alpha /2})\)</span> where <span class="math inline">\(\theta_{\alpha / 2}\)</span> is the <span class="math inline">\(\alpha / 2\)</span> sample quantile of <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span>.</p>
+<p>Once we have a sample <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span> from <span class="math inline">\(f(\theta | x^n)\)</span>, let <span class="math inline">\(\tau_i = g(\theta_i)\)</span>. Then <span class="math inline">\(\tau_1, \ldots, \tau_B\)</span> is a sample from <span class="math inline">\(f(\tau | x^n)\)</span>. This avoids the need to do any analytical calculations, especially when <span class="math inline">\(f(\theta | x^n)\)</span> is an especially complex function.</p>
+<div id="example-bernoulli-random-variable-1" class="section level2">
+<h2>Example: Bernoulli random variable</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli} (p)\)</span> and <span class="math inline">\(f(p) = 1\)</span> so that <span class="math inline">\(p | X^n \sim \text{Beta} (s + 1, n - s + 1)\)</span> with <span class="math inline">\(s = \sum_{i=1}^n x_i\)</span>. Let <span class="math inline">\(\psi = \log \left( \frac{p}{1 - p} \right)\)</span> (i.e. the log-odds). If we wanted to calculate the PMF and CDF of <span class="math inline">\(\psi | x^n\)</span>, we could do a lot of calculus and analytical math to solve for these equations.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Alternatively, we can approximate the posterior for <span class="math inline">\(\psi\)</span> without doing any calculus.</p>
+<ol style="list-style-type: decimal">
+<li>Draw <span class="math inline">\(P_1, \ldots, P_B \sim \text{Beta} (s + 1, n - s + 1)\)</span>.</li>
+<li>Let <span class="math inline">\(\psi_i = \log \left( \frac{P_i}{1 - P_i} \right)\)</span>, for <span class="math inline">\(i = 1, \ldots, B\)</span></li>
+</ol>
+<p>Now <span class="math inline">\(\psi_1, \ldots, \psi_B\)</span> are IID draws from <span class="math inline">\(h(\psi | x^n)\)</span>. A histogram of these values provides an estimate of <span class="math inline">\(h(\psi | x^n)\)</span>.</p>
+</div>
+</div>
+<div id="priors" class="section level1">
+<h1>Priors</h1>
+<p>To employ Bayesian inference, one requires a prior. Where do you get the prior <span class="math inline">\(f(\theta)\)</span>? One approach is to use a <strong>subjective</strong> prior based on your subjective opinion about <span class="math inline">\(\theta\)</span> before you collect any data. This may be possible, but is impractical for many complicated problems (especially when there are many parameters). Some would argue this approach is also not “scientific” because our inferences should be as objective as possible.</p>
+<p>An alternative approach is to define some sort of <strong>noninformative prior</strong>. One obvious choice is to use a flat prior <span class="math inline">\(f(\theta) \propto\)</span> constant. In the example earlier, taking <span class="math inline">\(f(p) = 1\)</span> leads to <span class="math inline">\(p | X^n \sim \text{Beta} (s + 1, n - s + 1)\)</span> which seems reasonable. But unfettered use of flat priors raises some questions.</p>
+<div id="improper-priors" class="section level2">
+<h2>Improper priors</h2>
+<p>Let <span class="math inline">\(X \sim N(\theta, \sigma^2)\)</span> with <span class="math inline">\(\sigma\)</span> known. Suppose we adopt a flat prior <span class="math inline">\(f(\theta) \propto c\)</span> where <span class="math inline">\(c &gt; 0\)</span> is a constant. Note that <span class="math inline">\(f(\theta) d\theta = \infty\)</span>, so this is not a probability density in the usual sense (otherwise it would integrate to 1). Such a prior is called an <strong>improper prior</strong>. However, we can still carry out Bayes’ theorem and compute the posterior density by multiplying the prior and the likelihood:</p>
+<p><span class="math display">\[f(\theta) \propto \Lagr_n(\theta) f(\theta) = \Lagr_n(\theta)\]</span></p>
+<p>This gives <span class="math inline">\(\theta | X^n \sim N(\bar{X}, \sigma^2 / n)\)</span> and the resulting point and interval estimators agree exactly with their frequentist counterparts. In general, improper priors are not a problem as long as the resulting posterior is a well-defined probability distribution.</p>
+</div>
+<div id="flat-priors-are-not-invariant" class="section level2">
+<h2>Flat priors are not invariant</h2>
+<p>Let <span class="math inline">\(X \sim \text{Bernoulli} (p)\)</span> and suppose we use the flat prior <span class="math inline">\(f(p) = 1\)</span>. This flat prior represents our lack of knowledge about <span class="math inline">\(p\)</span> before the experiment. Now let <span class="math inline">\(\psi = \log(p / (1 - p))\)</span>. This is a transformation of <span class="math inline">\(p\)</span> and we can compute the resulting distribution for <span class="math inline">\(\psi\)</span></p>
+<p><span class="math display">\[f_\Psi (\psi) = \frac{e^\psi}{(1 + e^\psi)^2}\]</span></p>
+<p>which is not flat. But if we are ignorant of <span class="math inline">\(p\)</span>, then we are also ignorant about <span class="math inline">\(\psi\)</span> so we should use a flat prior for <span class="math inline">\(\psi\)</span>. This is a contradiction. In short, the notion of a flat prior is not well defined because a flat prior on a parameter does not imply a flat prior on a transformed version of the parameter. Flat priors are not <strong>transformation invariant</strong>.</p>
+</div>
+</div>
+<div id="multiparameter-problems" class="section level1">
+<h1>Multiparameter problems</h1>
+<p>Suppose that <span class="math inline">\(\theta = (\theta_1, \ldots, \theta_p)\)</span>. The posterior density is given by</p>
+<p><span class="math display">\[f(\theta | x^n) \propto \Lagr_n(\theta) f(\theta)\]</span></p>
+<p>However, now we need to consider how to extract inferences about one parameter. The key is to find the <strong>marginal posterior density</strong> for the parameter of interest. Suppose we want to make inferences about <span class="math inline">\(\theta_1\)</span>. The marginal posterior for <span class="math inline">\(\theta_1\)</span> is</p>
+<p><span class="math display">\[f(\theta_1 | x^n) = \int \cdots \int f(\theta_1, \ldots, \theta_p | x^n) d\theta_2 \cdots d\theta_p\]</span></p>
+<p>Essentially, we calculate the integral of the function over all parameters except <span class="math inline">\(\theta_1\)</span>. If there are two parameters <span class="math inline">\((\theta_1, \theta_2)\)</span>, we integrate with respect to <span class="math inline">\(\theta_2\)</span>. As the number of parameters increase, this operation gets extremely tricky (if not impossible) to solve analytically. Instead, simulation can be used to approximate by drawing randomly from the posterior</p>
+<p><span class="math display">\[\theta^1, \ldots, \theta^B \sim f(\theta | x^n)\]</span></p>
+<p>where the superscripts index the different draws. Each <span class="math inline">\(\theta^j\)</span> is a vector <span class="math inline">\(\theta^j = (\theta_1^j, \ldots, \theta_p^j)\)</span>. Now collect together the first component of each draw</p>
+<p><span class="math display">\[\theta_1^1, \ldots, \theta_1^B\]</span></p>
+<p>These are a sample from <span class="math inline">\(f(\theta_1 | x^n)\)</span> and we have avoided doing any integrals.</p>
+<div id="example-comparing-two-binomials" class="section level2">
+<h2>Example: comparing two binomials</h2>
+<p>Suppose we have <span class="math inline">\(n_1\)</span> control patients and <span class="math inline">\(n_2\)</span> treatment patients and that <span class="math inline">\(X_1\)</span> control patients survive while <span class="math inline">\(X_2\)</span> treatment patients survive. We want to estimate <span class="math inline">\(\tau = g(p_1, p_2) = p_2 - p_1\)</span>. Then,</p>
+<p><span class="math display">\[X_1 \sim \text{Binomial} (n_1, p_1) \, \text{and} \, X_2 \sim \text{Binomial} (n_2, p_2)\]</span></p>
+<p>If <span class="math inline">\(f(p_1, p_2) = 1\)</span>, the posterior is</p>
+<p><span class="math display">\[f(p_1, p_2 | x_1, x_2) \propto p_1^{x_1} (1 - p_1)^{n_1 - x_1} p_2^{x_2} (1 - p_2)^{n_2 - x_2}\]</span></p>
+<p>Notice that</p>
+<p><span class="math display">\[f(p_1, p_2 | x_1, x_2) = f(p_1 | x_1) f(p_2 | x_2)\]</span></p>
+<p>where</p>
+<p><span class="math display">\[f(p_1 | x_1) \propto p_1^{x_1} (1 - p_1)^{n_1 - x_1} \, \text{and} \, f(p_2 | x_2) \propto p_2^{x_2} (1 - p_2)^{n_2 - x_2}\]</span></p>
+<p>which implies that <span class="math inline">\(p_1\)</span> and <span class="math inline">\(p_2\)</span> are independent under the posterior. Also</p>
+<p><span class="math display">\[
+\begin{align}
+p_1 | x_1 &amp;\sim \text{Beta} (x_1 + 1, n_1 - x_1 + 1) \\
+p_2 | x_2 &amp;\sim \text{Beta} (x_2 + 1, n_2 - x_2 + 1)
+\end{align}
+\]</span></p>
+<p>If we simulate</p>
+<p><span class="math display">\[
+\begin{align}
+P_{1,1}, \ldots, P_{1,B} &amp;\sim \text{Beta} (x_1 + 1, n_1 - x_1 + 1) \\
+P_{2,1}, \ldots, P_{2,B} &amp;\sim \text{Beta} (x_2 + 1, n_2 - x_2 + 1)
+\end{align}
+\]</span></p>
+<p>Then <span class="math inline">\(\tau_b = P_{2,b} - P_{1,b}, \, b = 1, \ldots, B\)</span> is a sample from <span class="math inline">\(f(\tau | x_1, x_2)\)</span>.</p>
+</div>
+</div>
+<div id="critiques-and-defenses-of-bayesian-inference" class="section level1">
+<h1>Critiques and defenses of Bayesian inference</h1>
+<p>When prior information is available, Bayesian inference is naturally appealing for combining prior information with data. It also focuses more on what researchers actually care about, namely making probability statements about parameter values. Frequentism does not allow for these inferences, even if that is substantively what we care about. So while Bayesian inference allows us to put probability statements on <span class="math inline">\(\Theta\)</span>, frequentism only allows us to create confidence sets <span class="math inline">\(C_n\)</span> which trap the parameter 95% of the time. We cannot say that <span class="math inline">\(\Pr (\theta \in C_n | X^n) = 0.95\)</span>.</p>
+<p>In parametric models, Bayesian and frequentist methods give approximately the same inferences (especially when we use flat or noninformative priors). In general, they do not have to agree.</p>
+<div id="critique-of-bayesian-inference" class="section level2">
+<h2>Critique of Bayesian inference</h2>
+<ol style="list-style-type: decimal">
+<li>The subjective prior is subjective. There is no single method for choosing a prior, so different (well-intentioned) people will produce different priors and therefore arrive at different posteriors and conclusions. If you accept the premise of subjective priors, you still need good information to create a well-defined prior distribution.</li>
+<li>Philosophically, some object to assigning probabilities to hypotheses as hypotheses do not constitute outcomes of repeatable experiments in which one can measure long-term frequency. Rather, a hypothesis is either true or false, regardless of whether one knows which is the case.
+<ul>
+<li>A coin is either fair or unfair</li>
+<li>Treatment 1 is either better or worse than treatment 2</li>
+<li>The sun will or will not come up tomorrow</li>
+<li>I will either win or not win the lottery</li>
+</ul></li>
+<li>For many parametric models with large samples, Bayesian and frequentist methods give approximately the same inferences. Since frequentist methods are historically more common and easier to estimate, there is no reason to go through the steps of Bayesian inference.</li>
+<li>Bayesian inference depends entirely on the likelihood function. In high dimensional and nonparametric methods, the likelihood function may not yield accurate inferences.</li>
+</ol>
+</div>
+<div id="defense-of-bayesian-inference" class="section level2">
+<h2>Defense of Bayesian inference</h2>
+<ol style="list-style-type: decimal">
+<li>The probability of hypotheses is exactly what we need to make decisions. When the doctor tells me a screening test came back positive for a disease, what I really want to know is the probability of the hypothesis “I’m sick”.</li>
+<li>Bayes’ theorem is logically rigorous (once we obtain a prior).</li>
+<li>By testing different priors we can see how sensitive our results are to the choice of prior.</li>
+<li>It is easy to communicate a result framed in terms of probabilities of hypotheses (try explaining the result of a null hypothesis test to a layperson).</li>
+<li>Priors can be defended based on the assumptions made to arrive at it.</li>
+<li>Evidence derived from the data is independent of notions about “data more extreme” that depend on the exact experimental setup.</li>
+<li>Data can be used as it comes in. We don’t have to wait for every contingency to be planned for ahead of time.</li>
+</ol>
+</div>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <a href="https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9"><strong>All of Statistics</strong></a> by Larry Wasserman</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-27</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.18  2018-10-10 cran (@0.6.18)                      
+##  dplyr      * 0.7.8   2018-11-10 cran (@0.7.8)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.1.0   2018-10-25 cran (@3.1.0)                       
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr       0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.3.0   2018-10-04 cran (@2.3.0)                       
+##  Rcpp         1.0.0   2018-11-07 cran (@1.0.0)                       
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.3.0.1 2018-10-25 CRAN (R 3.5.0)                      
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.5   2018-10-11 cran (@0.2.5)                       
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Even worse, many physicians substantially miss the correct answer to this question.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>See example 11.3 in Wasserman.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
