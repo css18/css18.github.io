@@ -351,7 +351,7 @@ div.tocify {
 <h1>Bayesian philosophy</h1>
 <p><strong>Frequentist methods</strong> are the major methods we’ve employed thus far. The frequentist point of view is based on the following postulates:</p>
 <ol style="list-style-type: decimal">
-<li>Probabilty refers to limiting relative frequencies. Probabilities are objective properties of the real world.</li>
+<li>Probability refers to limiting relative frequencies. Probabilities are objective properties of the real world.</li>
 <li>Parameters are fixed, unknown constants. Because they are not fluctuating, no useful probability statements can be made about parameters.</li>
 <li>Statistical procedures should be designed to have well-defined long run frequency properties. For example, a 95% confidence interval should trap the true value of the parameter with limiting frequency at least 95 percent.</li>
 </ol>
@@ -423,7 +423,7 @@ div.tocify {
 \]</span></p>
 <p>which is a basic application of Bayes’ theorem. The version for continuous variables is obtained using density functions</p>
 <p><span class="math display">\[f(\theta | x) = \frac{f(x | \theta) f(\theta)}{\int f(x | \theta) f(\theta) d\theta}\]</span></p>
-<p>If we have <span class="math inline">\(n\)</span> IID observations <span class="math inline">\(X_1, \ldots, X_n\)</span>, we replae <span class="math inline">\(f(x | \theta)\)</span> with</p>
+<p>If we have <span class="math inline">\(n\)</span> IID observations <span class="math inline">\(X_1, \ldots, X_n\)</span>, we replace <span class="math inline">\(f(x | \theta)\)</span> with</p>
 <p><span class="math display">\[f(x_1, \ldots, x_n | \theta) = \prod_{i = 1}^n f(x_i | \theta) = \Lagr_n(\theta)\]</span></p>
 <p>We will now write <span class="math inline">\(X^n\)</span> to mean <span class="math inline">\((X_1, \ldots, X_n)\)</span> and <span class="math inline">\(x^n\)</span> to mean <span class="math inline">\((x_1, \ldots, x_n)\)</span>. Now,</p>
 <p><span class="math display">\[
@@ -465,7 +465,7 @@ f(p | x^n) &amp;\propto f(p) \Lagr_n(p) \\
 <p><span class="math display">\[\bar{p} = \frac{s + 1}{n + 2}\]</span></p>
 <p>We can rewrite the estimator as</p>
 <p><span class="math display">\[\bar{p} = \lambda_n \hat{p} + (1 - \lambda_n) \tilde{p}\]</span></p>
-<p>wheer <span class="math inline">\(\hat{p} = \frac{s}{n}\)</span> is the MLE, <span class="math inline">\(\tilde{p} = \frac{1}{2}\)</span> is the prior mean, and <span class="math inline">\(\lambda_n = \frac{n}{n + 2} \approx 1\)</span>. So we can think of the MLE as the estimate for <span class="math inline">\(p\)</span> with a flat prior. If we have a non-flat prior, then our estimate <span class="math inline">\(\bar{p}\)</span> is a weighted average between the prior and the MLE.</p>
+<p>where <span class="math inline">\(\hat{p} = \frac{s}{n}\)</span> is the MLE, <span class="math inline">\(\tilde{p} = \frac{1}{2}\)</span> is the prior mean, and <span class="math inline">\(\lambda_n = \frac{n}{n + 2} \approx 1\)</span>. So we can think of the MLE as the estimate for <span class="math inline">\(p\)</span> with a flat prior. If we have a non-flat prior, then our estimate <span class="math inline">\(\bar{p}\)</span> is a weighted average between the prior and the MLE.</p>
 <p>A 95% credible interval can be obtained by numerically finding <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> such that <span class="math inline">\(\int_a^b f(p | x^n) dp = 0.95\)</span>.</p>
 <p>Suppose that instead of a uniform prior, we use the prior <span class="math inline">\(p \sim \text{Beta} (\alpha, \beta)\)</span>. If we repeat the calculations from before, we see that <span class="math inline">\(p | x^n \sim \text{Beta} (\alpha + s, \beta + n - s)\)</span>. The flat prior is the special case with <span class="math inline">\(\alpha = \beta = 1\)</span>. The posterior mean is</p>
 <p><span class="math display">\[\bar{p} = \frac{\alpha + s}{\alpha + \beta + n} = \left( \frac{n}{\alpha + \beta + n} \right) \hat{p} + \left( \frac{\alpha + \beta}{\alpha + \beta + n} \right) p_0\]</span></p>
@@ -582,10 +582,10 @@ f(p | x^n) &amp;\propto f(p) \Lagr_n(p) \\
 <div id="simulation" class="section level1">
 <h1>Simulation</h1>
 <p>The posterior can often be approximated by simulation. Suppose we draw <span class="math inline">\(\theta_1, \ldots, \theta_B \sim p(\theta | x^n)\)</span>. Then a histogram of <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span> approximates the posterior density <span class="math inline">\(p(\theta | x^n)\)</span>. An approximation to the posterior mean <span class="math inline">\(\bar{\theta}_n = \E (\theta | x^n)\)</span> is <span class="math inline">\(\frac{\sum_{j=1}^B \theta_j}{B}\)</span>. The posterior <span class="math inline">\(1 - \alpha\)</span> interval can be approximated by <span class="math inline">\((\theta_{\alpha / 2}, \theta_{1 - \alpha /2})\)</span> where <span class="math inline">\(\theta_{\alpha / 2}\)</span> is the <span class="math inline">\(\alpha / 2\)</span> sample quantile of <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span>.</p>
-<p>Once we have a sample <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span> from <span class="math inline">\(f(\theta | x^n)\)</span>, let <span class="math inline">\(\tau_i = g(\theta_i)\)</span>. Then <span class="math inline">\(\tau_1, \ldots, \tau_B\)</span> is a sample from <span class="math inline">\(f(\tau | x^n)\)</span>. This avoids the need to do any analytical calculations, especially when <span class="math inline">\(f(\theta | x^n)\)</span> is an especially complex function.</p>
+<p>Once we have a sample <span class="math inline">\(\theta_1, \ldots, \theta_B\)</span> from <span class="math inline">\(f(\theta | x^n)\)</span>, let <span class="math inline">\(\tau_i = g(\theta_i)\)</span>. Then <span class="math inline">\(\tau_1, \ldots, \tau_B\)</span> is a sample from <span class="math inline">\(f(\tau | x^n)\)</span>. This avoids the need to do any analytic calculations, especially when <span class="math inline">\(f(\theta | x^n)\)</span> is an especially complex function.</p>
 <div id="example-bernoulli-random-variable-1" class="section level2">
 <h2>Example: Bernoulli random variable</h2>
-<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli} (p)\)</span> and <span class="math inline">\(f(p) = 1\)</span> so that <span class="math inline">\(p | X^n \sim \text{Beta} (s + 1, n - s + 1)\)</span> with <span class="math inline">\(s = \sum_{i=1}^n x_i\)</span>. Let <span class="math inline">\(\psi = \log \left( \frac{p}{1 - p} \right)\)</span> (i.e. the log-odds). If we wanted to calculate the PMF and CDF of <span class="math inline">\(\psi | x^n\)</span>, we could do a lot of calculus and analytical math to solve for these equations.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Alternatively, we can approximate the posterior for <span class="math inline">\(\psi\)</span> without doing any calculus.</p>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli} (p)\)</span> and <span class="math inline">\(f(p) = 1\)</span> so that <span class="math inline">\(p | X^n \sim \text{Beta} (s + 1, n - s + 1)\)</span> with <span class="math inline">\(s = \sum_{i=1}^n x_i\)</span>. Let <span class="math inline">\(\psi = \log \left( \frac{p}{1 - p} \right)\)</span> (i.e. the log-odds). If we wanted to calculate the PMF and CDF of <span class="math inline">\(\psi | x^n\)</span>, we could do a lot of calculus and analytic math to solve for these equations.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Alternatively, we can approximate the posterior for <span class="math inline">\(\psi\)</span> without doing any calculus.</p>
 <ol style="list-style-type: decimal">
 <li>Draw <span class="math inline">\(P_1, \ldots, P_B \sim \text{Beta} (s + 1, n - s + 1)\)</span>.</li>
 <li>Let <span class="math inline">\(\psi_i = \log \left( \frac{P_i}{1 - P_i} \right)\)</span>, for <span class="math inline">\(i = 1, \ldots, B\)</span></li>
@@ -650,8 +650,6 @@ P_{2,1}, \ldots, P_{2,B} &amp;\sim \text{Beta} (x_2 + 1, n_2 - x_2 + 1)
 </div>
 <div id="critiques-and-defenses-of-bayesian-inference" class="section level1">
 <h1>Critiques and defenses of Bayesian inference</h1>
-<p>When prior information is available, Bayesian inference is naturally appealing for combining prior information with data. It also focuses more on what researchers actually care about, namely making probability statements about parameter values. Frequentism does not allow for these inferences, even if that is substantively what we care about. So while Bayesian inference allows us to put probability statements on <span class="math inline">\(\Theta\)</span>, frequentism only allows us to create confidence sets <span class="math inline">\(C_n\)</span> which trap the parameter 95% of the time. We cannot say that <span class="math inline">\(\Pr (\theta \in C_n | X^n) = 0.95\)</span>.</p>
-<p>In parametric models, Bayesian and frequentist methods give approximately the same inferences (especially when we use flat or noninformative priors). In general, they do not have to agree.</p>
 <div id="critique-of-bayesian-inference" class="section level2">
 <h2>Critique of Bayesian inference</h2>
 <ol style="list-style-type: decimal">

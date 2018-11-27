@@ -1,0 +1,411 @@
+---
+title: "Bayesian inference"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+base_size <- 18
+theme_set(theme_minimal(base_size = base_size))
+```
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
+## Bayesian philosophy
+
+* Frequentism
+    1. Probability refers to limiting relative frequencies
+    1. Probabilities are objective properties of the real world
+    1. Parameters are fixed, unknown constants
+    1. Statistical procedures should be designed to have well-defined long run frequency properties
+* Bayesian inference
+    1. Probability describes degree of belief, not limiting frequency
+    1. We can make probability statements about parameters, even though they are fixed constants
+    1. We make inferences about a parameter $\theta$ by producing a probability distribution for $\theta$
+
+## Bayes' theorem
+
+* For two events $A$ and $B$, Bayes' theorem states that:
+
+    $$\Pr(B|A) = \frac{\Pr(A|B) \times \Pr(B)}{\Pr(A)}$$
+
+* Inverting conditional probabilities
+* Find $\Pr(B|A)$ from $\Pr(A|B)$
+
+## Coin tossing
+
+* Toss a coin 5 times
+* Let $H_1 =$ "first toss is heads" and let $H_A =$ "all 5 tosses are heads"
+* $\Pr(H_1 | H_A) = 1$
+* $\Pr(H_A | H_1) = \frac{1}{16}$
+* Calculate $\Pr(H_1 | H_A)$ using $\Pr(H_A | H_1)$
+    * $\Pr(H_A | H_1) = \frac{1}{16}$
+    * $\Pr(H_1) = \frac{1}{2}$
+    * $\Pr(H_A) = \frac{1}{32}$
+* $\Pr(H_1 | H_A)$
+
+    $$\Pr(H_A | H_1) = \frac{\Pr(H_A | H_1) \times \Pr(H_1)}{\Pr(H_A)} = \frac{\frac{1}{16} \times \frac{1}{2}}{\frac{1}{32}} = 1$$
+
+## False positive fallacy
+
+* A test for a certain rare disease is assumed to be correct 95% of the time
+    * If a person has the disease, then the test results are positive with probability $0.95$
+    * If the person does not have the disease, then the test results are negative with probability $0.95$
+* A random person drawn from a certain population has probability $0.001$ of having the disease. Given that the person just tested positive, what is the probability of having the disease?
+
+## False positive fallacy
+
+* $A = {\text{person has the disease}}$
+* $B = {\text{test result is positive for the disease}}$
+* $\Pr(A) = 0.001$
+* $\Pr(B | A) = 0.95$
+* $\Pr(B | A = 0) = 0.05$
+
+    $$
+    \begin{align}
+    \Pr(A|B) & = \frac{\Pr(A) \times \Pr(B|A)}{\Pr(B)} \\
+    & = \frac{\Pr(A) \times \Pr(B|A)}{\Pr(A) \times \Pr(B|A) + \Pr(A = 0) \times(B | A = 0)} \\
+    & = \frac{0.001 \times 0.95}{0.001 \times 0.95 + 0.999 \times 0.05} \\
+    & = 0.0187
+    \end{align}
+    $$
+
+## Bayesian method
+
+1. Choose a prior distribution $f(\theta)$
+1. Choose a statistical model $f(x|\theta)$
+    * $f(x|\theta) \neq f(x; \theta)$
+1. Calculate the posterior distribution $f(\theta | X_1, \ldots, X_n)$
+
+## Bayesian method
+
+* Suppose that $\theta$ is discrete and that there is a single, discrete observation $X$
+* $\Theta$ is a random variable
+* Discrete random variable
+
+    $$
+    \begin{align}
+    \Pr(\Theta = \theta | X = x) &= \frac{\Pr(X = x, \Theta = \theta)}{\Pr(X = x)} \\
+    &= \frac{\Pr(X = x | \Theta = \theta) \Pr(\Theta = \theta)}{\sum_\theta \Pr (X = x| \Theta = \theta) \Pr (\Theta = \theta)}
+    \end{align}
+    $$
+
+* Continuous random variable
+
+    $$f(\theta | x) = \frac{f(x | \theta) f(\theta)}{\int f(x | \theta) f(\theta) d\theta}$$
+
+## Bayesian method {.scrollable}
+
+* Replace $f(x | \theta)$ with
+
+    $$f(x_1, \ldots, x_n | \theta) = \prod_{i = 1}^n f(x_i | \theta) = \Lagr_n(\theta)$$
+
+* Write $X^n$ to mean $(X_1, \ldots, X_n)$
+* Write $x^n$ to mean $(x_1, \ldots, x_n)$
+
+    $$
+    \begin{align}
+    f(\theta | x^n) &= \frac{f(x^n | \theta) f(\theta)}{\int f(x^n | \theta) f(\theta) d\theta} \\
+    &= \frac{\Lagr_n(\theta) f(\theta)}{c_n} \\
+    &\propto \Lagr_n(\theta) f(\theta)
+    \end{align}
+    $$
+    
+    
+    * Normalizing constant: $$c_n = \int f(x^n | \theta) f(\theta) d\theta$$
+
+* Posterior is proportional to Likelihood times Prior
+
+    $$f(\theta | x^n) \propto \Lagr_n(\theta) f(\theta)$$
+
+## Bayesian method
+
+* Point estimate
+
+    $$\bar{\theta}_n = \int \theta f(\theta | x^n) d\theta = \frac{\int \theta \Lagr_n(\theta) f(\theta)}{\int \Lagr_n(\theta) f(\theta) d\theta}$$
+
+* Bayesian interval estimate
+    * Find $a$ and $b$ such that
+
+        $$\int_{-\infty}^a f(\theta | x^n) d\theta = \int_b^\infty f(\theta | x^n) d\theta = \frac{\alpha}{2}$$
+
+    * Let $C = (a,b)$. Then
+
+        $$\Pr (\theta \in C | x^n) = \int_a^b f(\theta | x^n) d\theta = 1 - \alpha$$
+    
+    * Posterior/credible interval
+
+## Example: Bernoulli random variable {.scrollable}
+
+* Let $X_1, \ldots, X_n \sim \text{Bernoulli} (p)$
+* Uniform prior $f(p) = 1$ as a prior
+* Posterior distribution
+
+    $$
+    \begin{align}
+    f(p | x^n) &\propto f(p) \Lagr_n(p) \\
+    &= p^s (1 - p)^{n - s} \\
+    &= p^{s + 1 - 1} (1 - p)^{n - s + 1 - 1}
+    \end{align}
+    $$
+
+    * $s = \sum_{i=1}^n x_i$ is the number of successes
+* Beta distribution
+
+    $$f(p; \alpha, \beta) = \frac{\Gamma(\alpha + \beta)}{\Gamma(\alpha) \Gamma(\beta)}p^{\alpha - 1} (1 - p)^{\beta - 1}$$
+
+* Posterior for $p$ is a Beta distribution with parameters $s + 1$ and $n - s + 1$
+
+    $$f(p | x^n) = \frac{\Gamma(n + 2)}{\Gamma(s + 1) \Gamma(n - s + 1)}p^{(s + 1) - 1} (1 - p)^{(n - s + 1) - 1}$$
+
+    $$p | x^n \sim \text{Beta} (s + 1, n - s + 1)$$
+    
+    * $c_n = \frac{\Gamma(n + 2)}{\Gamma(s + 1) \Gamma(n - s + 1)}$
+* Mean of a $\text{Beta}(\alpha, \beta)$ distribution is $\frac{\alpha}{\alpha + \beta}$
+
+    $$\bar{p} = \frac{s + 1}{n + 2}$$
+
+    $$\bar{p} = \lambda_n \hat{p} + (1 - \lambda_n) \tilde{p}$$
+
+    * $\hat{p} = \frac{s}{n}$ is the MLE
+    * $\tilde{p} = \frac{1}{2}$ is the prior mean
+    * $\lambda_n = \frac{n}{n + 2} \approx 1$
+
+* 95% credible interval
+    * Find $a$ and $b$ such that $\int_a^b f(p | x^n) dp = 0.95$.
+* Use the prior $p \sim \text{Beta} (\alpha, \beta)$
+    
+    $$p | x^n \sim \text{Beta} (\alpha + s, \beta + n - s)$$
+    
+    * Flat prior is Beta distribution where $\alpha = \beta = 1$
+    * Posterior mean is
+
+        $$\bar{p} = \frac{\alpha + s}{\alpha + \beta + n} = \left( \frac{n}{\alpha + \beta + n} \right) \hat{p} + \left( \frac{\alpha + \beta}{\alpha + \beta + n} \right) p_0$$
+
+        * Prior mean: $p_0 = \frac{\alpha}{\alpha + \beta}$
+
+## Example: coin tossing
+
+* Three types of coins with different probabilities of landing heads when tossed
+    * Type $A$ coins are fair, with $p = 0.5$ of heads
+    * Type $B$ coins are bent, with $p = 0.6$ of heads
+    * Type $C$ coins are bent, with $p = 0.9$ of heads
+* Suppose a drawer contains 5 coins
+    * 2 of type $A$
+    * 2 of type $B$
+    * 1 of type $C$
+* Reach into the drawer and pick a coin at random. Without looking you flip the coin once and get heads
+* What is the probability it is type $A$? Type $B$? Type $C$?
+
+## Terminology {.scrollable}
+
+* Let $A$, $B$, and $C$ be the event the chosen coin was of the respective type
+* Let $D$ be the event that the toss is heads
+* Need to determine
+
+    $$\Pr(A|D), \Pr(B|D), \Pr(C|D)$$
+    
+* Experiment
+* Data
+    * $D = \text{heads}$
+* Hypotheses
+* Prior probability
+
+    $$\Pr(A) = 0.4, \Pr(B) = 0.4, \Pr(C) = 0.2$$
+    
+* Likelihood
+
+    $$\Pr(D|A) = 0.5, \Pr(D|B) = 0.6, \Pr(D|C) = 0.9$$
+    
+* Posterior probability
+
+    $$\Pr(A|D), \Pr(B|D), \Pr(C|D)$$
+
+## Apply Bayesian inference
+
+$$
+\begin{align}
+\Pr(A|D) &= \frac{\Pr(D|A) \times \Pr(A)}{\Pr(D)} \\
+\Pr(B|D) &= \frac{\Pr(D|B) \times \Pr(B)}{\Pr(D)} \\
+\Pr(C|D) &= \frac{\Pr(D|C) \times \Pr(C)}{\Pr(D)}
+\end{align}
+$$
+
+$$
+\begin{align}
+\Pr(D) & = \Pr(D|A) \times \Pr(A) + \Pr(D|B) \times \Pr(B) + \Pr(D|C) \times \Pr(C) \\
+& = 0.5 \times 0.4 + 0.6 \times 0.4 + 0.9 \times 0.2 = 0.62
+\end{align}
+$$
+
+## Apply Bayesian inference
+
+$$
+\begin{align}
+\Pr(A|D) &= \frac{\Pr(D|A) \times \Pr(A)}{\Pr(D)} = \frac{0.5 \times 0.4}{0.62} = \frac{0.2}{0.62} \\
+\Pr(B|D) &= \frac{\Pr(D|B) \times \Pr(B)}{\Pr(D)} = \frac{0.6 \times 0.4}{0.62} = \frac{0.24}{0.62} \\
+\Pr(C|D) &= \frac{\Pr(D|C) \times \Pr(C)}{\Pr(D)} = \frac{0.9 \times 0.2}{0.62} = \frac{0.18}{0.62}
+\end{align}
+$$
+
+## Apply Bayesian inference
+
+hypothesis | prior | likelihood | Bayes numerator | posterior
+----|--------|----------|---------------------|---------------
+$H$ | $\Pr(H)$ | $\Pr(D\mid H)$ | $\Pr(D \mid H) \times \Pr(H)$ | $\Pr(H \mid D)$
+A | 0.4 | 0.5 | 0.2 | 0.3226
+B | 0.4 | 0.6 | 0.24 | 0.3871
+C | 0.2 | 0.9 | 0.18 | 0.2903
+total | 1 | | 0.62 | 1
+
+## Simulation
+
+* Approximate posterior
+* Suppose we draw $\theta_1, \ldots, \theta_B \sim p(\theta | x^n)$
+* Histogram of $\theta_1, \ldots, \theta_B$ approximates the posterior density $p(\theta | x^n)$
+* $\bar{\theta}_n = \E (\theta | x^n) \equiv \frac{\sum_{j=1}^B \theta_j}{B}$
+* Credible $1 - \alpha$ interval
+
+    $$\approx (\theta_{\alpha / 2}, \theta_{1 - \alpha /2})$$
+    * $\theta_{\alpha / 2}$ is the $\alpha / 2$ sample quantile of $\theta_1, \ldots, \theta_B$
+* Generate sample $\theta_1, \ldots, \theta_B$ from $f(\theta | x^n)$
+* Let $\tau_i = g(\theta_i)$
+    * $\tau_1, \ldots, \tau_B$ is a sample from $f(\tau | x^n)$
+    * Avoids complex analytical calculations
+    
+## Example: Bernoulli random variable
+
+* $X_1, \ldots, X_n \sim \text{Bernoulli} (p)$
+* $f(p) = 1$
+* $p | X^n \sim \text{Beta} (s + 1, n - s + 1)$
+    * $s = \sum_{i=1}^n x_i$
+* $\psi = \log \left( \frac{p}{1 - p} \right)$
+* Analytic approach
+* Simulation
+    1. Draw $P_1, \ldots, P_B \sim \text{Beta} (s + 1, n - s + 1)$
+    1. Let $\psi_i = \log \left( \frac{P_i}{1 - P_i} \right)$, for $i = 1, \ldots, B$
+    * $\psi_1, \ldots, \psi_B$ are IID draws from $h(\psi | x^n)$
+    * Histogram of these values provides an estimate of $h(\psi | x^n)$
+
+## Priors
+
+* Subjective prior
+* Problems with subjective priors
+* Noninformative priors
+    * Flat prior
+    * $f(p) = 1$
+
+## Improper priors
+
+* Let $X \sim N(\theta, \sigma^2)$ with $\sigma$ known
+* Adopt a flat prior $f(\theta) \propto c$ where $c > 0$ is a constant
+* $f(\theta) d\theta = \infty$ (not a pdf)
+* Can still compute the posterior density by multiplying the prior and the likelihood:
+
+    $$f(\theta) \propto \Lagr_n(\theta) f(\theta) = \Lagr_n(\theta)$$
+
+* $\theta | X^n \sim N(\bar{X}, \sigma^2 / n)$
+* Improper priors are not a problem as long as the resulting posterior is a well-defined probability distribution
+
+## Flat priors are not invariant
+
+* Let $X \sim \text{Bernoulli} (p)$
+* $f(p) = 1$
+* $\psi = \log(p / (1 - p))$
+
+    $$f_\Psi (\psi) = \frac{e^\psi}{(1 + e^\psi)^2}$$
+    * Should be a flat prior, but it is not
+* Flat prior on a parameter does not imply a flat prior on a transformed version of the parameter
+* Transformation invariant
+
+## Multiparameter problems
+
+* $\theta = (\theta_1, \ldots, \theta_p)$
+* Posterior density
+
+    $$f(\theta | x^n) \propto \Lagr_n(\theta) f(\theta)$$
+
+* Inferences about a single parameter
+* Marginal posterior density
+
+    $$f(\theta_1 | x^n) = \int \cdots \int f(\theta_1, \ldots, \theta_p | x^n) d\theta_2 \cdots d\theta_p$$
+
+* Via simulation
+
+    $$\theta^1, \ldots, \theta^B \sim f(\theta | x^n)$$
+
+    * $\theta^j = (\theta_1^j, \ldots, \theta_p^j)$
+    * $\theta_1^1, \ldots, \theta_1^B$
+        * Sample from $f(\theta_1 | x^n)$
+
+## Example: comparing two binomials {.scrollable}
+
+* $n_1$ control patients and $n_2$ treatment patients
+* $X_1$ control patients survive while $X_2$ treatment patients survive
+* Estimate $\tau = g(p_1, p_2) = p_2 - p_1$
+
+    $$X_1 \sim \text{Binomial} (n_1, p_1) \, \text{and} \, X_2 \sim \text{Binomial} (n_2, p_2)$$
+
+* If $f(p_1, p_2) = 1$, the posterior is
+
+    $$f(p_1, p_2 | x_1, x_2) \propto p_1^{x_1} (1 - p_1)^{n_1 - x_1} p_2^{x_2} (1 - p_2)^{n_2 - x_2}$$
+
+    $$f(p_1, p_2 | x_1, x_2) = f(p_1 | x_1) f(p_2 | x_2)$$
+    
+    $$f(p_1 | x_1) \propto p_1^{x_1} (1 - p_1)^{n_1 - x_1} \, \text{and} \, f(p_2 | x_2) \propto p_2^{x_2} (1 - p_2)^{n_2 - x_2}$$
+
+    * $p_1$ and $p_2$ are independent under the posterior
+
+* Independent posteriors
+    
+    $$
+    \begin{align}
+    p_1 | x_1 &\sim \text{Beta} (x_1 + 1, n_1 - x_1 + 1) \\
+    p_2 | x_2 &\sim \text{Beta} (x_2 + 1, n_2 - x_2 + 1)
+    \end{align}
+    $$
+
+* Simulate draws from the posteriors
+
+    $$
+    \begin{align}
+    P_{1,1}, \ldots, P_{1,B} &\sim \text{Beta} (x_1 + 1, n_1 - x_1 + 1) \\
+    P_{2,1}, \ldots, P_{2,B} &\sim \text{Beta} (x_2 + 1, n_2 - x_2 + 1)
+    \end{align}
+    $$
+
+    * $f(\tau | x_1, x_2)$
+    * $\tau_b = P_{2,b} - P_{1,b}, \, b = 1, \ldots, B$
+
+## Critique of Bayesian inference
+
+1. The subjective prior is subjective
+1. Probabilities on hypotheses are wrong. There is only one outcome
+    * A coin is either fair or unfair
+    * Treatment 1 is either better or worse than treatment 2
+    * The sun will or will not come up tomorrow
+    * I will either win or not win the lottery
+1. For many parametric models with large samples, Bayesian and frequentist methods give approximately the same inferences
+1. Bayesian inference depends entirely on the likelihood function
+
+## Defense of Bayesian inference
+
+1. The probability of hypotheses is exactly what we need to make decisions
+1. Bayes' theorem is logically rigorous (once we obtain a prior)
+1. By testing different priors we can see how sensitive our results are to the choice of prior
+1. It is easy to communicate a result framed in terms of probabilities of hypotheses
+1. Priors can be defended based on the assumptions made to arrive at it
+1. Evidence derived from the data is independent of notions about "data more extreme" that depend on the exact experimental setup
+1. Data can be used as it comes in. We don't have to wait for every contingency to be planned for ahead of time

@@ -26,7 +26,7 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
 
 **Frequentist methods** are the major methods we've employed thus far. The frequentist point of view is based on the following postulates:
 
-1. Probabilty refers to limiting relative frequencies. Probabilities are objective properties of the real world.
+1. Probability refers to limiting relative frequencies. Probabilities are objective properties of the real world.
 1. Parameters are fixed, unknown constants. Because they are not fluctuating, no useful probability statements can be made about parameters.
 1. Statistical procedures should be designed to have well-defined long run frequency properties. For example, a 95% confidence interval should trap the true value of the parameter with limiting frequency at least 95 percent.
 
@@ -106,7 +106,7 @@ which is a basic application of Bayes' theorem. The version for continuous varia
 
 $$f(\theta | x) = \frac{f(x | \theta) f(\theta)}{\int f(x | \theta) f(\theta) d\theta}$$
 
-If we have $n$ IID observations $X_1, \ldots, X_n$, we replae $f(x | \theta)$ with
+If we have $n$ IID observations $X_1, \ldots, X_n$, we replace $f(x | \theta)$ with
 
 $$f(x_1, \ldots, x_n | \theta) = \prod_{i = 1}^n f(x_i | \theta) = \Lagr_n(\theta)$$
 
@@ -176,7 +176,7 @@ We can rewrite the estimator as
 
 $$\bar{p} = \lambda_n \hat{p} + (1 - \lambda_n) \tilde{p}$$
 
-wheer $\hat{p} = \frac{s}{n}$ is the MLE, $\tilde{p} = \frac{1}{2}$ is the prior mean, and $\lambda_n = \frac{n}{n + 2} \approx 1$. So we can think of the MLE as the estimate for $p$ with a flat prior. If we have a non-flat prior, then our estimate $\bar{p}$ is a weighted average between the prior and the MLE.
+where $\hat{p} = \frac{s}{n}$ is the MLE, $\tilde{p} = \frac{1}{2}$ is the prior mean, and $\lambda_n = \frac{n}{n + 2} \approx 1$. So we can think of the MLE as the estimate for $p$ with a flat prior. If we have a non-flat prior, then our estimate $\bar{p}$ is a weighted average between the prior and the MLE.
 
 A 95% credible interval can be obtained by numerically finding $a$ and $b$ such that $\int_a^b f(p | x^n) dp = 0.95$.
 
@@ -282,11 +282,11 @@ $$\text{Posterior} \propto \text{Likelihood} \times \text{Prior}$$
 
 The posterior can often be approximated by simulation. Suppose we draw $\theta_1, \ldots, \theta_B \sim p(\theta | x^n)$. Then a histogram of $\theta_1, \ldots, \theta_B$ approximates the posterior density $p(\theta | x^n)$. An approximation to the posterior mean $\bar{\theta}_n = \E (\theta | x^n)$ is $\frac{\sum_{j=1}^B \theta_j}{B}$. The posterior $1 - \alpha$ interval can be approximated by $(\theta_{\alpha / 2}, \theta_{1 - \alpha /2})$ where $\theta_{\alpha / 2}$ is the $\alpha / 2$ sample quantile of $\theta_1, \ldots, \theta_B$.
 
-Once we have a sample $\theta_1, \ldots, \theta_B$ from $f(\theta | x^n)$, let $\tau_i = g(\theta_i)$. Then $\tau_1, \ldots, \tau_B$ is a sample from $f(\tau | x^n)$. This avoids the need to do any analytical calculations, especially when $f(\theta | x^n)$ is an especially complex function.
+Once we have a sample $\theta_1, \ldots, \theta_B$ from $f(\theta | x^n)$, let $\tau_i = g(\theta_i)$. Then $\tau_1, \ldots, \tau_B$ is a sample from $f(\tau | x^n)$. This avoids the need to do any analytic calculations, especially when $f(\theta | x^n)$ is an especially complex function.
 
 ## Example: Bernoulli random variable
 
-Let $X_1, \ldots, X_n \sim \text{Bernoulli} (p)$ and $f(p) = 1$ so that $p | X^n \sim \text{Beta} (s + 1, n - s + 1)$ with $s = \sum_{i=1}^n x_i$. Let $\psi = \log \left( \frac{p}{1 - p} \right)$ (i.e. the log-odds). If we wanted to calculate the PMF and CDF of $\psi | x^n$, we could do a lot of calculus and analytical math to solve for these equations.^[See example 11.3 in Wasserman.] Alternatively, we can approximate the posterior for $\psi$ without doing any calculus.
+Let $X_1, \ldots, X_n \sim \text{Bernoulli} (p)$ and $f(p) = 1$ so that $p | X^n \sim \text{Beta} (s + 1, n - s + 1)$ with $s = \sum_{i=1}^n x_i$. Let $\psi = \log \left( \frac{p}{1 - p} \right)$ (i.e. the log-odds). If we wanted to calculate the PMF and CDF of $\psi | x^n$, we could do a lot of calculus and analytic math to solve for these equations.^[See example 11.3 in Wasserman.] Alternatively, we can approximate the posterior for $\psi$ without doing any calculus.
 
 1. Draw $P_1, \ldots, P_B \sim \text{Beta} (s + 1, n - s + 1)$.
 1. Let $\psi_i = \log \left( \frac{P_i}{1 - P_i} \right)$, for $i = 1, \ldots, B$
@@ -374,10 +374,6 @@ $$
 Then $\tau_b = P_{2,b} - P_{1,b}, \, b = 1, \ldots, B$ is a sample from $f(\tau | x_1, x_2)$.
 
 # Critiques and defenses of Bayesian inference
-
-When prior information is available, Bayesian inference is naturally appealing for combining prior information with data. It also focuses more on what researchers actually care about, namely making probability statements about parameter values. Frequentism does not allow for these inferences, even if that is substantively what we care about. So while Bayesian inference allows us to put probability statements on $\Theta$, frequentism only allows us to create confidence sets $C_n$ which trap the parameter 95% of the time. We cannot say that $\Pr (\theta \in C_n | X^n) = 0.95$.
-
-In parametric models, Bayesian and frequentist methods give approximately the same inferences (especially when we use flat or noninformative priors). In general, they do not have to agree.
 
 ## Critique of Bayesian inference
 
