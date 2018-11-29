@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Ordinary least squares</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Ordinary least squares</h1>
+<h3 class="subtitle"><em>Properties of the estimator</em></h3>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(modelr)
+<span class="kw">library</span>(patchwork)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
+<p><strong>Regression</strong> is a method for studying the relationship between a <strong>response variable</strong> <span class="math inline">\(Y\)</span> and a <strong>covariate</strong> <span class="math inline">\(X\)</span> (also known as the <strong>predictor variable</strong> or a <strong>feature</strong>). One way to summarize this relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is through a <strong>regression function</strong>:</p>
+<p><span class="math display">\[r(x) = \E (Y | X = x) = \int y f(y|x) dy\]</span></p>
+<p>Our goal is to estimate the regression function <span class="math inline">\(r(x)\)</span> from the data of the form</p>
+<p><span class="math display">\[(Y_1, X_1), \ldots, (Y_n, X_n) \sim F_{X,Y}\]</span></p>
+<div id="simple-linear-regression" class="section level1">
+<h1>Simple linear regression</h1>
+<p>The simplest form of regression is when <span class="math inline">\(X_i\)</span> is simple (one-dimensional) and <span class="math inline">\(r(x)\)</span> is assumed to be linear:</p>
+<p><span class="math display">\[r(x) = \beta_0 + \beta_1 x\]</span></p>
+<p>This model is called the <strong>simple linear regression model</strong>. We make the further assumption that <span class="math inline">\(\Var (\epsilon_i | X = x) = \sigma^2\)</span> does not depend on <span class="math inline">\(x\)</span>. Thus the linear regression model is:</p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1 X_i + \epsilon_i\]</span></p>
+<p>where <span class="math inline">\(\E (\epsilon_i | X_i) = 0\)</span> and <span class="math inline">\(\Var (\epsilon_i | X_i) = \sigma^2\)</span>. The unknown parameters in the model are the intercept <span class="math inline">\(\beta_0\)</span> and the slope <span class="math inline">\(\beta_1\)</span> and the variance <span class="math inline">\(\sigma^2\)</span>. Let <span class="math inline">\(\hat{\beta}_0\)</span> and <span class="math inline">\(\hat{\beta}_1\)</span> denote estimates of <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span>. The <strong>fitted line</strong> is</p>
+<p><span class="math display">\[\hat{r}(x) = \hat{\beta}_0 + \hat{\beta}_1 x\]</span></p>
+<p>The <strong>predicted values</strong> or <strong>fitted values</strong> are</p>
+<p><span class="math display">\[\hat{Y}_i = \hat{r}(X_i)\]</span></p>
+<p>and the <strong>residuals</strong> are defined as</p>
+<p><span class="math display">\[\hat{\epsilon}_i = Y_i - \hat{Y}_i = Y_i - (\hat{\beta}_0 + \hat{\beta}_1 x)\]</span></p>
+<p>The <strong>residual sum of squares</strong> or RSS measures how well the line fits the data. It is defined by</p>
+<p><span class="math display">\[RSS = \sum_{i=1}^n \hat{\epsilon}_i^2\]</span></p>
+</div>
+<div id="estimation-strategy" class="section level1">
+<h1>Estimation strategy</h1>
+<p>What is an appropriate way to estimate the <span class="math inline">\(\beta\)</span>s? We could fit many lines to this data, some better than others.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(sim1, <span class="kw">aes</span>(x, y)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="ols-estimator_files/figure-html/sim-plot-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">models &lt;-<span class="st"> </span><span class="kw">tibble</span>(
+  <span class="dt">a1 =</span> <span class="kw">runif</span>(<span class="dv">250</span>, <span class="op">-</span><span class="dv">20</span>, <span class="dv">40</span>),
+  <span class="dt">a2 =</span> <span class="kw">runif</span>(<span class="dv">250</span>, <span class="op">-</span><span class="dv">5</span>, <span class="dv">5</span>)
+)
+
+<span class="kw">ggplot</span>(sim1, <span class="kw">aes</span>(x, y)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_abline</span>(<span class="kw">aes</span>(<span class="dt">intercept =</span> a1, <span class="dt">slope =</span> a2), <span class="dt">data =</span> models, <span class="dt">alpha =</span> <span class="dv">1</span><span class="op">/</span><span class="dv">4</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="ols-estimator_files/figure-html/sim-random-fit-1.png" width="672" /></p>
+<p>We should seek estimators with some set of desired qualities. Classically, two desired qualities for an estimator are <strong>unbiasedness</strong> and <strong>efficiency</strong>.</p>
+<ul>
+<li>Unbiased
+<ul>
+<li><span class="math inline">\(E(\hat{\beta}) = \beta\)</span></li>
+<li>Estimator that “gets it right” vis-a-vis <span class="math inline">\(\beta\)</span></li>
+</ul></li>
+<li>Efficient
+<ul>
+<li><span class="math inline">\(\min(Var(\hat{\beta}))\)</span></li>
+<li>Not only do we get it right, but for any given sample used to generate the model we never want to be too far off from “right”</li>
+</ul></li>
+</ul>
+<div id="least-squares-estimator" class="section level2">
+<h2>Least squares estimator</h2>
+<p>The <strong>least squares estimates</strong> are the values <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span> that minimize the RSS.</p>
+<p><span class="math display">\[\min(RSS)\]</span></p>
+<p>This requires a bit of calculus to solve.</p>
+<p><span class="math display">\[
+\begin{aligned}
+RSS &amp;= \sum_{i=1}^n \hat{\epsilon}_i^2 \\
+\sum_{i=1}^n (\hat{\epsilon}_i)^2 &amp;= \sum_{i=1}^n (Y_i - (\beta_0 + \beta_1 X_i))^2\\
+f(\beta_0, \beta_1 | x_i, y_i) &amp; = \sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i )^2\\
+\dfrac{\partial{ f(\beta_0, \beta_1 | x_i, y_i)}}{\partial \beta_0} &amp; = -2 (\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 X_i))\\
+&amp; = \sum_{i=1}^n -2Y_i + 2\beta_0 + 2\beta_1 X_i\\
+0 &amp; = \sum_{i=1}^n -2Y_{i} + 2\beta_0 + 2\beta_1 X_i\\
+0 &amp; = -2 \sum_{i=1}^n Y_{i} +  2\sum_{i=1}^n \beta_0 +  2\beta_1 \sum_{i=1}^n X_i\\
+0 &amp; = -2 \sum_{i=1}^n Y_{i} +  (n \times 2\beta_0) +  2\beta_1 \sum_{i=1}^n X_i\\
+n \times 2\beta_0 &amp; = 2 \sum_{i=1}^n Y_i - 2\beta_1 \sum_{i=1}^n X_i\\
+\hat \beta_0 &amp; = \dfrac{2 \sum_{i=1}^n Y_i}{2n} - \dfrac{2\beta_1 \sum_{i=1}^n X_i}{2n}\\
+&amp; =  \dfrac{\sum_{i=1}^n Y_i}{n} - \beta_1\dfrac{ \sum_{i=1}^n X_i}{n}\\
+ \hat \beta_0 &amp; = \bar{Y}_n - \beta_1 \bar{X}_n
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\dfrac{\partial{ f(\beta_0, \beta_1 | x_i, y_i)}}{\partial \beta_1} &amp; = \sum_{i=1}^n -2X_i(Y_i - \beta_0 - \beta_1 X_i) \\
+&amp; =  \sum_{i=1}^n -2Y_iX_i + 2\beta_0X_i + 2\beta_1 X_i^2\\
+0 &amp; =  \sum_{i=1}^n -2Y_iX_i + 2\beta_0 \sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+&amp; =  \sum_{i=1}^n -2Y_iX_i + 2 (\bar{Y}_n - \beta_1 \bar{X}_n) \sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+&amp; = \sum_{i=1}^n -2Y_iX_i + 2\bar{Y}_n \sum_{i=1}^nX_i - 2\beta_1 \bar{X}_n\sum_{i=1}^nX_i + 2\beta_1  \sum_{i=1}^n X_i^2\\
+2\beta_1  \sum_{i=1}^n X_i^2 - 2\beta_1 \bar{X}_n\sum_{i=1}^nX_i  &amp; = \sum_{i=1}^n 2Y_iX_i  - 2\bar{Y}_n \sum_{i=1}^nX_i\\
+\beta_1 ( \sum_{i=1}^n X_i^2 - \bar{X}_n\sum_{i=1}^nX_i ) &amp; = \sum_{i=1}^n Y_iX_i  - \bar{Y}_n \sum_{i=1}^nX_i\\
+\hat \beta_1 &amp; = \dfrac{ \sum_{i=1}^n Y_iX_i  - \bar{Y}_n \sum_{i=1}^nX_i}{ \sum_{i=1}^n X_i^2 - \bar{X}_n\sum_{i=1}^nX_i}\\
+ \hat \beta_0 &amp; = \bar{Y}_n - \hat{\beta}_1 \bar{X}_n
+\end{aligned}
+\]</span></p>
+<p>Recall that we also need an estimate for <span class="math inline">\(\sigma^2\)</span>. An unbiased estimate turns out to be</p>
+<p><span class="math display">\[\hat{\sigma}^2 = \left( \frac{1}{n - 2} \right) \sum_{i=1}^n \hat{\epsilon}_i^2\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim1_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> sim1)
+
+dist2 &lt;-<span class="st"> </span>sim1 <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_predictions</span>(sim1_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(
+    <span class="dt">dodge =</span> <span class="kw">rep</span>(<span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="op">/</span><span class="st"> </span><span class="dv">20</span>, <span class="dv">10</span>),
+    <span class="dt">x1 =</span> x <span class="op">+</span><span class="st"> </span>dodge
+  )
+
+<span class="kw">ggplot</span>(dist2, <span class="kw">aes</span>(x1, y)) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;grey40&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color =</span> <span class="st">&quot;grey40&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_linerange</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> y, <span class="dt">ymax =</span> pred), <span class="dt">color =</span> <span class="st">&quot;#3366FF&quot;</span>)</code></pre></div>
+<p><img src="ols-estimator_files/figure-html/sim-lm-1.png" width="672" /></p>
+<div id="multivariate-formulation" class="section level3">
+<h3>Multivariate formulation</h3>
+<p><span class="math display">\[\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \mathbf{u}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{Y}\)</span>: <span class="math inline">\(N\times 1\)</span> vector</li>
+<li><span class="math inline">\(\mathbf{X}\)</span>: <span class="math inline">\(N \times K\)</span> matrix</li>
+<li><span class="math inline">\(\boldsymbol{\beta}\)</span>: <span class="math inline">\(K \times 1\)</span> vector</li>
+<li><span class="math inline">\(\mathbf{u}\)</span>: <span class="math inline">\(N\times 1\)</span> vector</li>
+<li><span class="math inline">\(i \in \{1,\ldots,N \}\)</span></li>
+<li><p><span class="math inline">\(k \in \{1,\ldots,K \}\)</span></p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1X_{1i} + \beta_2 X_{2i} + \ldots + \beta_K X_{Ki} + u_i\]</span></p></li>
+</ul>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbf{u} &amp;= \mathbf{Y} - \mathbf{X}\boldsymbol{\beta} \\
+\mathbf{u}&#39;\mathbf{u} &amp;= (\mathbf{Y} - \mathbf{X}\boldsymbol{\beta})&#39;(\mathbf{Y} - \mathbf{X}\boldsymbol{\beta}) \\
+&amp;= \mathbf{Y&#39;Y} - 2 \boldsymbol{\beta}&#39; \mathbf{X&#39;Y&#39;} + \boldsymbol{\beta}&#39; \mathbf{X&#39;X} \boldsymbol{\beta}
+\end{aligned}
+\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathbf{u}&#39;\mathbf{u}\)</span> equivalent to squaring each element <span class="math inline">\(u_i\)</span></li>
+<li>Last term on the last line
+<ul>
+<li><span class="math inline">\((\mathbf{X}\boldsymbol{\beta})&#39; = \boldsymbol{\beta}&#39;\mathbf{X}&#39;\)</span></li>
+<li><span class="math inline">\(\boldsymbol{\beta}&#39;\mathbf{X}&#39;\mathbf{Y}\)</span> is a scalar value (<span class="math inline">\((1 \times K) \times (K \times N) \times (N \times 1))\)</span>, so it is equal to its transpose <span class="math inline">\(\mathbf{Y}&#39;\mathbf{X}\boldsymbol{\beta}\)</span></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial\mathbf{u}&#39; \mathbf{u}}{\partial \boldsymbol{\beta}}  &amp;= -2\mathbf{X&#39;Y} + 2\boldsymbol{X&#39;X\beta} \\
+0  &amp;= -2\mathbf{X&#39;Y} + 2\mathbf{X&#39;X} \boldsymbol{\beta} \\
+0 &amp;= -\mathbf{X&#39;Y} + \mathbf{X&#39;X}\boldsymbol{\beta} \\
+\mathbf{X&#39;Y} &amp;= \mathbf{X&#39;X\beta} \\
+(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;Y} &amp;= (\mathbf{X&#39;X})^{-1}\mathbf{X&#39;X}\boldsymbol{\beta} \\
+(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;Y} &amp;= \mathbf{I}\boldsymbol{\beta} \\
+(\mathbf{X&#39;X})^{-1}\mathbf{X&#39;Y} &amp;= \boldsymbol{\beta} \\
+\end{aligned}
+\]</span></p>
+<ul>
+<li>Variability in <span class="math inline">\(\mathbf{X}\)</span> times <span class="math inline">\(\boldsymbol{\beta}\)</span> is equal to covariation in <span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{Y}\)</span>
+<ul>
+<li>Same as the bivariate setup</li>
+</ul></li>
+<li><p>Pre-multiply by the inverse to get the final equation</p></li>
+<li><span class="math inline">\(\mathbf{X&#39;Y}\)</span>: covariance of <span class="math inline">\(\mathbf{X}\)</span> and <span class="math inline">\(\mathbf{Y}\)</span></li>
+<li><span class="math inline">\(\mathbf{X&#39;X}\)</span>: variance of <span class="math inline">\(\mathbf{X}\)</span></li>
+<li><p>Premultiplying <span class="math inline">\(\mathbf{X&#39;Y}\)</span> by <span class="math inline">\((\mathbf{X&#39;X})^{-1}\)</span>: dividing <span class="math inline">\(\mathbf{X&#39;Y}\)</span> by <span class="math inline">\(\mathbf{X&#39;X}\)</span></p></li>
+</ul>
+</div>
+</div>
+<div id="maximum-likelihood" class="section level2">
+<h2>Maximum likelihood</h2>
+<p>Suppose we add the assumption that <span class="math inline">\(\epsilon_i | X_i \sim N(0, \sigma^2\)</span>, that is,</p>
+<p><span class="math display">\[Y_i | X_i \sim N(\mu_i, \sigma^2)\]</span></p>
+<p>where <span class="math inline">\(\mu_i = \beta_0 + \beta_1 X_i\)</span>. This means each <span class="math inline">\(i\)</span>th observation has a <strong>systematic</strong> mean that varies based on the value of <span class="math inline">\(X_i\)</span>. The likelihood function is</p>
+<p><span class="math display">\[
+\begin{align}
+\prod_{i=1}^n f(X_i, Y_i) &amp;= \prod_{i=1}^n f_X(X_i) f_{Y | X} (Y_i | X_i) \\
+&amp;= \prod_{i=1}^n f_X(X_i) \times \prod_{i=1}^n f_{Y | X} (Y_i | X_i) \\
+&amp;= \Lagr_1 \times \Lagr_2
+\end{align}
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\begin{align}
+\Lagr_1 &amp;= \prod_{i=1}^n f_X(X_i) \\
+\Lagr_2 = \prod_{i=1}^n f_{Y | X} (Y_i | X_i)
+\end{align}
+\]</span></p>
+<p><span class="math inline">\(\Lagr_1\)</span> does not involve the parameters <span class="math inline">\(\beta_0, \beta_1\)</span>. Instead we can focus on the second term <span class="math inline">\(\Lagr_2\)</span> which is called the <strong>conditional likelihood</strong>, given by</p>
+<p><span class="math display">\[
+\begin{align}
+\Lagr_2 &amp;\equiv \Lagr(\beta_0, \beta_1, \sigma^2) \\
+&amp;= \prod_{i=1}^n f_{Y | X}(Y_i | X_i) \\
+&amp;\propto \frac{1}{\sigma} \exp \left\{ -\frac{1}{2\sigma^2} \sum_{i=1}^n (Y_i - \mu_i)^2 \right\}
+\end{align}
+\]</span></p>
+<p>The conditional <strong>log-likelihood</strong> is</p>
+<p><span class="math display">\[\lagr(\beta_0, \beta_1, \sigma^2) = -n \log(\sigma) - \frac{1}{2\sigma^2} \left( Y_i - (\beta_0 + \beta_1 X_i) \right)^2\]</span></p>
+<p>To fine the MLE of <span class="math inline">\((\beta_0, \beta_1)\)</span>, we maximize <span class="math inline">\(\lagr(\beta_0, \beta_1, \sigma^2)\)</span>. This is equivalent to minimizing the RSS</p>
+<p><span class="math display">\[RSS = \sum_{i=1}^n \hat{\epsilon}_i^2 = \sum_{i=1}^n \left( Y_i - (\hat{\beta}_0 + \hat{\beta}_1 x) \right)\]</span></p>
+<p>Therefore, under the assumption that the residuals are distributed normally, the least squares estimator is also the maximum likelihood estimator.</p>
+</div>
+</div>
+<div id="properties-of-the-least-squares-estimator" class="section level1">
+<h1>Properties of the least squares estimator</h1>
+<p>In regression problems, we usually focus on the properties of the estimators conditional on <span class="math inline">\(X^n = (X_1, \ldots, X_n)\)</span>. Thus we state the means and variances as conditional means and variances.</p>
+<p>Let <span class="math inline">\(\hat{\beta}^T = (\hat{\beta}_0, \hat{\beta}_1)^T\)</span> denote the least squares estimators (<span class="math inline">\(^T\)</span>) simply indicates the vector is transposed to be a column vector. Then</p>
+<p><span class="math display">\[
+\begin{align}
+\E (\hat{\beta} | X^n) &amp;= \begin{pmatrix}
+  \beta_0 \\
+  \beta_1
+ \end{pmatrix} \\
+ \Var (\hat{\beta} | X^n) &amp;= \frac{\sigma^2}{n s_X^2}  \begin{pmatrix}
+  \frac{1}{n} \sum_{i=1}^n X_i^2 &amp; -\bar{X}^n \\
+  -\bar{X}^n &amp; 1
+ \end{pmatrix}
+\end{align}
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[s_X^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X}_n)^2\]</span></p>
+<p>The estimated standard errors of <span class="math inline">\(\hat{\beta}_0, \hat{\beta}_1\)</span> are obtained by taking the square roots of the corresponding diagonal terms of <span class="math inline">\(\Var (\hat{\beta} | X^n)\)</span> and inserting the estimate <span class="math inline">\(\hat{\sigma}\)</span> for <span class="math inline">\(\sigma\)</span>. Thus,</p>
+<p><span class="math display">\[
+\begin{align}
+\widehat{\se} (\hat{\beta}_0) &amp;= \frac{\hat{\sigma}}{s_X \sqrt{n}} \sqrt{\frac{ \sum_{i=1}^n X_i^2}{n}} \\
+\widehat{\se} (\hat{\beta}_1) &amp;= \frac{\hat{\sigma}}{s_X \sqrt{n}}
+\end{align}
+\]</span></p>
+<p>Under appropriate conditions, we have</p>
+<ol style="list-style-type: decimal">
+<li><p>Consistency</p>
+<p><span class="math display">\[\hat{\beta}_0 \xrightarrow{P} \beta_0 \, \text{and} \, \hat{\beta}_1 \xrightarrow{P} \beta_1\]</span></p></li>
+<li><p>Asymptotic normality</p>
+<p><span class="math display">\[\frac{\hat{\beta}_0 - \beta_0}{\widehat{\se}(\hat{\beta}_0)} \leadsto N(0,1) \, \text{and} \, \frac{\hat{\beta}_1 - \beta_1}{\widehat{\se}(\hat{\beta}_1)} \leadsto N(0,1)\]</span></p></li>
+<li><p>Approximate <span class="math inline">\(1 - \alpha\)</span> confidence intervals for <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are</p>
+<p><span class="math display">\[\hat{\beta}_0 \pm z_{\alpha / 2} \widehat{\se}(\hat{\beta}_0) \, \text{and} \, \hat{\beta}_1 \pm z_{\alpha / 2} \widehat{\se}(\hat{\beta}_1)\]</span></p></li>
+<li><p>The Wald test for testing <span class="math inline">\(H_0: \beta_1 = 0\)</span> versus <span class="math inline">\(H_1: \beta_1 \neq 0\)</span> is reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(\mid W \mid &gt; z_{\alpha / 2}\)</span> where</p>
+<p><span class="math display">\[W = \frac{\hat{\beta}_1}{\widehat{\se}(\hat{\beta}_1)}\]</span></p></li>
+</ol>
+</div>
+<div id="acknowledgements" class="section level1 toc-ignore">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Material drawn from <a href="https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9"><strong>All of Statistics</strong></a> by Larry Wasserman</li>
+</ul>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-29</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package    * version date       source                              
+##  assertthat   0.2.0   2017-04-11 CRAN (R 3.5.0)                      
+##  backports    1.1.2   2017-12-13 CRAN (R 3.5.0)                      
+##  base       * 3.5.1   2018-07-05 local                               
+##  bindr        0.1.1   2018-03-13 CRAN (R 3.5.0)                      
+##  bindrcpp     0.2.2   2018-03-29 CRAN (R 3.5.0)                      
+##  broom      * 0.5.0   2018-07-17 CRAN (R 3.5.0)                      
+##  cellranger   1.1.0   2016-07-27 CRAN (R 3.5.0)                      
+##  cli          1.0.0   2017-11-05 CRAN (R 3.5.0)                      
+##  colorspace   1.3-2   2016-12-14 CRAN (R 3.5.0)                      
+##  compiler     3.5.1   2018-07-05 local                               
+##  crayon       1.3.4   2017-09-16 CRAN (R 3.5.0)                      
+##  datasets   * 3.5.1   2018-07-05 local                               
+##  devtools     1.13.6  2018-06-27 CRAN (R 3.5.0)                      
+##  digest       0.6.18  2018-10-10 cran (@0.6.18)                      
+##  dplyr      * 0.7.8   2018-11-10 cran (@0.7.8)                       
+##  evaluate     0.11    2018-07-17 CRAN (R 3.5.0)                      
+##  forcats    * 0.3.0   2018-02-19 CRAN (R 3.5.0)                      
+##  ggplot2    * 3.1.0   2018-10-25 cran (@3.1.0)                       
+##  glue         1.3.0   2018-07-17 CRAN (R 3.5.0)                      
+##  graphics   * 3.5.1   2018-07-05 local                               
+##  grDevices  * 3.5.1   2018-07-05 local                               
+##  grid         3.5.1   2018-07-05 local                               
+##  gtable       0.2.0   2016-02-26 CRAN (R 3.5.0)                      
+##  haven        1.1.2   2018-06-27 CRAN (R 3.5.0)                      
+##  hms          0.4.2   2018-03-10 CRAN (R 3.5.0)                      
+##  htmltools    0.3.6   2017-04-28 CRAN (R 3.5.0)                      
+##  httr         1.3.1   2017-08-20 CRAN (R 3.5.0)                      
+##  jsonlite     1.5     2017-06-01 CRAN (R 3.5.0)                      
+##  knitr        1.20    2018-02-20 CRAN (R 3.5.0)                      
+##  lattice      0.20-35 2017-03-25 CRAN (R 3.5.1)                      
+##  lazyeval     0.2.1   2017-10-29 CRAN (R 3.5.0)                      
+##  lubridate    1.7.4   2018-04-11 CRAN (R 3.5.0)                      
+##  magrittr     1.5     2014-11-22 CRAN (R 3.5.0)                      
+##  memoise      1.1.0   2017-04-21 CRAN (R 3.5.0)                      
+##  methods    * 3.5.1   2018-07-05 local                               
+##  modelr     * 0.1.2   2018-05-11 CRAN (R 3.5.0)                      
+##  munsell      0.5.0   2018-06-12 CRAN (R 3.5.0)                      
+##  nlme         3.1-137 2018-04-07 CRAN (R 3.5.1)                      
+##  patchwork  * 0.0.1   2018-09-06 Github (thomasp85/patchwork@7fb35b1)
+##  pillar       1.3.0   2018-07-14 CRAN (R 3.5.0)                      
+##  pkgconfig    2.0.2   2018-08-16 CRAN (R 3.5.1)                      
+##  plyr         1.8.4   2016-06-08 CRAN (R 3.5.0)                      
+##  purrr      * 0.2.5   2018-05-29 CRAN (R 3.5.0)                      
+##  R6           2.3.0   2018-10-04 cran (@2.3.0)                       
+##  Rcpp         1.0.0   2018-11-07 cran (@1.0.0)                       
+##  readr      * 1.1.1   2017-05-16 CRAN (R 3.5.0)                      
+##  readxl       1.1.0   2018-04-20 CRAN (R 3.5.0)                      
+##  rlang        0.3.0.1 2018-10-25 CRAN (R 3.5.0)                      
+##  rmarkdown    1.10    2018-06-11 CRAN (R 3.5.0)                      
+##  rprojroot    1.3-2   2018-01-03 CRAN (R 3.5.0)                      
+##  rstudioapi   0.7     2017-09-07 CRAN (R 3.5.0)                      
+##  rvest        0.3.2   2016-06-17 CRAN (R 3.5.0)                      
+##  scales       1.0.0   2018-08-09 CRAN (R 3.5.0)                      
+##  stats      * 3.5.1   2018-07-05 local                               
+##  stringi      1.2.4   2018-07-20 CRAN (R 3.5.0)                      
+##  stringr    * 1.3.1   2018-05-10 CRAN (R 3.5.0)                      
+##  tibble     * 1.4.2   2018-01-22 CRAN (R 3.5.0)                      
+##  tidyr      * 0.8.1   2018-05-18 CRAN (R 3.5.0)                      
+##  tidyselect   0.2.5   2018-10-11 cran (@0.2.5)                       
+##  tidyverse  * 1.2.1   2017-11-14 CRAN (R 3.5.0)                      
+##  tools        3.5.1   2018-07-05 local                               
+##  utils      * 3.5.1   2018-07-05 local                               
+##  withr        2.1.2   2018-03-15 CRAN (R 3.5.0)                      
+##  xml2         1.2.0   2018-01-24 CRAN (R 3.5.0)                      
+##  yaml         2.2.0   2018-07-25 CRAN (R 3.5.0)</code></pre>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
