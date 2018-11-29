@@ -130,7 +130,7 @@ $$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{
 
     $$f(\theta | x^n) \propto \Lagr_n(\theta) f(\theta)$$
 
-## Bayesian method
+## Bayesian method {.scrollable}
 
 * Point estimate
 
