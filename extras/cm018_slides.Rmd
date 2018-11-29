@@ -1,0 +1,949 @@
+---
+title: "Ordinary least squares"
+subtitle: "Estimator and diagnostics"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(patchwork)
+library(broom)
+library(modelr)
+library(stringr)
+library(ISLR)
+library(titanic)
+library(rcfss)
+library(haven)
+library(car)
+library(lmtest)
+
+options(digits = 3)
+set.seed(1234)
+base_size <- 18
+theme_set(theme_minimal(base_size = base_size))
+```
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
+## Regression
+
+* Regression
+* Response variable $Y$
+* Covariate $X$
+* Regression function
+
+    $$r(x) = \E (Y | X = x) = \int y f(y|x) dy$$
+
+* Estimate the form
+
+    $$(Y_1, X_1), \ldots, (Y_n, X_n) \sim F_{X,Y}$$
+
+## Simple linear regression
+
+$$r(x) = \beta_0 + \beta_1 x$$
+
+* $X_i$ is one-dimensional
+* $r(x)$ assumed to be linear
+* $\Var (\epsilon_i | X = x) = \sigma^2$ does not depend on $x$
+
+## Linear regression model {.scrollable}
+
+$$Y_i = \beta_0 + \beta_1 X_i + \epsilon_i$$
+
+* $\E (\epsilon_i | X_i) = 0$
+* $\Var (\epsilon_i | X_i) = \sigma^2$
+* Unknown $\beta_0$, $\beta_1$, and $\sigma^2$
+* $\hat{\beta}_0$ and $\hat{\beta}_1$
+* Fitted line
+
+    $$\hat{r}(x) = \hat{\beta}_0 + \hat{\beta}_1 x$$
+
+* Fitted values
+
+    $$\hat{Y}_i = \hat{r}(X_i)$$
+
+* Residuals
+
+    $$\hat{\epsilon}_i = Y_i - \hat{Y}_i = Y_i - (\hat{\beta}_0 + \hat{\beta}_1 x)$$
+
+* Residual sum of squares
+
+    $$RSS = \sum_{i=1}^n \hat{\epsilon}_i^2$$
+
+## Estimation strategy
+
+```{r sim-plot}
+ggplot(sim1, aes(x, y)) + 
+  geom_point()
+```
+
+## Estimation strategy
+
+```{r sim-random-fit}
+models <- tibble(
+  a1 = runif(250, -20, 40),
+  a2 = runif(250, -5, 5)
+)
+
+ggplot(sim1, aes(x, y)) + 
+  geom_abline(aes(intercept = a1, slope = a2), data = models, alpha = 1/4) +
+  geom_point()
+```
+
+## Estimation strategy
+
+* Unbiased
+    * $E(\hat{\beta}) = \beta$
+* Efficient
+    * $\min(Var(\hat{\beta}))$
+
+## Least squares estimator
+
+* Values $\hat{\beta}_0, \hat{\beta}_1$ that
+
+    $$\min(RSS)$$
+
+$$
+\begin{aligned}
+\hat \beta_1 & = \dfrac{ \sum_{i=1}^n Y_iX_i  - \bar{Y}_n \sum_{i=1}^nX_i}{ \sum_{i=1}^n X_i^2 - \bar{X}_n\sum_{i=1}^nX_i}\\
+ \hat \beta_0 & = \bar{Y}_n - \hat{\beta}_1 \bar{X}_n \\
+ \hat{\sigma}^2 &= \left( \frac{1}{n - 2} \right) \sum_{i=1}^n \hat{\epsilon}_i^2
+\end{aligned}
+$$
+
+## Least squares estimator
+
+```{r sim-lm}
+sim1_mod <- lm(y ~ x, data = sim1)
+
+dist2 <- sim1 %>%
+  add_predictions(sim1_mod) %>%
+  mutate(
+    dodge = rep(c(-1, 0, 1) / 20, 10),
+    x1 = x + dodge
+  )
+
+ggplot(dist2, aes(x1, y)) + 
+  geom_smooth(method = "lm", color = "grey40", se = FALSE) +
+  geom_point(color = "grey40") +
+  geom_linerange(aes(ymin = y, ymax = pred), color = "#3366FF")
+```
+
+## Multivariate formulation
+
+$$\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \mathbf{u}$$
+
+* $\mathbf{Y}$: $N\times 1$ vector
+* $\mathbf{X}$: $N \times K$ matrix
+* $\boldsymbol{\beta}$: $K \times 1$ vector
+* $\mathbf{u}$: $N\times 1$ vector
+* $i \in \{1,\ldots,N \}$
+* $k \in \{1,\ldots,K \}$
+
+## Multivariate formulation
+
+$$(\mathbf{X'X})^{-1}\mathbf{X'Y} = \boldsymbol{\beta}$$
+
+## Maximum likelihood estimator
+
+* $\epsilon_i | X_i \sim N(0, \sigma^2$
+
+    $$Y_i | X_i \sim N(\mu_i, \sigma^2)$$
+
+    * $\mu_i = \beta_0 + \beta_1 X_i$
+* Likelihood function
+
+    $$
+    \begin{align}
+    \prod_{i=1}^n f(X_i, Y_i) &= \prod_{i=1}^n f_X(X_i) f_{Y | X} (Y_i | X_i) \\
+    &= \prod_{i=1}^n f_X(X_i) \times \prod_{i=1}^n f_{Y | X} (Y_i | X_i) \\
+    &= \Lagr_1 \times \Lagr_2
+    \end{align}
+    $$
+    
+    $$
+    \begin{align}
+    \Lagr_1 &= \prod_{i=1}^n f_X(X_i) \\
+    \Lagr_2 = \prod_{i=1}^n f_{Y | X} (Y_i | X_i)
+    \end{align}
+    $$
+
+* Conditional likelihood
+    
+    $$
+    \begin{align}
+    \Lagr_2 &\equiv \Lagr(\beta_0, \beta_1, \sigma^2) \\
+    &= \prod_{i=1}^n f_{Y | X}(Y_i | X_i) \\
+    &\propto \frac{1}{\sigma} \exp \left\{ -\frac{1}{2\sigma^2} \sum_{i=1}^n (Y_i - \mu_i)^2 \right\}
+    \end{align}
+    $$
+
+* Conditional log-likelihood
+
+    $$\lagr(\beta_0, \beta_1, \sigma^2) = -n \log(\sigma) - \frac{1}{2\sigma^2} \left( Y_i - (\beta_0 + \beta_1 X_i) \right)^2$$
+    
+    * $\max \left( \lagr(\beta_0, \beta_1, \sigma^2) \right)$
+    * Equivalent to $\min(RSS)$
+
+        $$RSS = \sum_{i=1}^n \hat{\epsilon}_i^2 = \sum_{i=1}^n \left( Y_i - (\hat{\beta}_0 + \hat{\beta}_1 x) \right)$$
+
+## Properties of the least squares estimator
+
+* Conditional on $X^n = (X_1, \ldots, X_n)$
+* $\hat{\beta}^T = (\hat{\beta}_0, \hat{\beta}_1)^T$
+
+    $$
+    \begin{align}
+    \E (\hat{\beta} | X^n) &= \begin{pmatrix}
+      \beta_0 \\
+      \beta_1
+     \end{pmatrix} \\
+     \Var (\hat{\beta} | X^n) &= \frac{\sigma^2}{n s_X^2}  \begin{pmatrix}
+      \frac{1}{n} \sum_{i=1}^n X_i^2 & -\bar{X}^n \\
+      -\bar{X}^n & 1
+     \end{pmatrix}
+    \end{align}
+    $$
+
+    $$s_X^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \bar{X}_n)^2$$
+
+## Properties of the least squares estimator
+
+$$
+\begin{align}
+\widehat{\se} (\hat{\beta}_0) &= \frac{\hat{\sigma}}{s_X \sqrt{n}} \sqrt{\frac{ \sum_{i=1}^n X_i^2}{n}} \\
+\widehat{\se} (\hat{\beta}_1) &= \frac{\hat{\sigma}}{s_X \sqrt{n}}
+\end{align}
+$$
+
+## Properties of the least squares estimator {.scrollable}
+
+1. Consistency
+
+    $$\hat{\beta}_0 \xrightarrow{P} \beta_0 \, \text{and} \, \hat{\beta}_1 \xrightarrow{P} \beta_1$$
+    
+1. Asymptotic normality
+
+    $$\frac{\hat{\beta}_0 - \beta_0}{\widehat{\se}(\hat{\beta}_0)} \leadsto N(0,1) \, \text{and} \, \frac{\hat{\beta}_1 - \beta_1}{\widehat{\se}(\hat{\beta}_1)} \leadsto N(0,1)$$
+
+1. Approximate $1 - \alpha$ confidence intervals for $\beta_0$ and $\beta_1$ are
+
+    $$\hat{\beta}_0 \pm z_{\alpha / 2} \widehat{\se}(\hat{\beta}_0) \, \text{and} \, \hat{\beta}_1 \pm z_{\alpha / 2} \widehat{\se}(\hat{\beta}_1)$$
+    
+1. The Wald test for testing $H_0: \beta_1 = 0$ versus $H_1: \beta_1 \neq 0$ is reject $H_0$ if $\mid W \mid > z_{\alpha / 2}$ where
+
+    $$W = \frac{\hat{\beta}_1}{\widehat{\se}(\hat{\beta}_1)}$$
+
+## Assumptions of linear regression models
+
+* Linearity
+* Constant variance
+* Normality
+* Independence
+* Fixed $X$
+* $X$ is not invariant
+
+## Linearity
+
+$$\E(\epsilon_i) \equiv E(\epsilon_i | X_i) = 0$$
+
+$$
+\begin{aligned}
+\mu_i \equiv E(Y_i) \equiv E(Y | X_i) &= E(\beta_0 + \beta_1 X_i + \epsilon_i) \\
+\mu_i &= \beta_0 + \beta_1 X_i + E(\epsilon_i) \\
+\mu_i &= \beta_0 + \beta_1 X_i + 0 \\
+\mu_i &= \beta_0 + \beta_1 X_i
+\end{aligned}
+$$
+
+## Constant variance
+
+* The variance of the errors is the same regardless of the values of $X$
+
+    $$\Var(\epsilon_i | X_i) = \sigma^2$$
+
+## Normality
+
+* The errors are assumed to be normally distributed
+
+    $$\epsilon_i \mid X_i \sim N(0, \sigma^2)$$
+
+## Independence
+
+* Observations are sampled independently from one another
+* Any pair of errors $\epsilon_i$ and $\epsilon_j$ are independent for $i \neq j$.
+
+## Fixed $X$
+
+* $X$ is assumed to be fixed or measured without error and independent of the error
+* Experimental design
+* Observational study
+
+    $$\epsilon_i \sim N(0, \sigma^2), \text{for } i = 1, \dots, n$$
+
+## $X$ is not invariant
+
+```{r invariant}
+data_frame(x = 1,
+           y = rnorm(10)) %>%
+  ggplot(aes(x, y)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "You cannot regress this",
+       subtitle = "Slope is undefined")
+```
+
+## Handling violations of assumptions
+
+* Ooopsie
+* Inference can be
+    * Tricky
+    * Biased
+    * Inefficient
+    * Error prone
+* Move to more robust inferential method
+* Diagnose assumption violations and solve them in the OLS framework
+
+## Unusual and influential data
+
+* Outliers
+    * Unusual observations
+    * Due to $Y_i$
+    * Due to $X_i$
+    * Some combination of the two
+* Potential disproportionate influence on the regression model
+
+## Terms
+
+* Outlier
+* Leverage
+* Discrepancy
+* Influence
+
+    $$\text{Influence} = \text{Leverage} \times \text{Discrepancy}$$
+
+## Unusual and influential data
+
+```{r flintstones-sim}
+flintstones <- tribble(
+  ~name,    ~x, ~y,
+  "Barney", 13, 75,
+  "Dino",   24, 300,
+  "Betty",  14, 250,
+  "Fred",   10, 220,
+  "Wilma",  8,  210
+)
+
+ggplot(flintstones, aes(x, y, label = name)) +
+  geom_smooth(data = filter(flintstones, name %in% c("Wilma", "Fred", "Betty")),
+              method = "lm", se = FALSE, fullrange = TRUE,
+              aes(linetype = "Betty + Fred + Wilma",
+                  color = "Betty + Fred + Wilma")) +
+  geom_smooth(data = filter(flintstones, name != "Dino"),
+              method = "lm", se = FALSE, fullrange = TRUE,
+              aes(linetype = "Barney + Betty + Fred + Wilma",
+                  color = "Barney + Betty + Fred + Wilma")) +
+  geom_smooth(data = filter(flintstones, name != "Barney"),
+              method = "lm", se = FALSE, fullrange = TRUE,
+              aes(linetype = "Betty + Dino + Fred + Wilma",
+                  color = "Betty + Dino + Fred + Wilma")) +
+  scale_linetype_manual(values = c(3,2,1)) +
+  scale_color_brewer(type = "qual") +
+  geom_point(size = 2) +
+  ggrepel::geom_label_repel() +
+  labs(linetype = NULL,
+       color = NULL) +
+  theme(legend.position = "bottom") + 
+  guides(color = guide_legend(nrow = 3, reverse = TRUE),
+         linetype = guide_legend(nrow = 3, reverse = TRUE))
+```
+
+## Measuring leverage
+
+* Hat statistic
+
+    $$h_i = \frac{1}{n} + \frac{(X_i - \bar{X})^2}{\sum_{j=1}^{n} (X_{j} - \bar{X})^2}$$
+
+* Measures the contribution of observation $Y_i$ to the fitted value $\hat{Y}_j$
+* Solely a function of $X$
+* Larger values indicate higher leverage
+
+## Measuring discrepancy
+
+* Use the residuals?
+* Standardized residual
+
+    $$\hat{\epsilon}_i ' \equiv \frac{\hat{\epsilon}_i}{S_{E} \sqrt{1 - h_i}}$$
+
+    * $S_E = \sqrt{\frac{\hat{\epsilon}_i^2}{(n - k - 1)}}$
+* Studentized residual
+
+    $$\hat{\epsilon}_i^{\ast} \equiv \frac{\hat{\epsilon}_i}{S_{E(-i)} \sqrt{1 - h_i}}$$
+
+## Measuring influence
+
+* $\text{DFBETA}_{ij}$
+
+    $$D_{ij} = \hat{\beta_1j} - \hat{\beta}_{1j(-i)}, \text{for } i=1, \dots, n \text{ and } j = 0, \dots, k$$
+
+* $\text{DFBETAS}_{ij}$
+
+    $$D^{\ast}_{ij} = \frac{D_{ij}}{SE_{-i}(\beta_{1j})}$$
+
+* Cook's D
+
+    $$D_i = \frac{\hat{\epsilon}^{'2}_i}{k + 1} \times \frac{h_i}{1 - h_i}$$
+
+## Visualizing leverage, discrepancy, and influence
+
+* Number of federal laws struck down by the U.S. Supreme Court in each Congress
+
+1. Age
+1. Tenure
+1. Unified
+
+## OLS model
+
+```{r dahl}
+# read in data and estimate model
+dahl <- read_dta("../data/LittleDahl.dta")
+dahl_mod <- lm(nulls ~ age + tenure + unified, data = dahl)
+tidy(dahl_mod)
+```
+
+## Outliers?
+
+```{r dahl-time}
+dahl <- dahl %>%
+  mutate(year = congress * 2 + 1787)
+
+ggplot(dahl, aes(year, nulls)) +
+  geom_line() +
+  geom_vline(xintercept = 1935, linetype = 2) +
+  labs(x = "Year",
+       y = "Congressional laws struck down")
+
+ggplot(dahl, aes(year, age)) +
+  geom_line() +
+  geom_vline(xintercept = 1935, linetype = 2) +
+  labs(x = "Year",
+       y = "Mean age of justices on the Court")
+```
+
+## Outliers?
+
+```{r bubble}
+# add key statistics
+dahl_augment <- dahl %>%
+  mutate(hat = hatvalues(dahl_mod),
+         student = rstudent(dahl_mod),
+         cooksd = cooks.distance(dahl_mod))
+
+# draw bubble plot
+ggplot(dahl_augment, aes(hat, student)) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_point(aes(size = cooksd), shape = 1) +
+  geom_text(data = dahl_augment %>%
+              arrange(-cooksd) %>%
+              slice(1:10),
+            aes(label = Congress)) +
+  scale_size_continuous(range = c(1, 20)) +
+  labs(x = "Leverage",
+       y = "Studentized residual") +
+  theme(legend.position = "none")
+```
+
+## Hat-values
+
+* Anything exceeding twice the average $\bar{h} = \frac{k + 1}{n}$ is noteworthy
+    
+    ```{r hat-sig}
+    dahl_augment %>%
+      filter(hat > 2 * mean(hat))
+    ```
+
+## Studentized residuals
+
+* Anything outside of the range $[-2,2]$ is discrepant
+    
+    ```{r resid-sig}
+    dahl_augment %>%
+      filter(abs(student) > 2)
+    ```
+
+## Influence
+
+* $D_i > \frac{4}{n - k - 1}$
+    
+    ```{r cooksd-sig}
+    dahl_augment %>%
+      filter(cooksd > 4 / (nrow(.) - (length(coef(dahl_mod)) - 1) - 1))
+    ```
+
+## How to treat unusual observations
+
+* Mistake
+* Weird observation
+* Why is it weird?
+
+## Omit unusual observations {.scrollable}
+
+```{r dahl-reestimate}
+dahl_omit <- dahl %>%
+  filter(!(congress %in% c(74, 98, 104)))
+
+dahl_omit_mod <- lm(nulls ~ age + tenure + unified, data = dahl_omit)
+
+coefplot::multiplot(dahl_mod, dahl_omit_mod,
+                    names = c("All observations",
+                              "Omit outliers")) +
+  theme(legend.position = "bottom")
+
+# rsquared values
+rsquare(dahl_mod, dahl)
+rsquare(dahl_omit_mod, dahl_omit)
+
+# rmse values
+rmse(dahl_mod, dahl)
+rmse(dahl_omit_mod, dahl_omit)
+```
+
+## Non-normally distributed errors
+
+$$\epsilon_i | X_i \sim N(0, \sigma^2)$$
+
+* Under CLT, inference based on the least-squares estimator is approximately valid under broad conditions
+* Violation does not effect validity
+* Violation effects efficiency
+
+## Detecting non-normally distributed errors {.scrollable}
+
+```{r slid}
+(slid <- read_tsv("http://socserv.socsci.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/SLID-Ontario.txt"))
+
+slid_mod <- lm(compositeHourlyWages ~ sex + yearsEducation + age, data = slid)
+tidy(slid_mod)
+
+car::qqPlot(slid_mod)
+```
+
+## Detecting non-normally distributed errors
+
+```{r slid-density}
+augment(slid_mod, slid) %>%
+  mutate(.student = rstudent(slid_mod)) %>%
+  ggplot(aes(.student)) +
+  geom_density(adjust = .5) +
+  labs(x = "Studentized residuals",
+       y = "Estimated density")
+```
+
+## Fixing non-normally distributed errors
+
+* Power transformations
+* Log transformations
+
+## Fixing non-normally distributed errors {.scrollable}
+
+```{r slid-log}
+slid <- slid %>%
+  mutate(wage_log = log(compositeHourlyWages))
+
+slid_log_mod <- lm(wage_log ~ sex + yearsEducation + age, data = slid)
+tidy(slid_log_mod)
+
+car::qqPlot(slid_log_mod)
+
+augment(slid_log_mod, slid) %>%
+  mutate(.student = rstudent(slid_log_mod)) %>%
+  ggplot(aes(.student)) +
+  geom_density(adjust = .5) +
+  labs(x = "Studentized residuals",
+       y = "Estimated density")
+```
+
+## Non-constant error variance
+
+* Homoscedasticity
+
+    $$\text{Var}(\epsilon_i) = \sigma^2$$
+    
+    $$\widehat{\se}(\hat{\beta}_{1j}) = \sqrt{\hat{\sigma}^{2} (X'X)^{-1}_{jj}}$$
+
+* Heteroscedasticity
+
+## Detecting heteroscedasticity
+
+$$Y_i = 2 + 3X_i + \epsilon$$
+
+$$\epsilon_i \sim N(0,1)$$
+
+```{r sim-homo, fig.asp = .7}
+sim_homo <- data_frame(x = runif(1000, 0, 10),
+                       y = 2 + 3 * x + rnorm(1000, 0, 1))
+sim_homo_mod <- glm(y ~ x, data = sim_homo)
+
+sim_homo %>%
+  add_predictions(sim_homo_mod) %>%
+  add_residuals(sim_homo_mod) %>%
+  ggplot(aes(pred, resid)) +
+  geom_point(alpha = .2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_quantile(method = "rqss", lambda = 5, quantiles = c(.05, .95)) +
+  labs(title = "Homoscedastic variance of error terms",
+       x = "Predicted values",
+       y = "Residuals")
+```
+
+## Detecting heteroscedasticity
+
+$$Y_i = 2 + 3X_i + \epsilon_i$$
+
+$$\epsilon_i \sim N(0,\frac{X}{2})$$
+
+```{r sim-hetero, fig.asp = .7}
+sim_hetero <- data_frame(x = runif(1000, 0, 10),
+                       y = 2 + 3 * x + rnorm(1000, 0, (x / 2)))
+sim_hetero_mod <- glm(y ~ x, data = sim_hetero)
+
+sim_hetero %>%
+  add_predictions(sim_hetero_mod) %>%
+  add_residuals(sim_hetero_mod) %>%
+  ggplot(aes(pred, resid)) +
+  geom_point(alpha = .2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_quantile(method = "rqss", lambda = 5, quantiles = c(.05, .95)) +
+  labs(title = "Heteroscedastic variance of error terms",
+       x = "Predicted values",
+       y = "Residuals")
+```
+
+## Breusch-Pagan test
+
+* Estimate an OLS model and obtain the squared residuals $\hat{\epsilon}^2$
+* Regress $\hat{\epsilon}^2$ against:
+    * All the $k$ variables you think might be causing the heteroscedasticity
+* Calculate $R^2_{\hat{\epsilon}^2}$ for the residual model and multiply it by the number of observations $n$
+    * $\chi^2_{(k-1)}$ distribution
+
+## Breusch-Pagan test
+
+```{r breusch-pagan}
+bptest(sim_homo_mod)
+bptest(sim_hetero_mod)
+```
+
+## Weighted least squares regression
+
+* $\epsilon_i \sim N(0, \sigma_i^2)$
+
+    $$
+    \begin{bmatrix}
+        \sigma_1^2       & 0 & 0 & 0 \\
+        0       & \sigma_2^2 & 0 & 0 \\
+        0       & 0 & \ddots & 0 \\
+        0       & 0 & 0 & \sigma_n^2 \\
+    \end{bmatrix}
+    $$
+
+We can define the reciprocal of each variance $\sigma_i^2$ as the weight $w_i = \frac{1}{\sigma_i^2}$, then let matrix $\mathbf{W}$ be a diagonal matrix containing these weights:
+
+$$
+\mathbf{W} =
+\begin{bmatrix}
+    \frac{1}{\sigma_1^2}       & 0 & 0 & 0 \\
+    0       & \frac{1}{\sigma_2^2} & 0 & 0 \\
+    0       & 0 & \ddots & 0 \\
+    0       & 0 & 0 & \frac{1}{\sigma_n^2} \\
+\end{bmatrix}
+$$
+
+So rather than following the traditional linear regression estimator
+
+$$\hat{\mathbf{\beta_1}} = (\mathbf{X}'\mathbf{X})^{-1} \mathbf{X}'\mathbf{y}$$
+
+we can substitute in the weighting matrix $\mathbf{W}$:
+
+$$\hat{\mathbf{\beta_1}} = (\mathbf{X}' \mathbf{W} \mathbf{X})^{-1} \mathbf{X}' \mathbf{W} \mathbf{y}$$
+
+$$\sigma_{i}^2 = \frac{\sum(w_i \hat{\epsilon}_i^2)}{n}$$
+
+This is equivalent to minimizing the weighted sum of squares, according greater weight to observations with smaller variance.
+
+How do we estimate the weights $W_i$?
+
+1. Use the residuals from a preliminary OLS regression to obtain estimates of the error variance within different subsets of observations.
+1. Model the weights as a function of observable variables in the model.
+
+For example, using the first approach on our original SLID model:
+
+```{r wls}
+# do we have heteroscedasticity?
+slid_mod <- glm(compositeHourlyWages ~ sex + yearsEducation + age, data = slid)
+
+slid %>%
+  add_predictions(slid_mod) %>%
+  add_residuals(slid_mod) %>%
+  ggplot(aes(pred, resid)) +
+  geom_point(alpha = .2) +
+  geom_hline(yintercept = 0, linetype = 2) +
+  geom_quantile(method = "rqss", lambda = 5, quantiles = c(.05, .95)) +
+  labs(title = "Heteroscedastic variance of error terms",
+       x = "Predicted values",
+       y = "Residuals")
+
+# convert residuals to weights
+weights <- 1 / residuals(slid_mod)^2
+
+slid_wls <- lm(compositeHourlyWages ~ sex + yearsEducation + age, data = slid, weights = weights)
+
+tidy(slid_mod)
+tidy(slid_wls)
+```
+
+We see some mild changes in the estimated parameters, but drastic reductions in the standard errors. The problem is that this reduction is potentially biased through the estimated covariance matrix because the sampling error in the estimates should reflect the additional source of uncertainty, which is not explicitly accounted for just basing it on the original residuals. Instead, it would be better to model the weights as a function of relevant explanatory variables.^[Omitted here for time purposes. You can find details on this estimation procedure on the internet.]
+
+### Corrections for the variance-covariance estimates
+
+Alternatively, we could instead attempt to correct for heteroscedasticity only in the standard error estimates. This produces the same estimated parameters, but adjusts the standard errors to account for the violation of the constant error variance assumption (we won't falsely believe our estimates are more precise than they really are.) One major estimation procedure are **Huber-White standard errors** (also called **robust standard errors**) which can be recovered using the `car::hccm()` function:^[This function really returns the "sandwich" estimator of the variance-covariance matrix, so we need to further take the square root of the diagonal of this matrix.]
+
+```{r huber-white}
+hw_std_err <- hccm(slid_mod, type = "hc1") %>%
+  diag %>%
+  sqrt
+
+tidy(slid_mod) %>%
+  mutate(std.error.rob = hw_std_err)
+```
+
+Notice that these new standard errors are a bit larger than the original model, accounting for the increased uncertainty of our parameter estimates due to heteroscedasticity.
+
+# Non-linearity in the data
+
+By assuming the average error $\E (\epsilon_i)$ is 0 everywhere implies that the regression line (surface) accurately reflects the relationship between $X$ and $Y$. Violating this assumption means that the model fails to capture the systematic relationship between the response and explanatory variables. Therefore here, the term **nonlinearity** could mean a couple different things:
+
+* The relationship between $X_1$ and $Y$ is nonlinear - that is, it is not constant and monotonic
+* The relationship between $X_1$ and $Y$ is conditional on $X_2$ - that is, the relationship is interactive rather than purely additive
+
+Detecting nonlinearity can be tricky in higher-dimensional regression models with multiple explanatory variables.
+
+## Partial residual plots
+
+Define the **partial residual** for the $j$th explanatory variable:
+
+$$\hat{\epsilon}_i^{(j)} = \hat{\epsilon}_i + \hat{\beta}_j X_{ij}$$
+
+In essence, calculate the least-squares residual ($\hat{\epsilon}_i$) and add to it the linear component of the partial relationship between $Y$ and $X_j$. Finally, we can plot $X_j$ versus $\hat{\epsilon}_i^{(j)}$ and assess the relationship. For instance, consider the results of the logged wage model from earlier:
+
+```{r part-resid-plot}
+# get partial resids
+slid_resid <- residuals(slid_log_mod, type = "partial") %>%
+  as_tibble
+names(slid_resid) <- str_c(names(slid_resid), "_resid")
+
+slid_diag <- augment(slid_log_mod, slid) %>%
+  bind_cols(slid_resid)
+
+ggplot(slid_diag, aes(age, age_resid)) +
+  geom_point(alpha = .1) +
+  geom_smooth(se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE, linetype = 2) +
+  labs(x = "Age",
+       y = "Partial residual for age")
+
+ggplot(slid_diag, aes(yearsEducation, yearsEducation_resid)) +
+  geom_point(alpha = .1) +
+  geom_smooth(se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE, linetype = 2) +
+  labs(x = "Education (years)",
+       y = "Partial residual for education")
+```
+
+The solid lines are GAMs, while the dashed lines are linear least-squares fits. For age, the partial relationship with logged wages is not linear - some transformation of age is necessary to correct this. For education, the relationship is more approximately linear except for the discrepancy for individual with very low education levels.
+
+We can correct this by adding a squared polynomial term for age, and square the education term. The resulting regression model is:
+
+$$\log(\text{Wage}) = \beta_0 + \beta_1(\text{Male}) + \beta_2 \text{Age} + \beta_3 \text{Age}^2 + \beta_4 \text{Education}^2$$
+
+```{r slid-part-transform}
+slid_log_trans <- lm(wage_log ~ sex + I(yearsEducation^2) + age + I(age^2), data = slid)
+tidy(slid_log_trans)
+```
+
+Because the model is now nonlinear in both age and education, we need to rethink how to draw the partial residuals plot. The easiest approach is to plot the partial residuals for both age and education against the original explanatory variable. For age, that is
+
+$$\hat{\epsilon}_i^{\text{Age}} = `r coef(slid_log_trans)[[4]]` \times \text{Age}_i `r formatC(coef(slid_log_trans)[[5]])` \times \text{Age}^2_i + \hat{\epsilon}_i$$
+
+and for education,
+
+$$\hat{\epsilon}_i^{\text{Education}} = `r coef(slid_log_trans)[[3]]` \times \text{Education}^2_i + \hat{\epsilon}_i$$
+
+On the same graph, we also plot the **partial fits** for the two explanatory variables:
+
+$$\hat{Y}_i^{(\text{Age})} = `r coef(slid_log_trans)[[4]]` \times \text{Age}_i `r formatC(coef(slid_log_trans)[[5]])` \times \text{Age}^2_i$$
+
+and for education,
+
+$$\hat{Y}_i^{(\text{Education})} = `r coef(slid_log_trans)[[3]]` \times \text{Education}^2_i$$
+
+On the graphs, the solid lines represent the partial fits and the dashed lines represent the partial residuals. If the two lines overlap significantly, then the revised model does a good job accounting for the nonlinearity.
+
+```{r slid-part-trans-plot}
+# get partial resids
+slid_trans_resid <- residuals(slid_log_trans, type = "partial") %>%
+  as_tibble
+names(slid_trans_resid) <- c("sex", "education", "age", "age_sq")
+names(slid_trans_resid) <- str_c(names(slid_trans_resid), "_resid")
+
+slid_trans_diag <- augment(slid_log_trans, slid) %>%
+  as_tibble %>%
+  mutate(age_resid = coef(slid_log_trans)[[4]] * age +
+           coef(slid_log_trans)[[5]] * age^2,
+         educ_resid = coef(slid_log_trans)[[5]] * yearsEducation^2)
+
+ggplot(slid_trans_diag, aes(age, age_resid + .resid)) +
+  geom_point(alpha = .1) +
+  geom_smooth(aes(y = age_resid), se = FALSE) +
+  geom_smooth(se = FALSE, linetype = 2) +
+  labs(x = "Age",
+       y = "Partial residual for age")
+
+ggplot(slid_trans_diag, aes(yearsEducation, educ_resid + .resid)) +
+  geom_point(alpha = .1) +
+  geom_smooth(aes(y = educ_resid), se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE, linetype = 2) +
+  labs(x = "Education (years)",
+       y = "Partial residual for education")
+```
+
+# Collinearity
+
+**Collinearity** (or **multicollinearity**) is a state of a model where explanatory variables are correlated with one another.
+
+## Perfect collinearity
+
+Perfect collinearity is incredibly rare, and typically involves using transformed versions of a variable in the model **along with the original variable**. For example, let's estimate a regression model explaining `mpg` as a function of `displ`, `wt`, and `cyl`:
+
+```{r mtcars}
+mtcars1 <- lm(mpg ~ disp + wt + cyl, data = mtcars)
+summary(mtcars1)
+```
+
+Now let's say we want to recode `displ` so it is centered around it's mean and re-estimate the model:
+
+```{r mtcars-recenter}
+mtcars <- mtcars %>%
+  mutate(disp_mean = disp - mean(disp))
+
+mtcars2 <- lm(mpg ~ disp + wt + cyl + disp_mean, data = mtcars)
+summary(mtcars2)
+```
+
+Oops. What's the problem? `disp` and `disp_mean` are perfectly correlated with each other:
+
+```{r mtcars-cor}
+ggplot(mtcars, aes(disp, disp_mean)) +
+  geom_point()
+```
+
+Because they perfectly explain each other, we cannot estimate a linear regression model that contains both variables.^[Basically we cannot invert the variance-covariance matrix of $\mathbf{X}$ because the collinear columns in $\mathbf{X}$ are perfectly linearly dependent on each other. Because of this, we cannot get parameter estimates or standard errors for the model.] Fortunately R automatically drops the second variable so it can estimate the model. Because of this, perfect multicollinearity is rarely problematic in social science.
+
+## Less-than-perfect collinearity
+
+Instead consider the credit dataset:
+
+```{r credit}
+credit <- read_csv("../data/Credit.csv") %>%
+  select(-X1)
+names(credit) <- tolower(names(credit))
+
+ggplot(credit, aes(limit, age)) +
+  geom_point()
+```
+
+Age and limit are not strongly correlated with one another, so estimating a linear regression model to predict an individual's balance as a function of age and limit is not a problem:
+
+```{r credit-lm}
+age_limit <- lm(balance ~ age + limit, data = credit)
+tidy(age_limit)
+```
+
+But what about using an individual's credit card rating instead of age? It is likely a good predictor of balance as well:
+
+```{r add-rating}
+ggplot(credit, aes(rating, balance)) +
+  geom_point() +
+  geom_smooth()
+
+limit_rate <- lm(balance ~ limit + rating, data = credit)
+tidy(limit_rate)
+
+coefplot::multiplot(age_limit, limit_rate)
+```
+
+By replacing age with rating, we developed a problem in our model. The problem is that limit and rating are strongly correlated with one another:
+
+```{r limit-rate}
+ggplot(credit, aes(limit, rating)) +
+  geom_point() +
+  geom_smooth()
+
+coefplot::multiplot(age_limit, limit_rate, predictors = "limit")
+```
+
+In the regression model, it is difficult to parse out the independent effects of limit and rating on balance, because limit and rating tend to increase and decrease in association with one another. Because the accuracy of our estimates of the parameters is reduced, the standard errors increase. This is why you can see above that the standard error for limit is much larger in the second model compared to the first model.
+
+### Detecting collinearity
+
+#### Scatterplot matrix
+
+A correlation or scatterplot matrix would help to reveal any strongly correlated variables:
+
+```{r credit-cor-mat}
+library(GGally)
+
+ggcorr(select_if(credit, is.numeric))
+ggpairs(select_if(credit, is.numeric))
+```
+
+Here it is very clear that limit and rating are strongly correlated with one another.
+
+#### Variance inflation factor (VIF)
+
+Unfortunately correlation matrices may not be sufficient to detect collinearity if the correlation exists between three or more variables (aka **multicollinearity**) *while not existing between any two pairs of these variables*. Instead, we can calculate the variance inflation factor (VIF) which is the ratio of the variance of $\hat{\beta}_{1j}$ when fitting the full model divided by the variance of $\hat{\beta}_{1j}$ if fit on its own model. We can use the `car::vif()` function in R to calculate this statistic for each coefficient. A good rule of thumb is that a VIF statistic greater than 10 indicates potential multicollinearity in the model. Applied to the `credit` regression models above:
+
+```{r vif}
+vif(age_limit)
+vif(limit_rate)
+```
+
+## Fixing multicollinearity
+
+### What not to do
+
+> Drop one or more of the collinear variables from the model
+
+This is not a good idea, even if it makes your results "significant". By omitting the variable, you are completely re-specifying your model **in direct contradiction to your theory**. If your theory suggests that a variable can be dropped, go ahead. But if not, then don't do it.
+
+### What you could do instead
+
+#### Add data
+
+The more observations, the better. It could at least decrease your standard errors and give you more precise estimates. And if you add "odd" or unusual observations, it could also reduce the degree of multicollinearity.
+
+#### Transform the covariates
+
+If the variables are indicators of the same underlying concept, you can combine them into an index variable. This could be an **additive index** where you sum up comparable covariates or binary indicators. Alternatively, you could create an index via **principal components analysis**.
+
+#### Shrinkage methods
+
+**Shrinkage methods** involve fitting a model involving all $p$ predictors and shrinking the estimated coefficients towards zero. This shrinkage reduces variance in the model. When multicollinearity is high, the variance of the estimator $\hat{\beta}_1$ is also high. By shrinking the estimated coefficient towards zero, we may increase **bias** in exchange for smaller variance in our estimates.
+
