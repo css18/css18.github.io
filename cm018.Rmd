@@ -1,0 +1,34 @@
+---
+title: "Ordinary least squares - foundation and diagnostics"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm018 - November 29, 2018
+
+## Overview
+
+* Define ordinary least squares (OLS) estimation
+* Identify why OLS estimator is the best linear unbiased estimator
+* Explain how to calculate OLS using matrix algebra, minimizing the sum of the squared error, and maximizing the likelihood
+* Identify core assumptions of OLS
+* Summarize diagnostic tests to validate whether assumptions are met
+
+## Before class
+
+## Slides and class materials
+
+* [Slides](extras/cm018_slides.html)
+* [OLS - properties of the estimator](ols-estimator.html)
+* [OLS - diagnostic tests](ols-diagnostics.html)
+
+## Additional resources
+
+* [Chapter 13 (Linear and logistic regression) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+* [Chapters 7 (Introduction to linear regression) and 8 (Multiple and logistic regression) in *OpenIntro Statistics](https://www.openintro.org/stat/textbook.php?stat_book=os)
+
+## What you need to do
+
