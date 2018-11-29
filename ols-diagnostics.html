@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Ordinary least squares</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Ordinary least squares</h1>
+<h3 class="subtitle"><em>Diagnostic tests</em></h3>
+
+</div>
+
+
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(forcats)
+<span class="kw">library</span>(broom)
+<span class="kw">library</span>(modelr)
+<span class="kw">library</span>(stringr)
+<span class="kw">library</span>(ISLR)
+<span class="kw">library</span>(titanic)
+<span class="kw">library</span>(rcfss)
+<span class="kw">library</span>(haven)
+<span class="kw">library</span>(car)
+<span class="kw">library</span>(lmtest)
+
+<span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
+<div id="assumptions-of-linear-regression-models" class="section level1">
+<h1>Assumptions of linear regression models</h1>
+<p>Basic linear regression follows the functional form:</p>
+<p><span class="math display">\[Y_i = \beta_0 + \beta_1 X_i + \epsilon_i\]</span></p>
+<p>where <span class="math inline">\(Y_i\)</span> is the value of the response variable <span class="math inline">\(Y\)</span> for the <span class="math inline">\(i\)</span>th observation, <span class="math inline">\(X_i\)</span> is the value for the explanatory variable <span class="math inline">\(X\)</span> for the <span class="math inline">\(i\)</span>th observation. The coefficients <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are <strong>population regression coefficients</strong> - our goal is to estimate these population parameters given the observed data. <span class="math inline">\(\epsilon_i\)</span> is the error representing the aggregated omitted causes of <span class="math inline">\(Y\)</span>, other explanatory variables that could be included in the model, measurement error in <span class="math inline">\(Y\)</span>, and any inherently random component of <span class="math inline">\(Y\)</span>.</p>
+<p>The key assumptions of linear regression concern the behavior of the errors.</p>
+<div id="linearity" class="section level2">
+<h2>Linearity</h2>
+<p>The expectation of the error is 0:</p>
+<p><span class="math display">\[\E(\epsilon_i) \equiv E(\epsilon_i | X_i) = 0\]</span></p>
+<p>This allows us to recover the expected value of the response variable as a linear function of the explanatory variable:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu_i \equiv E(Y_i) \equiv E(Y | X_i) &amp;= E(\beta_0 + \beta_1 X_i + \epsilon_i) \\
+\mu_i &amp;= \beta_0 + \beta_1 X_i + E(\epsilon_i) \\
+\mu_i &amp;= \beta_0 + \beta_1 X_i + 0 \\
+\mu_i &amp;= \beta_0 + \beta_1 X_i
+\end{aligned}
+\]</span></p>
+<blockquote>
+<p>Because <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> are fixed parameters in the population, we can remove them from the expectation operator.</p>
+</blockquote>
+</div>
+<div id="constant-variance" class="section level2">
+<h2>Constant variance</h2>
+<p>The variance of the errors is the same regardless of the values of <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[\Var(\epsilon_i | X_i) = \sigma^2\]</span></p>
+</div>
+<div id="normality" class="section level2">
+<h2>Normality</h2>
+<p>The errors are assumed to be normally distributed:</p>
+<p><span class="math display">\[\epsilon_i \mid X_i \sim N(0, \sigma^2)\]</span></p>
+</div>
+<div id="independence" class="section level2">
+<h2>Independence</h2>
+<p>Observations are sampled independently from one another. Any pair of errors <span class="math inline">\(\epsilon_i\)</span> and <span class="math inline">\(\epsilon_j\)</span> are independent for <span class="math inline">\(i \neq j\)</span>. Simple random sampling from a large population will ensure this assumption is met. However data collection procedures frequently (and explicitly) violate this assumption (e.g. time series data, panel survey data).</p>
+</div>
+<div id="fixed-x-or-x-measured-without-error-and-independent-of-the-error" class="section level2">
+<h2>Fixed <span class="math inline">\(X\)</span>, or <span class="math inline">\(X\)</span> measured without error and independent of the error</h2>
+<p><span class="math inline">\(X\)</span> is assumed to be fixed or measured without error and independent of the error. With a fixed <span class="math inline">\(X\)</span>, the researcher controls the precise value of <span class="math inline">\(X\)</span> for a given observation (think experimental design with treatment/control). In observational study, we assume <span class="math inline">\(X\)</span> is measured without error and that the explanatory variable and the error are independent in the population from which the sample is drawn.</p>
+<p><span class="math display">\[\epsilon_i \sim N(0, \sigma^2), \text{for } i = 1, \dots, n\]</span></p>
+</div>
+<div id="x-is-not-invariant" class="section level2">
+<h2><span class="math inline">\(X\)</span> is not invariant</h2>
+<p>If <span class="math inline">\(X\)</span> is fixed, it must vary (i.e. it’s values cannot all be the same). If <span class="math inline">\(X\)</span> is random, then in the population <span class="math inline">\(X\)</span> must vary. You cannot estimate a regression line for an invariant <span class="math inline">\(X\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="dv">1</span>,
+           <span class="dt">y =</span> <span class="kw">rnorm</span>(<span class="dv">10</span>)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;You cannot regress this&quot;</span>,
+       <span class="dt">subtitle =</span> <span class="st">&quot;Slope is undefined&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/invariant-1.png" width="672" /></p>
+</div>
+<div id="handling-violations-of-assumptions" class="section level2">
+<h2>Handling violations of assumptions</h2>
+<p>If these assumptions are violated, conducting inference from linear regression becomes tricky, biased, inefficient, and/or error prone. You could move to a more robust inferential method such as nonparametric regression, decision trees, support vector machines, etc., but these methods are more tricky to generate inference about the explanatory variables. Instead, we can attempt to diagnose assumption violations and impose solutions while still constraining ourselves to a linear regression framework.</p>
+</div>
+</div>
+<div id="unusual-and-influential-data" class="section level1">
+<h1>Unusual and influential data</h1>
+<p><strong>Outliers</strong> are observations that are somehow unusual, either in their value of <span class="math inline">\(Y_i\)</span>, of one or more <span class="math inline">\(X_i\)</span>s, or some combination thereof. Outliers have the potential to have a disproportionate influence on a regression model.</p>
+<div id="terms" class="section level2">
+<h2>Terms</h2>
+<ul>
+<li><strong>Outlier</strong> - an observation that has an unusual value on the dependent variable <span class="math inline">\(Y\)</span> given its particular combination of values on <span class="math inline">\(X\)</span></li>
+<li><strong>Leverage</strong> - degree of potential influence on the coefficient estimates that a given observation can (but not necessarily does) have</li>
+<li><strong>Discrepancy</strong> - extent to which an observation is “unusual” or “different” from the rest of the data</li>
+<li><p><strong>Influence</strong> - how much effect a particular observation’s value(s) on <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> have on the coefficient estimates. Influence is a function of leverage and discrepancy:</p>
+<p><span class="math display">\[\text{Influence} = \text{Leverage} \times \text{Discrepancy}\]</span></p></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">flintstones &lt;-<span class="st"> </span><span class="kw">tribble</span>(
+  <span class="op">~</span>name,    <span class="op">~</span>x, <span class="op">~</span>y,
+  <span class="st">&quot;Barney&quot;</span>, <span class="dv">13</span>, <span class="dv">75</span>,
+  <span class="st">&quot;Dino&quot;</span>,   <span class="dv">24</span>, <span class="dv">300</span>,
+  <span class="st">&quot;Betty&quot;</span>,  <span class="dv">14</span>, <span class="dv">250</span>,
+  <span class="st">&quot;Fred&quot;</span>,   <span class="dv">10</span>, <span class="dv">220</span>,
+  <span class="st">&quot;Wilma&quot;</span>,  <span class="dv">8</span>,  <span class="dv">210</span>
+)
+
+<span class="kw">ggplot</span>(flintstones, <span class="kw">aes</span>(x, y, <span class="dt">label =</span> name)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> <span class="kw">filter</span>(flintstones, name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Wilma&quot;</span>, <span class="st">&quot;Fred&quot;</span>, <span class="st">&quot;Betty&quot;</span>)),
+              <span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">fullrange =</span> <span class="ot">TRUE</span>,
+              <span class="kw">aes</span>(<span class="dt">linetype =</span> <span class="st">&quot;Betty + Fred + Wilma&quot;</span>,
+                  <span class="dt">color =</span> <span class="st">&quot;Betty + Fred + Wilma&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> <span class="kw">filter</span>(flintstones, name <span class="op">!=</span><span class="st"> &quot;Dino&quot;</span>),
+              <span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">fullrange =</span> <span class="ot">TRUE</span>,
+              <span class="kw">aes</span>(<span class="dt">linetype =</span> <span class="st">&quot;Barney + Betty + Fred + Wilma&quot;</span>,
+                  <span class="dt">color =</span> <span class="st">&quot;Barney + Betty + Fred + Wilma&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">data =</span> <span class="kw">filter</span>(flintstones, name <span class="op">!=</span><span class="st"> &quot;Barney&quot;</span>),
+              <span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">fullrange =</span> <span class="ot">TRUE</span>,
+              <span class="kw">aes</span>(<span class="dt">linetype =</span> <span class="st">&quot;Betty + Dino + Fred + Wilma&quot;</span>,
+                  <span class="dt">color =</span> <span class="st">&quot;Betty + Dino + Fred + Wilma&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_linetype_manual</span>(<span class="dt">values =</span> <span class="kw">c</span>(<span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">1</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">type =</span> <span class="st">&quot;qual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">size =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span>ggrepel<span class="op">::</span><span class="kw">geom_label_repel</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">linetype =</span> <span class="ot">NULL</span>,
+       <span class="dt">color =</span> <span class="ot">NULL</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>) <span class="op">+</span><span class="st"> </span>
+<span class="st">  </span><span class="kw">guides</span>(<span class="dt">color =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow =</span> <span class="dv">3</span>, <span class="dt">reverse =</span> <span class="ot">TRUE</span>),
+         <span class="dt">linetype =</span> <span class="kw">guide_legend</span>(<span class="dt">nrow =</span> <span class="dv">3</span>, <span class="dt">reverse =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/flintstones-sim-1.png" width="672" /></p>
+<ul>
+<li>Dino is an observation with high leverage but low discrepancy (close to the regression line defined by Betty, Fred, and Wilma). Therefore he has little impact on the regression line (long dashed line); his influence is low because his discrepancy is low.</li>
+<li>Barney has high leverage (though lower than Dino) and high discrepancy, so he substantially influences the regression results (short-dashed line).</li>
+</ul>
+</div>
+<div id="measuring-leverage" class="section level2">
+<h2>Measuring leverage</h2>
+<p>Leverage is typically assessed using the <strong>leverage</strong> (<strong>hat</strong>) <strong>statistic</strong>:</p>
+<p><span class="math display">\[h_i = \frac{1}{n} + \frac{(X_i - \bar{X})^2}{\sum_{j=1}^{n} (X_{j} - \bar{X})^2}\]</span></p>
+<ul>
+<li>Measures the contribution of observation <span class="math inline">\(Y_i\)</span> to the fitted value <span class="math inline">\(\hat{Y}_j\)</span> (the other values in the dataset)</li>
+<li>It is solely a function of <span class="math inline">\(X\)</span></li>
+<li>Larger values indicate higher leverage</li>
+<li><span class="math inline">\(\frac{1}{n} \leq h_i \leq 1\)</span></li>
+<li><span class="math inline">\(\bar{h} = \frac{(p + 1)}{n}\)</span></li>
+</ul>
+<p>Observations with a leverage statistic greater than the average could have high leverage.</p>
+</div>
+<div id="measuring-discrepancy" class="section level2">
+<h2>Measuring discrepancy</h2>
+<p>Residuals are a natural way to look for discrepant or outlying observations (discrepant observations typically have large residuals, or differences between actual and fitted values for <span class="math inline">\(y_i\)</span>.) The problem is that variability of the errors <span class="math inline">\(\hat{\epsilon}_i\)</span> do not have equal variances, even if the actual errors <span class="math inline">\(\epsilon_i\)</span> do have equal variances:</p>
+<p><span class="math display">\[\Var(\hat{\epsilon}_i) = \sigma^2 (1 - h_i)\]</span></p>
+<p>High leverage observations tend to have small residuals, which makes sense because they pull the regression line towards them. Alternatively we can calculate a <strong>standardized residual</strong> which parses out the variability in <span class="math inline">\(X_i\)</span> for <span class="math inline">\(\hat{\epsilon}_i\)</span>:</p>
+<p><span class="math display">\[\hat{\epsilon}_i &#39; \equiv \frac{\hat{\epsilon}_i}{S_{E} \sqrt{1 - h_i}}\]</span></p>
+<p>where <span class="math inline">\(S_E\)</span> is the standard error of the regression:</p>
+<p><span class="math display">\[S_E = \sqrt{\frac{\hat{\epsilon}_i^2}{(n - k - 1)}}\]</span></p>
+<p>The problem is that the numerator and the denominator are not independent - they both contain <span class="math inline">\(\hat{\epsilon}_i\)</span>, so <span class="math inline">\(\hat{\epsilon}_i &#39;\)</span> does not follow a <span class="math inline">\(t\)</span>-distribution. Instead, we can modify this measure by calculating <span class="math inline">\(S_{E(-i)}\)</span>; that is, refit the model deleting each <span class="math inline">\(i\)</span>th observation, estimating the standard error of the regression <span class="math inline">\(S_{E(-i)}\)</span> based on the remaining <span class="math inline">\(i-1\)</span> observations. We then calculate the <strong>studentized residual</strong>:</p>
+<p><span class="math display">\[\hat{\epsilon}_i^{\ast} \equiv \frac{\hat{\epsilon}_i}{S_{E(-i)} \sqrt{1 - h_i}}\]</span></p>
+<p>which now has an independent numerator and denominator and follows a <span class="math inline">\(t\)</span>-distribution with <span class="math inline">\(n-k-2\)</span> degrees of freedom. They are on a common scale and we should expect roughly 95% of the studentized residuals to fall within the interval <span class="math inline">\([-2,2]\)</span>.</p>
+</div>
+<div id="measuring-influence" class="section level2">
+<h2>Measuring influence</h2>
+<p>As described previously, influence is the a combination of an observation’s leverage and discrepancy. In other words, influence is the effect of a particular observation on the coefficient estimates. A simple measure of that influence is the difference between the coefficient estimate with and without the observation in question:</p>
+<p><span class="math display">\[D_{ij} = \hat{\beta_1j} - \hat{\beta}_{1j(-i)}, \text{for } i=1, \dots, n \text{ and } j = 0, \dots, k\]</span></p>
+<p>This measure is called <span class="math inline">\(\text{DFBETA}_{ij}\)</span>. Since coefficient estimates are scaled differently depending on how the variables are scaled, we can rescale <span class="math inline">\(\text{DFBETA}_{ij}\)</span> by the coefficient’s standard error to account for this fact:</p>
+<p><span class="math display">\[D^{\ast}_{ij} = \frac{D_{ij}}{SE_{-i}(\beta_{1j})}\]</span></p>
+<p>This measure is called <span class="math inline">\(\text{DFBETAS}_{ij}\)</span>.</p>
+<ul>
+<li>Positive values of <span class="math inline">\(\text{DFBETAS}_{ij}\)</span> correspond to observations which <strong>decrease</strong> the estimate of <span class="math inline">\(\hat{\beta}_{1j}\)</span></li>
+<li>Negative values of <span class="math inline">\(\text{DFBETAS}_{ij}\)</span> correspond to observations which <strong>increase</strong> the estimate of <span class="math inline">\(\hat{\beta}_{1j}\)</span></li>
+</ul>
+<p>Frequently <span class="math inline">\(\text{DFBETA}\)</span>s are used to construct summary statistics of each observation’s influence on the regression model. <strong>Cook’s D</strong> is based on the theory that one could conduct an <span class="math inline">\(F\)</span>-test on each observation for the hypothesis that <span class="math inline">\(\beta_{1j} = \hat{\beta}_{1k(-i)} \forall j \in J\)</span>. The formula for this measure is:</p>
+<p><span class="math display">\[D_i = \frac{\hat{\epsilon}^{&#39;2}_i}{k + 1} \times \frac{h_i}{1 - h_i}\]</span></p>
+<p>where <span class="math inline">\(\hat{\epsilon}^{&#39;2}_i\)</span> is the squared standardized residual, <span class="math inline">\(k\)</span> is the number of parameters in the model, and <span class="math inline">\(\frac{h_i}{1 - h_i}\)</span> is the hat value. We look for values of <span class="math inline">\(D_i\)</span> that stand out from the rest.</p>
+</div>
+<div id="visualizing-leverage-discrepancy-and-influence" class="section level2">
+<h2>Visualizing leverage, discrepancy, and influence</h2>
+<p>For example, here are the results of a basic model of the number of federal laws struck down by the U.S. Supreme Court in each Congress, based on:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Age</strong> - the mean age of the members of the Supreme Court</li>
+<li><strong>Tenure</strong> - mean tenure of the members of the Court</li>
+<li><strong>Unified</strong> - a dummy variable indicating whether or not the Congress was controlled by the same party in that period</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># read in data and estimate model</span>
+dahl &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;data/LittleDahl.dta&quot;</span>)
+dahl_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(nulls <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>tenure <span class="op">+</span><span class="st"> </span>unified, <span class="dt">data =</span> dahl)
+<span class="kw">tidy</span>(dahl_mod)</code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+##   term        estimate std.error statistic    p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1 (Intercept) -12.1       2.54       -4.76 0.00000657
+## 2 age           0.219     0.0448      4.88 0.00000401
+## 3 tenure       -0.0669    0.0643     -1.04 0.300     
+## 4 unified       0.718     0.458       1.57 0.121</code></pre>
+<p>A major concern with regression analysis of this data is that the results are being driven by outliers in the data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dahl &lt;-<span class="st"> </span>dahl <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">year =</span> congress <span class="op">*</span><span class="st"> </span><span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">1787</span>)
+
+<span class="kw">ggplot</span>(dahl, <span class="kw">aes</span>(year, nulls)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">1935</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Congressional laws struck down&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/dahl-time-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(dahl, <span class="kw">aes</span>(year, age)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_vline</span>(<span class="dt">xintercept =</span> <span class="dv">1935</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Mean age of justices on the Court&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/dahl-time-2.png" width="672" /></p>
+<p>During the 74th Congress (1935-36), the New Deal/Court-packing crisis was associated with an abnormally large number of laws struck down by the court. We should determine whether or not this observation is driving our results.</p>
+<p>By combining all three variables into a “bubble plot”, we can visualize all three variables simultaneously.</p>
+<ul>
+<li>Each observation’s leverage (<span class="math inline">\(h_i\)</span>) is plotted on the <span class="math inline">\(x\)</span> axis</li>
+<li>Each observation’s discrepancy (i.e. Studentized residual) is plotted on the <span class="math inline">\(y\)</span> axis</li>
+<li>Each symbol is drawn proportional to the observation’s Cook’s <span class="math inline">\(D_i\)</span></li>
+</ul>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># add key statistics</span>
+dahl_augment &lt;-<span class="st"> </span>dahl <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">hat =</span> <span class="kw">hatvalues</span>(dahl_mod),
+         <span class="dt">student =</span> <span class="kw">rstudent</span>(dahl_mod),
+         <span class="dt">cooksd =</span> <span class="kw">cooks.distance</span>(dahl_mod))
+
+<span class="co"># draw bubble plot</span>
+<span class="kw">ggplot</span>(dahl_augment, <span class="kw">aes</span>(hat, student)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> cooksd), <span class="dt">shape =</span> <span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="dt">data =</span> dahl_augment <span class="op">%&gt;%</span>
+<span class="st">              </span><span class="kw">arrange</span>(<span class="op">-</span>cooksd) <span class="op">%&gt;%</span>
+<span class="st">              </span><span class="kw">slice</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>),
+            <span class="kw">aes</span>(<span class="dt">label =</span> Congress)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">scale_size_continuous</span>(<span class="dt">range =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">20</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Leverage&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Studentized residual&quot;</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/bubble-1.png" width="672" /></p>
+<p>The bubble plot tells us several things:</p>
+<ul>
+<li>The size/color of the symbols is proportional to Cook’s D, which is in turn a multiplicative function of the square of the Studentized residuals (Y axis) and the leverage (X axis), so observations farther away from <span class="math inline">\(Y=0\)</span> and/or have higher values of <span class="math inline">\(X\)</span> will have larger symbols.</li>
+<li>The plot tells us whether the large influence of an observation is due to high discrepancy, high leverage, or both
+<ul>
+<li>The 104th Congress has relatively low leverage but is very discrepant</li>
+<li>The 74th and 98th Congresses demonstrate both high discrepancy and high leverage</li>
+</ul></li>
+</ul>
+</div>
+<div id="numerical-rules-of-thumb" class="section level2">
+<h2>Numerical rules of thumb</h2>
+<p>These are not hard and fast rules rigorously defended by mathematical proofs; they are simply potential rules of thumb to follow when interpreting the above statistics.</p>
+<div id="hat-values" class="section level3">
+<h3>Hat-values</h3>
+<p>Anything exceeding twice the average <span class="math inline">\(\bar{h} = \frac{k + 1}{n}\)</span> is noteworthy. In our example that would be the following observations:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dahl_augment <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(hat <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span><span class="kw">mean</span>(hat))</code></pre></div>
+<pre><code>## # A tibble: 9 x 10
+##   Congress congress nulls   age tenure unified  year    hat student  cooksd
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1 1st             1     0  49.8  0.800       1  1789 0.0974   0.330 0.00296
+## 2 3rd             3     0  52.8  4.20        0  1793 0.113    0.511 0.00841
+## 3 12th           12     0  49    6.60        1  1811 0.0802   0.669 0.00980
+## 4 17th           17     0  59   16.6         1  1821 0.0887  -0.253 0.00157
+## 5 20th           20     0  61.7 17.4         1  1827 0.0790  -0.577 0.00719
+## 6 23rd           23     0  64   18.4         1  1833 0.0819  -0.844 0.0159 
+## 7 34th           34     0  64   14.6         0  1855 0.0782  -0.561 0.00671
+## 8 36th           36     0  68.7 17.8         0  1859 0.102   -1.07  0.0326 
+## 9 99th           99     3  71.9 16.7         0  1985 0.0912   0.295 0.00221</code></pre>
+</div>
+<div id="studentized-residuals" class="section level3">
+<h3>Studentized residuals</h3>
+<p>Anything outside of the range <span class="math inline">\([-2,2]\)</span> is discrepant.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dahl_augment <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="kw">abs</span>(student) <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>)</code></pre></div>
+<pre><code>## # A tibble: 7 x 10
+##   Congress congress nulls   age tenure unified  year    hat student cooksd
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+## 1 67th           67     6  66     9          1  1921 0.0361    2.14 0.0415
+## 2 74th           74    10  71.1  14.2        1  1935 0.0514    4.42 0.223 
+## 3 90th           90     6  64.7  13.3        1  1967 0.0195    2.49 0.0292
+## 4 91st           91     6  65.1  13          1  1969 0.0189    2.42 0.0269
+## 5 92nd           92     5  62     9.20       1  1971 0.0146    2.05 0.0150
+## 6 98th           98     7  69.9  14.7        0  1983 0.0730    3.02 0.165 
+## 7 104th         104     8  60.6  12.5        1  1995 0.0208    4.48 0.0897</code></pre>
+</div>
+<div id="influence" class="section level3">
+<h3>Influence</h3>
+<p><span class="math display">\[D_i &gt; \frac{4}{n - k - 1}\]</span></p>
+<p>where <span class="math inline">\(n\)</span> is the number of observations and <span class="math inline">\(k\)</span> is the number of coefficients in the regression model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dahl_augment <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(cooksd <span class="op">&gt;</span><span class="st"> </span><span class="dv">4</span> <span class="op">/</span><span class="st"> </span>(<span class="kw">nrow</span>(.) <span class="op">-</span><span class="st"> </span>(<span class="kw">length</span>(<span class="kw">coef</span>(dahl_mod)) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>))</code></pre></div>
+<pre><code>## # A tibble: 4 x 10
+##   Congress congress nulls   age tenure unified  year    hat student cooksd
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
+## 1 67th           67     6  66      9         1  1921 0.0361    2.14 0.0415
+## 2 74th           74    10  71.1   14.2       1  1935 0.0514    4.42 0.223 
+## 3 98th           98     7  69.9   14.7       0  1983 0.0730    3.02 0.165 
+## 4 104th         104     8  60.6   12.5       1  1995 0.0208    4.48 0.0897</code></pre>
+</div>
+</div>
+<div id="how-to-treat-unusual-observations" class="section level2">
+<h2>How to treat unusual observations</h2>
+<div id="mistakes" class="section level3">
+<h3>Mistakes</h3>
+<p>If the data is just wrong (miscoded, mismeasured, misentered, etc.), then either fix the error, impute a plausible value for the observation, or omit the offending observation.</p>
+</div>
+<div id="weird-observations" class="section level3">
+<h3>Weird observations</h3>
+<p>If the data for a particular observation is just strange, then you may want to ask “why is it so strange?”</p>
+<ol style="list-style-type: decimal">
+<li>The data are strange because something unusual/weird/singular happened to that data point
+<ul>
+<li>If that “something” is important to the theory being tested, then you may want to respecify your model</li>
+<li>If the answer is no, then you can drop the offending observation from the analysis</li>
+</ul></li>
+<li>The data are strange for no apparent reason
+<ul>
+<li>Not really a good answer here. Try digging into the history of the observation to find out what is going on.</li>
+<li>Dropping the observation is a judgment call</li>
+<li>You could always rerun the model omitting the observation and including the results as a footnote (i.e. a robustness check)</li>
+</ul></li>
+</ol>
+<p>For example, let’s re-estimate the SCOTUS model and omit observations that were commonly identified as outliers:<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dahl_omit &lt;-<span class="st"> </span>dahl <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span>(congress <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="dv">74</span>, <span class="dv">98</span>, <span class="dv">104</span>)))
+
+dahl_omit_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(nulls <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>tenure <span class="op">+</span><span class="st"> </span>unified, <span class="dt">data =</span> dahl_omit)
+
+coefplot<span class="op">::</span><span class="kw">multiplot</span>(dahl_mod, dahl_omit_mod,
+                    <span class="dt">names =</span> <span class="kw">c</span>(<span class="st">&quot;All observations&quot;</span>,
+                              <span class="st">&quot;Omit outliers&quot;</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/dahl-reestimate-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># rsquared values</span>
+<span class="kw">rsquare</span>(dahl_mod, dahl)</code></pre></div>
+<pre><code>## [1] 0.232</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rsquare</span>(dahl_omit_mod, dahl_omit)</code></pre></div>
+<pre><code>## [1] 0.258</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># rmse values</span>
+<span class="kw">rmse</span>(dahl_mod, dahl)</code></pre></div>
+<pre><code>## [1] 1.68</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">rmse</span>(dahl_omit_mod, dahl_omit)</code></pre></div>
+<pre><code>## [1] 1.29</code></pre>
+<ul>
+<li>Not much has changed from the original model
+<ul>
+<li>Estimate for age is a bit smaller, as well as a smaller standard error</li>
+<li>Tenure is also smaller, but only fractionally</li>
+<li>Unified is a bit larger and with a smaller standard error</li>
+</ul></li>
+<li><span class="math inline">\(R^2\)</span> is larger for the omitted observation model, and the RMSE is smaller</li>
+<li>These three observations mostly influenced the precision of the estimates (i.e. standard errors), not the accuracy of them</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="non-normally-distributed-errors" class="section level1">
+<h1>Non-normally distributed errors</h1>
+<p>Recall that OLS assumes errors are distributed normally:</p>
+<p><span class="math display">\[\epsilon_i | X_i \sim N(0, \sigma^2)\]</span></p>
+<p>However according to the central limit theorem, inference based on the least-squares estimator is approximately valid under broad conditions.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> So while the <strong>validity</strong> of the estimates is robust to violating this assumption, the <strong>efficiency</strong> of the estimates is not robust. Recall that efficiency guarantees us the smallest possible sampling variance and therefore the smallest possible mean squared error (MSE). Heavy-tailed or skewed distributions of the errors will therefore give rise to outliers (which we just recognized as a problem). Alternatively, we interpret the least-squares fit as a conditional mean <span class="math inline">\(Y | X\)</span>. But arithmetic means are not good measures of the center of a highly skewed distribution.</p>
+<div id="detecting-non-normally-distributed-errors" class="section level2">
+<h2>Detecting non-normally distributed errors</h2>
+<p>Graphical interpretations are easiest to detect non-normality in the errors. Consider a regression model using survey data from the 1994 wave of Statistics Canada’s Survey of Labour and Income Dynamics (SLID), explaining hourly wages as an outcome of sex, education, and age:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(slid &lt;-<span class="st"> </span><span class="kw">read_tsv</span>(<span class="st">&quot;http://socserv.socsci.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/SLID-Ontario.txt&quot;</span>))</code></pre></div>
+<pre><code>## Parsed with column specification:
+## cols(
+##   age = col_integer(),
+##   sex = col_character(),
+##   compositeHourlyWages = col_double(),
+##   yearsEducation = col_integer()
+## )</code></pre>
+<pre><code>## # A tibble: 3,997 x 4
+##      age sex    compositeHourlyWages yearsEducation
+##    &lt;int&gt; &lt;chr&gt;                 &lt;dbl&gt;          &lt;int&gt;
+##  1    40 Male                  10.6              15
+##  2    19 Male                  11                13
+##  3    46 Male                  17.8              14
+##  4    50 Female                14                16
+##  5    31 Male                   8.2              15
+##  6    30 Female                17.0              13
+##  7    61 Female                 6.7              12
+##  8    46 Female                14                14
+##  9    43 Male                  19.2              18
+## 10    17 Male                   7.25             11
+## # ... with 3,987 more rows</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">slid_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(compositeHourlyWages <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>yearsEducation <span class="op">+</span><span class="st"> </span>age, <span class="dt">data =</span> slid)
+<span class="kw">tidy</span>(slid_mod)</code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+##   term           estimate std.error statistic   p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)      -8.12    0.599       -13.6 5.27e- 41
+## 2 sexMale           3.47    0.207        16.8 4.04e- 61
+## 3 yearsEducation    0.930   0.0343       27.1 5.47e-149
+## 4 age               0.261   0.00866      30.2 3.42e-180</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">car<span class="op">::</span><span class="kw">qqPlot</span>(slid_mod)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/slid-1.png" width="672" /></p>
+<pre><code>## [1]  967 3911</code></pre>
+<p>The above figure is a <strong>quantile-comparison plot</strong>, graphing for each observation its studentized residual on the <span class="math inline">\(y\)</span> axis and the corresponding quantile in the <span class="math inline">\(t\)</span>-distribution on the <span class="math inline">\(x\)</span> axis. The dashed lines indicate 95% confidence intervals calculated under the assumption that the errors are normally distributed. If any observations fall outside this range, this is an indication that the assumption has been violated. Clearly, here that is the case.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">augment</span>(slid_mod, slid) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">.student =</span> <span class="kw">rstudent</span>(slid_mod)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(.student)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">adjust =</span> .<span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Studentized residuals&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Estimated density&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/slid-density-1.png" width="672" /></p>
+<p>From the density plot of the studentized residuals, we can also see that the residuals are positively skewed.</p>
+</div>
+<div id="fixing-non-normally-distributed-errors" class="section level2">
+<h2>Fixing non-normally distributed errors</h2>
+<p><a href="persp007_nonlinear.html#monotonic_transformations">Power and log transformations</a> are typically used to correct this problem. Here, trial and error reveals that by log transforming the wage variable, the distribution of the residuals becomes much more symmetric:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">slid &lt;-<span class="st"> </span>slid <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">wage_log =</span> <span class="kw">log</span>(compositeHourlyWages))
+
+slid_log_mod &lt;-<span class="st"> </span><span class="kw">lm</span>(wage_log <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>yearsEducation <span class="op">+</span><span class="st"> </span>age, <span class="dt">data =</span> slid)
+<span class="kw">tidy</span>(slid_log_mod)</code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+##   term           estimate std.error statistic   p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)      1.10    0.0380        28.9 1.97e-167
+## 2 sexMale          0.224   0.0131        17.1 2.16e- 63
+## 3 yearsEducation   0.0559  0.00217       25.7 2.95e-135
+## 4 age              0.0182  0.000549      33.1 4.50e-212</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">car<span class="op">::</span><span class="kw">qqPlot</span>(slid_log_mod)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/slid-log-1.png" width="672" /></p>
+<pre><code>## [1] 2760 3267</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">augment</span>(slid_log_mod, slid) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">.student =</span> <span class="kw">rstudent</span>(slid_log_mod)) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(.student)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_density</span>(<span class="dt">adjust =</span> .<span class="dv">5</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Studentized residuals&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Estimated density&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/slid-log-2.png" width="672" /></p>
+</div>
+</div>
+<div id="non-constant-error-variance" class="section level1">
+<h1>Non-constant error variance</h1>
+<p>Recall that linear regression assumes the error terms <span class="math inline">\(\epsilon_i\)</span> have a constant variance, <span class="math inline">\(\text{Var}(\epsilon_i) = \sigma^2\)</span>. This is called <strong>homoscedasticity</strong>. Remember that the standard errors directly rely upon the estimate of this value:</p>
+<p><span class="math display">\[\widehat{\se}(\hat{\beta}_{1j}) = \sqrt{\hat{\sigma}^{2} (X&#39;X)^{-1}_{jj}}\]</span></p>
+<p>If the variances of the error terms are non-constant (aka <strong>heteroscedastic</strong>), our estimates of the parameters <span class="math inline">\(\hat{\beta}_1\)</span> will still be unbiased because they do not depend on <span class="math inline">\(\sigma^2\)</span>. However our estimates of the standard errors will be inaccurate - they will either be inflated or deflated, leading to incorrect inferences about the statistical significance of predictor variables.</p>
+<div id="detecting-heteroscedasticity" class="section level2">
+<h2>Detecting heteroscedasticity</h2>
+<div id="graphically" class="section level3">
+<h3>Graphically</h3>
+<p>We can uncover homo- or heteroscedasticity through the use of the residual plot. Below is data generated from the process:</p>
+<p><span class="math display">\[Y_i = 2 + 3X_i + \epsilon\]</span></p>
+<p>where <span class="math inline">\(\epsilon_i\)</span> is random error distributed normally <span class="math inline">\(N(0,1)\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_homo &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">10</span>),
+                       <span class="dt">y =</span> <span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">1</span>))
+sim_homo_mod &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> sim_homo)
+
+sim_homo <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_predictions</span>(sim_homo_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_residuals</span>(sim_homo_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pred, resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_quantile</span>(<span class="dt">method =</span> <span class="st">&quot;rqss&quot;</span>, <span class="dt">lambda =</span> <span class="dv">5</span>, <span class="dt">quantiles =</span> <span class="kw">c</span>(.<span class="dv">05</span>, .<span class="dv">95</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Homoscedastic variance of error terms&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Predicted values&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>)</code></pre></div>
+<pre><code>## Loading required package: SparseM</code></pre>
+<pre><code>## 
+## Attaching package: &#39;SparseM&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     backsolve</code></pre>
+<pre><code>## Smoothing formula not specified. Using: y ~ qss(x, lambda = 5)</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/sim-homo-1.png" width="672" /></p>
+<p>Compare this to a linear model fit to the data generating process:</p>
+<p><span class="math display">\[Y_i = 2 + 3X_i + \epsilon_i\]</span></p>
+<p>where <span class="math inline">\(\epsilon_i\)</span> is random error distributed normally <span class="math inline">\(N(0,\frac{X}{2})\)</span>. Note that the variance for the error term of each observation <span class="math inline">\(\epsilon_i\)</span> is not constant, and is itself a function of <span class="math inline">\(X\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sim_hetero &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">runif</span>(<span class="dv">1000</span>, <span class="dv">0</span>, <span class="dv">10</span>),
+                       <span class="dt">y =</span> <span class="dv">2</span> <span class="op">+</span><span class="st"> </span><span class="dv">3</span> <span class="op">*</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dv">0</span>, (x <span class="op">/</span><span class="st"> </span><span class="dv">2</span>)))
+sim_hetero_mod &lt;-<span class="st"> </span><span class="kw">glm</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">data =</span> sim_hetero)
+
+sim_hetero <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_predictions</span>(sim_hetero_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_residuals</span>(sim_hetero_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pred, resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_quantile</span>(<span class="dt">method =</span> <span class="st">&quot;rqss&quot;</span>, <span class="dt">lambda =</span> <span class="dv">5</span>, <span class="dt">quantiles =</span> <span class="kw">c</span>(.<span class="dv">05</span>, .<span class="dv">95</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Heteroscedastic variance of error terms&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Predicted values&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>)</code></pre></div>
+<pre><code>## Smoothing formula not specified. Using: y ~ qss(x, lambda = 5)</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/sim-hetero-1.png" width="672" /></p>
+<p>We see a distinct funnel-shape to the relationship between the predicted values and the residuals. This is because by assuming the variance is constant, we substantially over or underestimate the actual response <span class="math inline">\(Y_i\)</span> as <span class="math inline">\(X_i\)</span> increases.</p>
+</div>
+<div id="statistical-tests" class="section level3">
+<h3>Statistical tests</h3>
+<p>There are formal statistical tests to check for heteroscedasticity. One such test is the <strong>Breusch-Pagan test</strong>. The procedure is:</p>
+<ul>
+<li>Estimate an OLS model and obtain the squared residuals <span class="math inline">\(\hat{\epsilon}^2\)</span></li>
+<li>Regress <span class="math inline">\(\hat{\epsilon}^2\)</span> against:
+<ul>
+<li>All the <span class="math inline">\(k\)</span> variables you think might be causing the heteroscedasticity</li>
+<li>By default, include the same explanatory variables as the original model</li>
+</ul></li>
+<li>Calculate the coefficient of determination (<span class="math inline">\(R^2_{\hat{\epsilon}^2}\)</span>) for the residual model and multiply it by the number of observations <span class="math inline">\(n\)</span>
+<ul>
+<li>The resulting statistic follows a <span class="math inline">\(\chi^2_{(k-1)}\)</span> distribution</li>
+<li>Rejecting the null hypothesis indicates heteroscedasticity is present</li>
+</ul></li>
+</ul>
+<p>The <code>lmtest</code> library contains a function for the Breusch-Pagan test:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">bptest</span>(sim_homo_mod)</code></pre></div>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  sim_homo_mod
+## BP = 2, df = 1, p-value = 0.1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">bptest</span>(sim_hetero_mod)</code></pre></div>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  sim_hetero_mod
+## BP = 100, df = 1, p-value &lt;2e-16</code></pre>
+</div>
+</div>
+<div id="accounting-for-heteroscedasticity" class="section level2">
+<h2>Accounting for heteroscedasticity</h2>
+<div id="weighted-least-squares-regression" class="section level3">
+<h3>Weighted least squares regression</h3>
+<p>Instead of assuming the errors have a constant variance <span class="math inline">\(\text{Var}(\epsilon_i) = \sigma^2\)</span>, instead we can assume that the errors are independent and normally distributed with mean zero and different variances <span class="math inline">\(\epsilon_i \sim N(0, \sigma_i^2)\)</span>:</p>
+<p><span class="math display">\[
+\begin{bmatrix}
+    \sigma_1^2       &amp; 0 &amp; 0 &amp; 0 \\
+    0       &amp; \sigma_2^2 &amp; 0 &amp; 0 \\
+    0       &amp; 0 &amp; \ddots &amp; 0 \\
+    0       &amp; 0 &amp; 0 &amp; \sigma_n^2 \\
+\end{bmatrix}
+\]</span></p>
+<p>We can define the reciprocal of each variance <span class="math inline">\(\sigma_i^2\)</span> as the weight <span class="math inline">\(w_i = \frac{1}{\sigma_i^2}\)</span>, then let matrix <span class="math inline">\(\mathbf{W}\)</span> be a diagonal matrix containing these weights:</p>
+<p><span class="math display">\[
+\mathbf{W} =
+\begin{bmatrix}
+    \frac{1}{\sigma_1^2}       &amp; 0 &amp; 0 &amp; 0 \\
+    0       &amp; \frac{1}{\sigma_2^2} &amp; 0 &amp; 0 \\
+    0       &amp; 0 &amp; \ddots &amp; 0 \\
+    0       &amp; 0 &amp; 0 &amp; \frac{1}{\sigma_n^2} \\
+\end{bmatrix}
+\]</span></p>
+<p>So rather than following the traditional linear regression estimator</p>
+<p><span class="math display">\[\hat{\mathbf{\beta_1}} = (\mathbf{X}&#39;\mathbf{X})^{-1} \mathbf{X}&#39;\mathbf{y}\]</span></p>
+<p>we can substitute in the weighting matrix <span class="math inline">\(\mathbf{W}\)</span>:</p>
+<p><span class="math display">\[\hat{\mathbf{\beta_1}} = (\mathbf{X}&#39; \mathbf{W} \mathbf{X})^{-1} \mathbf{X}&#39; \mathbf{W} \mathbf{y}\]</span></p>
+<p><span class="math display">\[\sigma_{i}^2 = \frac{\sum(w_i \hat{\epsilon}_i^2)}{n}\]</span></p>
+<p>This is equivalent to minimizing the weighted sum of squares, according greater weight to observations with smaller variance.</p>
+<p>How do we estimate the weights <span class="math inline">\(W_i\)</span>?</p>
+<ol style="list-style-type: decimal">
+<li>Use the residuals from a preliminary OLS regression to obtain estimates of the error variance within different subsets of observations.</li>
+<li>Model the weights as a function of observable variables in the model.</li>
+</ol>
+<p>For example, using the first approach on our original SLID model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># do we have heteroscedasticity?</span>
+slid_mod &lt;-<span class="st"> </span><span class="kw">glm</span>(compositeHourlyWages <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>yearsEducation <span class="op">+</span><span class="st"> </span>age, <span class="dt">data =</span> slid)
+
+slid <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_predictions</span>(slid_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">add_residuals</span>(slid_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(pred, resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_quantile</span>(<span class="dt">method =</span> <span class="st">&quot;rqss&quot;</span>, <span class="dt">lambda =</span> <span class="dv">5</span>, <span class="dt">quantiles =</span> <span class="kw">c</span>(.<span class="dv">05</span>, .<span class="dv">95</span>)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Heteroscedastic variance of error terms&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;Predicted values&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Residuals&quot;</span>)</code></pre></div>
+<pre><code>## Smoothing formula not specified. Using: y ~ qss(x, lambda = 5)</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/wls-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># convert residuals to weights</span>
+weights &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw">residuals</span>(slid_mod)<span class="op">^</span><span class="dv">2</span>
+
+slid_wls &lt;-<span class="st"> </span><span class="kw">lm</span>(compositeHourlyWages <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span>yearsEducation <span class="op">+</span><span class="st"> </span>age, <span class="dt">data =</span> slid, <span class="dt">weights =</span> weights)
+
+<span class="kw">tidy</span>(slid_mod)</code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+##   term           estimate std.error statistic   p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)      -8.12    0.599       -13.6 5.27e- 41
+## 2 sexMale           3.47    0.207        16.8 4.04e- 61
+## 3 yearsEducation    0.930   0.0343       27.1 5.47e-149
+## 4 age               0.261   0.00866      30.2 3.42e-180</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">tidy</span>(slid_wls)</code></pre></div>
+<pre><code>## # A tibble: 4 x 5
+##   term           estimate std.error statistic p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)      -8.10   0.0160       -506.       0
+## 2 sexMale           3.47   0.00977       356.       0
+## 3 yearsEducation    0.927  0.00142       653.       0
+## 4 age               0.261  0.000170     1534.       0</code></pre>
+<p>We see some mild changes in the estimated parameters, but drastic reductions in the standard errors. The problem is that this reduction is potentially biased through the estimated covariance matrix because the sampling error in the estimates should reflect the additional source of uncertainty, which is not explicitly accounted for just basing it on the original residuals. Instead, it would be better to model the weights as a function of relevant explanatory variables.<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a></p>
+</div>
+<div id="corrections-for-the-variance-covariance-estimates" class="section level3">
+<h3>Corrections for the variance-covariance estimates</h3>
+<p>Alternatively, we could instead attempt to correct for heteroscedasticity only in the standard error estimates. This produces the same estimated parameters, but adjusts the standard errors to account for the violation of the constant error variance assumption (we won’t falsely believe our estimates are more precise than they really are.) One major estimation procedure are <strong>Huber-White standard errors</strong> (also called <strong>robust standard errors</strong>) which can be recovered using the <code>car::hccm()</code> function:<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hw_std_err &lt;-<span class="st"> </span><span class="kw">hccm</span>(slid_mod, <span class="dt">type =</span> <span class="st">&quot;hc1&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>diag <span class="op">%&gt;%</span>
+<span class="st">  </span>sqrt
+
+<span class="kw">tidy</span>(slid_mod) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">std.error.rob =</span> hw_std_err)</code></pre></div>
+<pre><code>## # A tibble: 4 x 6
+##   term           estimate std.error statistic   p.value std.error.rob
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;
+## 1 (Intercept)      -8.12    0.599       -13.6 5.27e- 41       0.636  
+## 2 sexMale           3.47    0.207        16.8 4.04e- 61       0.207  
+## 3 yearsEducation    0.930   0.0343       27.1 5.47e-149       0.0385 
+## 4 age               0.261   0.00866      30.2 3.42e-180       0.00881</code></pre>
+<p>Notice that these new standard errors are a bit larger than the original model, accounting for the increased uncertainty of our parameter estimates due to heteroscedasticity.</p>
+</div>
+</div>
+</div>
+<div id="non-linearity-in-the-data" class="section level1">
+<h1>Non-linearity in the data</h1>
+<p>By assuming the average error <span class="math inline">\(\E (\epsilon_i)\)</span> is 0 everywhere implies that the regression line (surface) accurately reflects the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. Violating this assumption means that the model fails to capture the systematic relationship between the response and explanatory variables. Therefore here, the term <strong>nonlinearity</strong> could mean a couple different things:</p>
+<ul>
+<li>The relationship between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(Y\)</span> is nonlinear - that is, it is not constant and monotonic</li>
+<li>The relationship between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(Y\)</span> is conditional on <span class="math inline">\(X_2\)</span> - that is, the relationship is interactive rather than purely additive</li>
+</ul>
+<p>Detecting nonlinearity can be tricky in higher-dimensional regression models with multiple explanatory variables.</p>
+<div id="partial-residual-plots" class="section level2">
+<h2>Partial residual plots</h2>
+<p>Define the <strong>partial residual</strong> for the <span class="math inline">\(j\)</span>th explanatory variable:</p>
+<p><span class="math display">\[\hat{\epsilon}_i^{(j)} = \hat{\epsilon}_i + \hat{\beta}_j X_{ij}\]</span></p>
+<p>In essence, calculate the least-squares residual (<span class="math inline">\(\hat{\epsilon}_i\)</span>) and add to it the linear component of the partial relationship between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X_j\)</span>. Finally, we can plot <span class="math inline">\(X_j\)</span> versus <span class="math inline">\(\hat{\epsilon}_i^{(j)}\)</span> and assess the relationship. For instance, consider the results of the logged wage model from earlier:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get partial resids</span>
+slid_resid &lt;-<span class="st"> </span><span class="kw">residuals</span>(slid_log_mod, <span class="dt">type =</span> <span class="st">&quot;partial&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble
+<span class="kw">names</span>(slid_resid) &lt;-<span class="st"> </span><span class="kw">str_c</span>(<span class="kw">names</span>(slid_resid), <span class="st">&quot;_resid&quot;</span>)
+
+slid_diag &lt;-<span class="st"> </span><span class="kw">augment</span>(slid_log_mod, slid) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">bind_cols</span>(slid_resid)
+
+<span class="kw">ggplot</span>(slid_diag, <span class="kw">aes</span>(age, age_resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Age&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Partial residual for age&quot;</span>)</code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/part-resid-plot-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(slid_diag, <span class="kw">aes</span>(yearsEducation, yearsEducation_resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Education (years)&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Partial residual for education&quot;</span>)</code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/part-resid-plot-2.png" width="672" /></p>
+<p>The solid lines are GAMs, while the dashed lines are linear least-squares fits. For age, the partial relationship with logged wages is not linear - some transformation of age is necessary to correct this. For education, the relationship is more approximately linear except for the discrepancy for individual with very low education levels.</p>
+<p>We can correct this by adding a squared polynomial term for age, and square the education term. The resulting regression model is:</p>
+<p><span class="math display">\[\log(\text{Wage}) = \beta_0 + \beta_1(\text{Male}) + \beta_2 \text{Age} + \beta_3 \text{Age}^2 + \beta_4 \text{Education}^2\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">slid_log_trans &lt;-<span class="st"> </span><span class="kw">lm</span>(wage_log <span class="op">~</span><span class="st"> </span>sex <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(yearsEducation<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span><span class="kw">I</span>(age<span class="op">^</span><span class="dv">2</span>), <span class="dt">data =</span> slid)
+<span class="kw">tidy</span>(slid_log_trans)</code></pre></div>
+<pre><code>## # A tibble: 5 x 5
+##   term                 estimate std.error statistic   p.value
+##   &lt;chr&gt;                   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept)          0.397    0.0578         6.87 7.62e- 12
+## 2 sexMale              0.221    0.0124        17.8  3.21e- 68
+## 3 I(yearsEducation^2)  0.00181  0.0000786     23.0  1.19e-109
+## 4 age                  0.0830   0.00319       26.0  2.93e-138
+## 5 I(age^2)            -0.000852 0.0000410    -20.8  3.85e- 91</code></pre>
+<p>Because the model is now nonlinear in both age and education, we need to rethink how to draw the partial residuals plot. The easiest approach is to plot the partial residuals for both age and education against the original explanatory variable. For age, that is</p>
+<p><span class="math display">\[\hat{\epsilon}_i^{\text{Age}} = 0.083 \times \text{Age}_i -0.0008524 \times \text{Age}^2_i + \hat{\epsilon}_i\]</span></p>
+<p>and for education,</p>
+<p><span class="math display">\[\hat{\epsilon}_i^{\text{Education}} = 0.002 \times \text{Education}^2_i + \hat{\epsilon}_i\]</span></p>
+<p>On the same graph, we also plot the <strong>partial fits</strong> for the two explanatory variables:</p>
+<p><span class="math display">\[\hat{Y}_i^{(\text{Age})} = 0.083 \times \text{Age}_i -0.0008524 \times \text{Age}^2_i\]</span></p>
+<p>and for education,</p>
+<p><span class="math display">\[\hat{Y}_i^{(\text{Education})} = 0.002 \times \text{Education}^2_i\]</span></p>
+<p>On the graphs, the solid lines represent the partial fits and the dashed lines represent the partial residuals. If the two lines overlap significantly, then the revised model does a good job accounting for the nonlinearity.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get partial resids</span>
+slid_trans_resid &lt;-<span class="st"> </span><span class="kw">residuals</span>(slid_log_trans, <span class="dt">type =</span> <span class="st">&quot;partial&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble
+<span class="kw">names</span>(slid_trans_resid) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;sex&quot;</span>, <span class="st">&quot;education&quot;</span>, <span class="st">&quot;age&quot;</span>, <span class="st">&quot;age_sq&quot;</span>)
+<span class="kw">names</span>(slid_trans_resid) &lt;-<span class="st"> </span><span class="kw">str_c</span>(<span class="kw">names</span>(slid_trans_resid), <span class="st">&quot;_resid&quot;</span>)
+
+slid_trans_diag &lt;-<span class="st"> </span><span class="kw">augment</span>(slid_log_trans, slid) <span class="op">%&gt;%</span>
+<span class="st">  </span>as_tibble <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">age_resid =</span> <span class="kw">coef</span>(slid_log_trans)[[<span class="dv">4</span>]] <span class="op">*</span><span class="st"> </span>age <span class="op">+</span>
+<span class="st">           </span><span class="kw">coef</span>(slid_log_trans)[[<span class="dv">5</span>]] <span class="op">*</span><span class="st"> </span>age<span class="op">^</span><span class="dv">2</span>,
+         <span class="dt">educ_resid =</span> <span class="kw">coef</span>(slid_log_trans)[[<span class="dv">5</span>]] <span class="op">*</span><span class="st"> </span>yearsEducation<span class="op">^</span><span class="dv">2</span>)
+
+<span class="kw">ggplot</span>(slid_trans_diag, <span class="kw">aes</span>(age, age_resid <span class="op">+</span><span class="st"> </span>.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="kw">aes</span>(<span class="dt">y =</span> age_resid), <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Age&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Partial residual for age&quot;</span>)</code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;
+## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/slid-part-trans-plot-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(slid_trans_diag, <span class="kw">aes</span>(yearsEducation, educ_resid <span class="op">+</span><span class="st"> </span>.resid)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha =</span> .<span class="dv">1</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="kw">aes</span>(<span class="dt">y =</span> educ_resid), <span class="dt">se =</span> <span class="ot">FALSE</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="dt">se =</span> <span class="ot">FALSE</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Education (years)&quot;</span>,
+       <span class="dt">y =</span> <span class="st">&quot;Partial residual for education&quot;</span>)</code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/slid-part-trans-plot-2.png" width="672" /></p>
+</div>
+</div>
+<div id="collinearity" class="section level1">
+<h1>Collinearity</h1>
+<p><strong>Collinearity</strong> (or <strong>multicollinearity</strong>) is a state of a model where explanatory variables are correlated with one another.</p>
+<div id="perfect-collinearity" class="section level2">
+<h2>Perfect collinearity</h2>
+<p>Perfect collinearity is incredibly rare, and typically involves using transformed versions of a variable in the model <strong>along with the original variable</strong>. For example, let’s estimate a regression model explaining <code>mpg</code> as a function of <code>displ</code>, <code>wt</code>, and <code>cyl</code>:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars1 &lt;-<span class="st"> </span><span class="kw">lm</span>(mpg <span class="op">~</span><span class="st"> </span>disp <span class="op">+</span><span class="st"> </span>wt <span class="op">+</span><span class="st"> </span>cyl, <span class="dt">data =</span> mtcars)
+<span class="kw">summary</span>(mtcars1)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ disp + wt + cyl, data = mtcars)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -4.403 -1.403 -0.495  1.339  6.072 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 41.10768    2.84243   14.46  1.6e-14 ***
+## disp         0.00747    0.01184    0.63   0.5332    
+## wt          -3.63568    1.04014   -3.50   0.0016 ** 
+## cyl         -1.78494    0.60711   -2.94   0.0065 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.59 on 28 degrees of freedom
+## Multiple R-squared:  0.833,  Adjusted R-squared:  0.815 
+## F-statistic: 46.4 on 3 and 28 DF,  p-value: 5.4e-11</code></pre>
+<p>Now let’s say we want to recode <code>displ</code> so it is centered around it’s mean and re-estimate the model:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mtcars &lt;-<span class="st"> </span>mtcars <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate</span>(<span class="dt">disp_mean =</span> disp <span class="op">-</span><span class="st"> </span><span class="kw">mean</span>(disp))
+
+mtcars2 &lt;-<span class="st"> </span><span class="kw">lm</span>(mpg <span class="op">~</span><span class="st"> </span>disp <span class="op">+</span><span class="st"> </span>wt <span class="op">+</span><span class="st"> </span>cyl <span class="op">+</span><span class="st"> </span>disp_mean, <span class="dt">data =</span> mtcars)
+<span class="kw">summary</span>(mtcars2)</code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = mpg ~ disp + wt + cyl + disp_mean, data = mtcars)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -4.403 -1.403 -0.495  1.339  6.072 
+## 
+## Coefficients: (1 not defined because of singularities)
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 41.10768    2.84243   14.46  1.6e-14 ***
+## disp         0.00747    0.01184    0.63   0.5332    
+## wt          -3.63568    1.04014   -3.50   0.0016 ** 
+## cyl         -1.78494    0.60711   -2.94   0.0065 ** 
+## disp_mean         NA         NA      NA       NA    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.59 on 28 degrees of freedom
+## Multiple R-squared:  0.833,  Adjusted R-squared:  0.815 
+## F-statistic: 46.4 on 3 and 28 DF,  p-value: 5.4e-11</code></pre>
+<p>Oops. What’s the problem? <code>disp</code> and <code>disp_mean</code> are perfectly correlated with each other:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(mtcars, <span class="kw">aes</span>(disp, disp_mean)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/mtcars-cor-1.png" width="672" /></p>
+<p>Because they perfectly explain each other, we cannot estimate a linear regression model that contains both variables.<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> Fortunately R automatically drops the second variable so it can estimate the model. Because of this, perfect multicollinearity is rarely problematic in social science.</p>
+</div>
+<div id="less-than-perfect-collinearity" class="section level2">
+<h2>Less-than-perfect collinearity</h2>
+<p>Instead consider the credit dataset:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">credit &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/Credit.csv&quot;</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>X1)</code></pre></div>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   X1 = col_integer(),
+##   Income = col_double(),
+##   Limit = col_integer(),
+##   Rating = col_integer(),
+##   Cards = col_integer(),
+##   Age = col_integer(),
+##   Education = col_integer(),
+##   Gender = col_character(),
+##   Student = col_character(),
+##   Married = col_character(),
+##   Ethnicity = col_character(),
+##   Balance = col_integer()
+## )</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(credit) &lt;-<span class="st"> </span><span class="kw">tolower</span>(<span class="kw">names</span>(credit))
+
+<span class="kw">ggplot</span>(credit, <span class="kw">aes</span>(limit, age)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>()</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/credit-1.png" width="672" /></p>
+<p>Age and limit are not strongly correlated with one another, so estimating a linear regression model to predict an individual’s balance as a function of age and limit is not a problem:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">age_limit &lt;-<span class="st"> </span><span class="kw">lm</span>(balance <span class="op">~</span><span class="st"> </span>age <span class="op">+</span><span class="st"> </span>limit, <span class="dt">data =</span> credit)
+<span class="kw">tidy</span>(age_limit)</code></pre></div>
+<pre><code>## # A tibble: 3 x 5
+##   term        estimate std.error statistic   p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 (Intercept) -173.     43.8         -3.96 9.01e-  5
+## 2 age           -2.29    0.672       -3.41 7.23e-  4
+## 3 limit          0.173   0.00503     34.5  1.63e-121</code></pre>
+<p>But what about using an individual’s credit card rating instead of age? It is likely a good predictor of balance as well:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(credit, <span class="kw">aes</span>(rating, balance)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>()</code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/add-rating-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">limit_rate &lt;-<span class="st"> </span><span class="kw">lm</span>(balance <span class="op">~</span><span class="st"> </span>limit <span class="op">+</span><span class="st"> </span>rating, <span class="dt">data =</span> credit)
+<span class="kw">tidy</span>(limit_rate)</code></pre></div>
+<pre><code>## # A tibble: 3 x 5
+##   term         estimate std.error statistic  p.value
+##   &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept) -378.       45.3       -8.34  1.21e-15
+## 2 limit          0.0245    0.0638     0.384 7.01e- 1
+## 3 rating         2.20      0.952      2.31  2.13e- 2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coefplot<span class="op">::</span><span class="kw">multiplot</span>(age_limit, limit_rate)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/add-rating-2.png" width="672" /></p>
+<p>By replacing age with rating, we developed a problem in our model. The problem is that limit and rating are strongly correlated with one another:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(credit, <span class="kw">aes</span>(limit, rating)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
+<span class="st">  </span><span class="kw">geom_smooth</span>()</code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="ols-diagnostics_files/figure-html/limit-rate-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coefplot<span class="op">::</span><span class="kw">multiplot</span>(age_limit, limit_rate, <span class="dt">predictors =</span> <span class="st">&quot;limit&quot;</span>)</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/limit-rate-2.png" width="672" /></p>
+<p>In the regression model, it is difficult to parse out the independent effects of limit and rating on balance, because limit and rating tend to increase and decrease in association with one another. Because the accuracy of our estimates of the parameters is reduced, the standard errors increase. This is why you can see above that the standard error for limit is much larger in the second model compared to the first model.</p>
+<div id="detecting-collinearity" class="section level3">
+<h3>Detecting collinearity</h3>
+<div id="scatterplot-matrix" class="section level4">
+<h4>Scatterplot matrix</h4>
+<p>A correlation or scatterplot matrix would help to reveal any strongly correlated variables:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GGally)
+
+<span class="kw">ggcorr</span>(<span class="kw">select_if</span>(credit, is.numeric))</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/credit-cor-mat-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggpairs</span>(<span class="kw">select_if</span>(credit, is.numeric))</code></pre></div>
+<p><img src="ols-diagnostics_files/figure-html/credit-cor-mat-2.png" width="672" /></p>
+<p>Here it is very clear that limit and rating are strongly correlated with one another.</p>
+</div>
+<div id="variance-inflation-factor-vif" class="section level4">
+<h4>Variance inflation factor (VIF)</h4>
+<p>Unfortunately correlation matrices may not be sufficient to detect collinearity if the correlation exists between three or more variables (aka <strong>multicollinearity</strong>) <em>while not existing between any two pairs of these variables</em>. Instead, we can calculate the variance inflation factor (VIF) which is the ratio of the variance of <span class="math inline">\(\hat{\beta}_{1j}\)</span> when fitting the full model divided by the variance of <span class="math inline">\(\hat{\beta}_{1j}\)</span> if fit on its own model. We can use the <code>car::vif()</code> function in R to calculate this statistic for each coefficient. A good rule of thumb is that a VIF statistic greater than 10 indicates potential multicollinearity in the model. Applied to the <code>credit</code> regression models above:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">vif</span>(age_limit)</code></pre></div>
+<pre><code>##   age limit 
+##  1.01  1.01</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">vif</span>(limit_rate)</code></pre></div>
+<pre><code>##  limit rating 
+##    160    160</code></pre>
+</div>
+</div>
+</div>
+<div id="fixing-multicollinearity" class="section level2">
+<h2>Fixing multicollinearity</h2>
+<div id="what-not-to-do" class="section level3">
+<h3>What not to do</h3>
+<blockquote>
+<p>Drop one or more of the collinear variables from the model</p>
+</blockquote>
+<p>This is not a good idea, even if it makes your results “significant”. By omitting the variable, you are completely re-specifying your model <strong>in direct contradiction to your theory</strong>. If your theory suggests that a variable can be dropped, go ahead. But if not, then don’t do it.</p>
+</div>
+<div id="what-you-could-do-instead" class="section level3">
+<h3>What you could do instead</h3>
+<div id="add-data" class="section level4">
+<h4>Add data</h4>
+<p>The more observations, the better. It could at least decrease your standard errors and give you more precise estimates. And if you add “odd” or unusual observations, it could also reduce the degree of multicollinearity.</p>
+</div>
+<div id="transform-the-covariates" class="section level4">
+<h4>Transform the covariates</h4>
+<p>If the variables are indicators of the same underlying concept, you can combine them into an index variable. This could be an <strong>additive index</strong> where you sum up comparable covariates or binary indicators. Alternatively, you could create an index via <a href="persp011_unsupervised.html#principal_components_analysis"><strong>principal components analysis</strong></a>.</p>
+</div>
+<div id="shrinkage-methods" class="section level4">
+<h4>Shrinkage methods</h4>
+<p><strong>Shrinkage methods</strong> involve fitting a model involving all <span class="math inline">\(p\)</span> predictors and shrinking the estimated coefficients towards zero. This shrinkage reduces variance in the model. When multicollinearity is high, the variance of the estimator <span class="math inline">\(\hat{\beta}_1\)</span> is also high. By shrinking the estimated coefficient towards zero, we may increase <strong>bias</strong> in exchange for smaller variance in our estimates.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="session-info" class="section level1 toc-ignore">
+<h1>Session Info</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw">session_info</span>()</code></pre></div>
+<pre><code>## Session info -------------------------------------------------------------</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.5.1 (2018-07-02)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       America/Chicago             
+##  date     2018-11-29</code></pre>
+<pre><code>## Packages -----------------------------------------------------------------</code></pre>
+<pre><code>##  package      * version date       source        
+##  abind          1.4-5   2016-07-21 CRAN (R 3.5.0)
+##  assertthat     0.2.0   2017-04-11 CRAN (R 3.5.0)
+##  backports      1.1.2   2017-12-13 CRAN (R 3.5.0)
+##  base         * 3.5.1   2018-07-05 local         
+##  bindr          0.1.1   2018-03-13 CRAN (R 3.5.0)
+##  bindrcpp     * 0.2.2   2018-03-29 CRAN (R 3.5.0)
+##  broom        * 0.5.0   2018-07-17 CRAN (R 3.5.0)
+##  car          * 3.0-0   2018-04-02 CRAN (R 3.5.0)
+##  carData      * 3.0-1   2018-03-28 CRAN (R 3.5.0)
+##  cellranger     1.1.0   2016-07-27 CRAN (R 3.5.0)
+##  cli            1.0.0   2017-11-05 CRAN (R 3.5.0)
+##  codetools      0.2-15  2016-10-05 CRAN (R 3.5.1)
+##  colorspace     1.3-2   2016-12-14 CRAN (R 3.5.0)
+##  compiler       3.5.1   2018-07-05 local         
+##  crayon         1.3.4   2017-09-16 CRAN (R 3.5.0)
+##  curl           3.2     2018-03-28 CRAN (R 3.5.0)
+##  data.table     1.11.4  2018-05-27 CRAN (R 3.5.0)
+##  datasets     * 3.5.1   2018-07-05 local         
+##  devtools       1.13.6  2018-06-27 CRAN (R 3.5.0)
+##  digest         0.6.18  2018-10-10 cran (@0.6.18)
+##  dplyr        * 0.7.8   2018-11-10 cran (@0.7.8) 
+##  evaluate       0.11    2018-07-17 CRAN (R 3.5.0)
+##  forcats      * 0.3.0   2018-02-19 CRAN (R 3.5.0)
+##  foreign        0.8-71  2018-07-20 CRAN (R 3.5.0)
+##  GGally       * 1.4.0   2018-05-17 CRAN (R 3.5.0)
+##  ggplot2      * 3.1.0   2018-10-25 cran (@3.1.0) 
+##  glue           1.3.0   2018-07-17 CRAN (R 3.5.0)
+##  graphics     * 3.5.1   2018-07-05 local         
+##  grDevices    * 3.5.1   2018-07-05 local         
+##  grid           3.5.1   2018-07-05 local         
+##  gtable         0.2.0   2016-02-26 CRAN (R 3.5.0)
+##  haven        * 1.1.2   2018-06-27 CRAN (R 3.5.0)
+##  hms            0.4.2   2018-03-10 CRAN (R 3.5.0)
+##  htmltools      0.3.6   2017-04-28 CRAN (R 3.5.0)
+##  httr           1.3.1   2017-08-20 CRAN (R 3.5.0)
+##  ISLR         * 1.2     2017-10-20 CRAN (R 3.5.0)
+##  jsonlite       1.5     2017-06-01 CRAN (R 3.5.0)
+##  knitr          1.20    2018-02-20 CRAN (R 3.5.0)
+##  labeling       0.3     2014-08-23 CRAN (R 3.5.0)
+##  lattice        0.20-35 2017-03-25 CRAN (R 3.5.1)
+##  lazyeval       0.2.1   2017-10-29 CRAN (R 3.5.0)
+##  lmtest       * 0.9-36  2018-04-04 CRAN (R 3.5.0)
+##  lubridate      1.7.4   2018-04-11 CRAN (R 3.5.0)
+##  magrittr       1.5     2014-11-22 CRAN (R 3.5.0)
+##  Matrix         1.2-14  2018-04-13 CRAN (R 3.5.1)
+##  MatrixModels * 0.4-1   2015-08-22 CRAN (R 3.5.0)
+##  memoise        1.1.0   2017-04-21 CRAN (R 3.5.0)
+##  methods      * 3.5.1   2018-07-05 local         
+##  modelr       * 0.1.2   2018-05-11 CRAN (R 3.5.0)
+##  munsell        0.5.0   2018-06-12 CRAN (R 3.5.0)
+##  nlme           3.1-137 2018-04-07 CRAN (R 3.5.1)
+##  openxlsx       4.1.0   2018-05-26 CRAN (R 3.5.0)
+##  pillar         1.3.0   2018-07-14 CRAN (R 3.5.0)
+##  pkgconfig      2.0.2   2018-08-16 CRAN (R 3.5.1)
+##  plyr           1.8.4   2016-06-08 CRAN (R 3.5.0)
+##  purrr        * 0.2.5   2018-05-29 CRAN (R 3.5.0)
+##  quantreg     * 5.36    2018-05-29 CRAN (R 3.5.0)
+##  R6             2.3.0   2018-10-04 cran (@2.3.0) 
+##  rcfss        * 0.1.5   2018-05-30 local         
+##  RColorBrewer   1.1-2   2014-12-07 CRAN (R 3.5.0)
+##  Rcpp           1.0.0   2018-11-07 cran (@1.0.0) 
+##  readr        * 1.1.1   2017-05-16 CRAN (R 3.5.0)
+##  readxl         1.1.0   2018-04-20 CRAN (R 3.5.0)
+##  reshape        0.8.7   2017-08-06 CRAN (R 3.5.0)
+##  reshape2       1.4.3   2017-12-11 CRAN (R 3.5.0)
+##  rio            0.5.10  2018-03-29 CRAN (R 3.5.0)
+##  rlang          0.3.0.1 2018-10-25 CRAN (R 3.5.0)
+##  rmarkdown      1.10    2018-06-11 CRAN (R 3.5.0)
+##  rprojroot      1.3-2   2018-01-03 CRAN (R 3.5.0)
+##  rstudioapi     0.7     2017-09-07 CRAN (R 3.5.0)
+##  rvest          0.3.2   2016-06-17 CRAN (R 3.5.0)
+##  scales         1.0.0   2018-08-09 CRAN (R 3.5.0)
+##  SparseM      * 1.77    2017-04-23 CRAN (R 3.5.0)
+##  stats        * 3.5.1   2018-07-05 local         
+##  stringi        1.2.4   2018-07-20 CRAN (R 3.5.0)
+##  stringr      * 1.3.1   2018-05-10 CRAN (R 3.5.0)
+##  tibble       * 1.4.2   2018-01-22 CRAN (R 3.5.0)
+##  tidyr        * 0.8.1   2018-05-18 CRAN (R 3.5.0)
+##  tidyselect     0.2.5   2018-10-11 cran (@0.2.5) 
+##  tidyverse    * 1.2.1   2017-11-14 CRAN (R 3.5.0)
+##  titanic      * 0.1.0   2015-08-31 CRAN (R 3.5.0)
+##  tools          3.5.1   2018-07-05 local         
+##  utils        * 3.5.1   2018-07-05 local         
+##  withr          2.1.2   2018-03-15 CRAN (R 3.5.0)
+##  xml2           1.2.0   2018-01-24 CRAN (R 3.5.0)
+##  yaml           2.2.0   2018-07-25 CRAN (R 3.5.0)
+##  zip            1.0.0   2017-04-25 CRAN (R 3.5.0)
+##  zoo          * 1.8-3   2018-07-16 CRAN (R 3.5.0)</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>74th (1935-36), 98th (1983-84), and 104th (1995-96).<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Assuming the sample size is sufficiently large.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Omitted here for time purposes. You can find details on this estimation procedure on the internet.<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>This function really returns the “sandwich” estimator of the variance-covariance matrix, so we need to further take the square root of the diagonal of this matrix.<a href="#fnref4">↩</a></p></li>
+<li id="fn5"><p>Basically we cannot invert the variance-covariance matrix of <span class="math inline">\(\mathbf{X}\)</span> because the collinear columns in <span class="math inline">\(\mathbf{X}\)</span> are perfectly linearly dependent on each other. Because of this, we cannot get parameter estimates or standard errors for the model.<a href="#fnref5">↩</a></p></li>
+</ol>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
