@@ -1,0 +1,72 @@
+---
+title: "Homework 07: Bayesian inference and OLS estimator"
+output: html_document
+---
+
+# Overview
+
+Due before class on December 4th.
+
+# Fork the `hw07` repository
+
+Go [here](https://github.com/css18/hw07) to fork the repo for homework 07.
+
+# Exercises (10 points)
+
+Complete each of the following exercises. Some exercises require an analytical answer, others require you to write code to complete the exercise. When writing your answer to analytical exercises, be sure to use appropriate $\LaTeX$ mathematical notation.
+
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
+## Bayesian inference (5 points)
+
+1. Suppose that 50 people are given a placebo and 50 are given a new treatment. 30 placebo patients show improvement while 40 treated patients show improvement. Let $\tau = p_2 - p_1$ where $p_2$ is the probability of improving under treatment and $p_1$ is the probability of improving under placebo.
+    a. Use the prior $f(p_1, p_2) = 1$. Use simulation ($B = 10000$) to find the posterior mean and posterior 90% interval for $\tau$.
+    a. Let
+        $$\psi = \log \left( \left( \frac{p_1}{1 - p_1} \right) \div \left( \frac{p_2}{1 - p_2} \right)  \right)$$
+        be the log-odds ratio. Note that $\psi = 0$ if $p_1 = p_2$. Use simulation to find the posterior mean and posterior 90% interval for $\psi$.
+1. Consider the $\text{Bernoulli}(p)$ observations:
+    $$0, 1, 0, 1, 0, 0, 0, 0, 0, 0$$
+    Plot the posterior for $p$ using the following priors:
+    a. $\text{Beta}(1/2, 1/2)$
+    a. $\text{Beta}(1, 1)$
+    a. $\text{Beta}(10, 10)$
+    a. $\text{Beta}(100, 100)$
+
+## OLS estimator (5 points)
+
+1. Write a function to calculate the OLS estimator $\hat{\beta}$ using matrix algebra.
+1. Write a function to calculate the OLS estimator $\hat{\beta}$ by minimizing the sum of the squared errors.
+1. Write a function to calculate the OLS estimator $\hat{\beta}$ by maximizing the log-likelihood.
+1. Simulate the dataset for the regression model
+
+    $$
+    \begin{align}
+    X_i &\sim \text{Uniform}(0,1) \\
+    \epsilon_i &\sim N(0, 1) \\
+    Y_i | X_i &\sim N(\mu_i, 1)
+    \end{align}
+    $$
+    
+    where $\mu_i = \beta_0 + \beta_1 X_i$, $\beta_0 = 2$, and $\beta_1 = 3$.
+    
+    Estimate $\hat{\beta}_0$ and $\hat{\beta}_1$ using the three functions you created above, in addition to using the `lm()` function. Compare your results across all four methods. Do they converge towards the same basic estimates $\hat{\beta}_0$ and $\hat{\beta}_1$?
+1. Simulate the dataset for the regression model
+
+    $$
+    \begin{align}
+    X_{1i} &\sim \text{Uniform}(0,1) \\
+    X_{2i} &\sim \text{Poisson}(4) \\
+    \epsilon_i &\sim N(0, 1) \\
+    Y_i | X_{1i}, X_{2i} &\sim N(\mu_i, 1)
+    \end{align}
+    $$
+    
+    where $\mu_i = \beta_0 + \beta_1 X_{1i} + \beta_2 X_{2i}$, $\beta_0 = 2$, $\beta_1 = 3$, and $\beta_2 = 8.5$.
+    
+    Estimate $\boldsymbol{\hat{\beta}}$ using the three functions you created above, in addition to using the `lm()` function. Compare your results across all four methods. Do they converge towards the same basic estimates $\hat{\beta}_0$ and $\hat{\beta}_1$?
+
+# Submit the assignment
+
+Your assignment should be submitted as an R Markdown document rendered as an HTML/PDF document. **Don't know what an R Markdown document is? [Read this!](http://rmarkdown.rstudio.com/lesson-1.html) Or [this!](http://r4ds.had.co.nz/r-markdown.html)** I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.
+
+Follow instructions on [homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow). As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.
