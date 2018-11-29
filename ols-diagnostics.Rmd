@@ -792,7 +792,7 @@ The more observations, the better. It could at least decrease your standard erro
 
 #### Transform the covariates
 
-If the variables are indicators of the same underlying concept, you can combine them into an index variable. This could be an **additive index** where you sum up comparable covariates or binary indicators. Alternatively, you could create an index via [**principal components analysis**](persp011_unsupervised.html#principal_components_analysis).
+If the variables are indicators of the same underlying concept, you can combine them into an index variable. This could be an **additive index** where you sum up comparable covariates or binary indicators. Alternatively, you could create an index via **principal components analysis**.
 
 #### Shrinkage methods
 
