@@ -152,9 +152,9 @@ $$\mathbf{Y} = \mathbf{X} \boldsymbol{\beta} + \mathbf{u}$$
 
 $$(\mathbf{X'X})^{-1}\mathbf{X'Y} = \boldsymbol{\beta}$$
 
-## Maximum likelihood estimator
+## Maximum likelihood estimator {.scrollable}
 
-* $\epsilon_i | X_i \sim N(0, \sigma^2$
+* $\epsilon_i | X_i \sim N(0, \sigma^2)$
 
     $$Y_i | X_i \sim N(\mu_i, \sigma^2)$$
 
@@ -419,7 +419,7 @@ dahl_mod <- lm(nulls ~ age + tenure + unified, data = dahl)
 tidy(dahl_mod)
 ```
 
-## Outliers?
+## Outliers? {.scrollable}
 
 ```{r dahl-time}
 dahl <- dahl %>%

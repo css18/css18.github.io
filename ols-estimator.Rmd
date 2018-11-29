@@ -194,7 +194,7 @@ $$
 
 ## Maximum likelihood
 
-Suppose we add the assumption that $\epsilon_i | X_i \sim N(0, \sigma^2$, that is,
+Suppose we add the assumption that $\epsilon_i | X_i \sim N(0, \sigma^2)$, that is,
 
 $$Y_i | X_i \sim N(\mu_i, \sigma^2)$$
 
