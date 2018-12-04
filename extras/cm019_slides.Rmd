@@ -1,0 +1,138 @@
+---
+title: "OLS: Interpretation and hypothesis testing"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(broom)
+library(sf)
+library(albersusa)
+
+options(digits = 3)
+set.seed(1234)
+base_size <- 18
+theme_set(theme_minimal(base_size = base_size))
+```
+
+## Cigarette consumption
+
+```{r import-states}
+states <- haven::read_dta("../data/states.dta")
+```
+
+```{r cig}
+ggplot(states, aes(cigarettes)) +
+  geom_histogram() +
+  labs(title = "Cigarette consumption in the United States",
+       subtitle = "By state",
+       x = "Bimonthly packs of cigarettes per adult",
+       y = "Number of states")
+```
+
+## Cigarette tax
+
+```{r cig-tax}
+ggplot(states, aes(cig_tax)) +
+  geom_histogram() +
+  scale_x_continuous(labels = scales::dollar) +
+  labs(title = "Cigarette taxes in the United States",
+       x = "Cigarette tax (per pack)",
+       y = "Number of states")
+```
+
+## Linear regression of cigarette consumption {.scrollable}
+
+```{r cig-tax-lm}
+ggplot(states, aes(cig_tax, cigarettes)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(labels = scales::dollar) +
+  labs(title = "Cigarette consumption in the United States",
+       x = "Cigarette tax (per pack)",
+       y = "Bimonthly packs of cigarettes per adult")
+
+cig_tax <- lm(cigarettes ~ cig_tax, data = states)
+summary(cig_tax)
+```
+
+## Southern states
+
+```{r south}
+# get simple features and join with states
+us_sf <- usa_sf("laea") %>%
+  left_join(states, by = c("name" = "state")) %>%
+  filter(name != "District of Columbia")
+
+us_sf %>%
+  mutate(cigarettes = cut_number(cigarettes, n = 6)) %>%
+  ggplot() +
+  geom_sf(aes(fill = cigarettes)) +
+  scale_fill_brewer() +
+  labs(title = "Cigarette consumption in the United States",
+       subtitle = "Bimonthly packs of cigarettes per adult",
+       fill = NULL)
+```
+
+## Linear regression of cigarette consumption {.scrollable}
+
+```{r south-lm}
+south <- lm(cigarettes ~ cig_tax + south, data = states)
+summary(south)
+```
+
+```{r south-lm-ggplot}
+states %>%
+  mutate(south = factor(south, levels = 1:0, labels = c("Southern", "Non-Southern"))) %>%
+  ggplot(aes(cig_tax, cigarettes, color = south)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE) +
+  scale_x_continuous(labels = scales::dollar) +
+  scale_color_brewer(type = "qual") +
+  labs(title = "Cigarette consumption in the United States",
+       x = "Cigarette tax (per pack)",
+       y = "Bimonthly packs of cigarettes per adult",
+       color = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Estimating linear regression models in R
+
+```{r south-lm, echo = TRUE}
+```
+
+## `lm()` objects {.scrollable}
+
+```{r lm-str}
+str(south)
+```
+
+## `tidy()`
+
+```{r tidy}
+tidy(south)
+
+tidy(south) %>%
+  str()
+```
+
+## `augment()`
+
+```{r augment}
+augment(south) %>%
+  as_tibble()
+```
+
+## `glance()`
+
+```{r glance}
+glance(south)
+```
