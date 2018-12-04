@@ -1,6 +1,5 @@
 ---
-title: "Ordinary least squares"
-subtitle: "Estimator and diagnostics"
+title: "OLS: Estimator and diagnostics"
 author: |
   | MACS 33001
   | University of Chicago
@@ -641,7 +640,7 @@ bptest(sim_homo_mod)
 bptest(sim_hetero_mod)
 ```
 
-## Weighted least squares regression
+## Weighted least squares regression {.scrollable}
 
 * $\epsilon_i \sim N(0, \sigma_i^2)$
 
@@ -654,36 +653,34 @@ bptest(sim_hetero_mod)
     \end{bmatrix}
     $$
 
-We can define the reciprocal of each variance $\sigma_i^2$ as the weight $w_i = \frac{1}{\sigma_i^2}$, then let matrix $\mathbf{W}$ be a diagonal matrix containing these weights:
+* $w_i = \frac{1}{\sigma_i^2}$
+    
+    $$
+    \mathbf{W} =
+    \begin{bmatrix}
+        \frac{1}{\sigma_1^2}       & 0 & 0 & 0 \\
+        0       & \frac{1}{\sigma_2^2} & 0 & 0 \\
+        0       & 0 & \ddots & 0 \\
+        0       & 0 & 0 & \frac{1}{\sigma_n^2} \\
+    \end{bmatrix}
+    $$
 
-$$
-\mathbf{W} =
-\begin{bmatrix}
-    \frac{1}{\sigma_1^2}       & 0 & 0 & 0 \\
-    0       & \frac{1}{\sigma_2^2} & 0 & 0 \\
-    0       & 0 & \ddots & 0 \\
-    0       & 0 & 0 & \frac{1}{\sigma_n^2} \\
-\end{bmatrix}
-$$
+* Traditional regression estimator
 
-So rather than following the traditional linear regression estimator
+    $$\hat{\boldsymbol{\beta}} = (\mathbf{X}'\mathbf{X})^{-1} \mathbf{X}'\mathbf{y}$$
 
-$$\hat{\mathbf{\beta_1}} = (\mathbf{X}'\mathbf{X})^{-1} \mathbf{X}'\mathbf{y}$$
+* Substitute with weighting matrix
 
-we can substitute in the weighting matrix $\mathbf{W}$:
+    $$\hat{\boldsymbol{\beta}} = (\mathbf{X}' \mathbf{W} \mathbf{X})^{-1} \mathbf{X}' \mathbf{W} \mathbf{y}$$
 
-$$\hat{\mathbf{\beta_1}} = (\mathbf{X}' \mathbf{W} \mathbf{X})^{-1} \mathbf{X}' \mathbf{W} \mathbf{y}$$
+    $$\sigma_{i}^2 = \frac{\sum(w_i \hat{\epsilon}_i^2)}{n}$$
 
-$$\sigma_{i}^2 = \frac{\sum(w_i \hat{\epsilon}_i^2)}{n}$$
+## Estimating the weights $W_i$
 
-This is equivalent to minimizing the weighted sum of squares, according greater weight to observations with smaller variance.
+1. Use the residuals from a preliminary OLS regression to obtain estimates of the error variance within different subsets of observations
+1. Model the weights as a function of observable variables in the model
 
-How do we estimate the weights $W_i$?
-
-1. Use the residuals from a preliminary OLS regression to obtain estimates of the error variance within different subsets of observations.
-1. Model the weights as a function of observable variables in the model.
-
-For example, using the first approach on our original SLID model:
+## Weighted least squares regression
 
 ```{r wls}
 # do we have heteroscedasticity?
@@ -697,9 +694,14 @@ slid %>%
   geom_hline(yintercept = 0, linetype = 2) +
   geom_quantile(method = "rqss", lambda = 5, quantiles = c(.05, .95)) +
   labs(title = "Heteroscedastic variance of error terms",
+       subtitle = "Hourly wages ~ Sex + Education + Age",
        x = "Predicted values",
        y = "Residuals")
+```
 
+## Weighted least squares regression
+
+```{r wls-2}
 # convert residuals to weights
 weights <- 1 / residuals(slid_mod)^2
 
@@ -709,11 +711,12 @@ tidy(slid_mod)
 tidy(slid_wls)
 ```
 
-We see some mild changes in the estimated parameters, but drastic reductions in the standard errors. The problem is that this reduction is potentially biased through the estimated covariance matrix because the sampling error in the estimates should reflect the additional source of uncertainty, which is not explicitly accounted for just basing it on the original residuals. Instead, it would be better to model the weights as a function of relevant explanatory variables.^[Omitted here for time purposes. You can find details on this estimation procedure on the internet.]
+## Corrections for the variance-covariance estimates
 
-### Corrections for the variance-covariance estimates
+* Correct standard errors only
+* Huber-White (robust) standard errors
 
-Alternatively, we could instead attempt to correct for heteroscedasticity only in the standard error estimates. This produces the same estimated parameters, but adjusts the standard errors to account for the violation of the constant error variance assumption (we won't falsely believe our estimates are more precise than they really are.) One major estimation procedure are **Huber-White standard errors** (also called **robust standard errors**) which can be recovered using the `car::hccm()` function:^[This function really returns the "sandwich" estimator of the variance-covariance matrix, so we need to further take the square root of the diagonal of this matrix.]
+## Corrections for the variance-covariance estimates
 
 ```{r huber-white}
 hw_std_err <- hccm(slid_mod, type = "hc1") %>%
@@ -724,24 +727,19 @@ tidy(slid_mod) %>%
   mutate(std.error.rob = hw_std_err)
 ```
 
-Notice that these new standard errors are a bit larger than the original model, accounting for the increased uncertainty of our parameter estimates due to heteroscedasticity.
+## Non-linearity in the data
 
-# Non-linearity in the data
+* Assume $\E (\epsilon_i) = 0$
+* Implies the regression line accurately reflects the relationship between $X$ and $Y$
+* Nonlinearity
+    * Nonlinear relationship
+    * Conditional relationship
 
-By assuming the average error $\E (\epsilon_i)$ is 0 everywhere implies that the regression line (surface) accurately reflects the relationship between $X$ and $Y$. Violating this assumption means that the model fails to capture the systematic relationship between the response and explanatory variables. Therefore here, the term **nonlinearity** could mean a couple different things:
-
-* The relationship between $X_1$ and $Y$ is nonlinear - that is, it is not constant and monotonic
-* The relationship between $X_1$ and $Y$ is conditional on $X_2$ - that is, the relationship is interactive rather than purely additive
-
-Detecting nonlinearity can be tricky in higher-dimensional regression models with multiple explanatory variables.
-
-## Partial residual plots
-
-Define the **partial residual** for the $j$th explanatory variable:
+## Partial residual
 
 $$\hat{\epsilon}_i^{(j)} = \hat{\epsilon}_i + \hat{\beta}_j X_{ij}$$
 
-In essence, calculate the least-squares residual ($\hat{\epsilon}_i$) and add to it the linear component of the partial relationship between $Y$ and $X_j$. Finally, we can plot $X_j$ versus $\hat{\epsilon}_i^{(j)}$ and assess the relationship. For instance, consider the results of the logged wage model from earlier:
+## Partial residual plots {.scrollable}
 
 ```{r part-resid-plot}
 # get partial resids
@@ -767,9 +765,7 @@ ggplot(slid_diag, aes(yearsEducation, yearsEducation_resid)) +
        y = "Partial residual for education")
 ```
 
-The solid lines are GAMs, while the dashed lines are linear least-squares fits. For age, the partial relationship with logged wages is not linear - some transformation of age is necessary to correct this. For education, the relationship is more approximately linear except for the discrepancy for individual with very low education levels.
-
-We can correct this by adding a squared polynomial term for age, and square the education term. The resulting regression model is:
+## Correcting for nonlinearity
 
 $$\log(\text{Wage}) = \beta_0 + \beta_1(\text{Male}) + \beta_2 \text{Age} + \beta_3 \text{Age}^2 + \beta_4 \text{Education}^2$$
 
@@ -778,23 +774,21 @@ slid_log_trans <- lm(wage_log ~ sex + I(yearsEducation^2) + age + I(age^2), data
 tidy(slid_log_trans)
 ```
 
-Because the model is now nonlinear in both age and education, we need to rethink how to draw the partial residuals plot. The easiest approach is to plot the partial residuals for both age and education against the original explanatory variable. For age, that is
+## Correcting for nonlinearity
 
-$$\hat{\epsilon}_i^{\text{Age}} = `r coef(slid_log_trans)[[4]]` \times \text{Age}_i `r formatC(coef(slid_log_trans)[[5]])` \times \text{Age}^2_i + \hat{\epsilon}_i$$
+* Partial residuals
 
-and for education,
+    $$\hat{\epsilon}_i^{\text{Age}} = `r coef(slid_log_trans)[[4]]` \times \text{Age}_i `r formatC(coef(slid_log_trans)[[5]])` \times \text{Age}^2_i + \hat{\epsilon}_i$$
+    
+    $$\hat{\epsilon}_i^{\text{Education}} = `r coef(slid_log_trans)[[3]]` \times \text{Education}^2_i + \hat{\epsilon}_i$$
 
-$$\hat{\epsilon}_i^{\text{Education}} = `r coef(slid_log_trans)[[3]]` \times \text{Education}^2_i + \hat{\epsilon}_i$$
+* Partial fits
 
-On the same graph, we also plot the **partial fits** for the two explanatory variables:
+    $$\hat{Y}_i^{(\text{Age})} = `r coef(slid_log_trans)[[4]]` \times \text{Age}_i `r formatC(coef(slid_log_trans)[[5]])` \times \text{Age}^2_i$$
+    
+    $$\hat{Y}_i^{(\text{Education})} = `r coef(slid_log_trans)[[3]]` \times \text{Education}^2_i$$
 
-$$\hat{Y}_i^{(\text{Age})} = `r coef(slid_log_trans)[[4]]` \times \text{Age}_i `r formatC(coef(slid_log_trans)[[5]])` \times \text{Age}^2_i$$
-
-and for education,
-
-$$\hat{Y}_i^{(\text{Education})} = `r coef(slid_log_trans)[[3]]` \times \text{Education}^2_i$$
-
-On the graphs, the solid lines represent the partial fits and the dashed lines represent the partial residuals. If the two lines overlap significantly, then the revised model does a good job accounting for the nonlinearity.
+## Correcting for nonlinearity {.scrollable}
 
 ```{r slid-part-trans-plot}
 # get partial resids
@@ -824,20 +818,18 @@ ggplot(slid_trans_diag, aes(yearsEducation, educ_resid + .resid)) +
        y = "Partial residual for education")
 ```
 
-# Collinearity
+## Collinearity
 
-**Collinearity** (or **multicollinearity**) is a state of a model where explanatory variables are correlated with one another.
+> A state of a model where explanatory variables are correlated with one another
 
 ## Perfect collinearity
-
-Perfect collinearity is incredibly rare, and typically involves using transformed versions of a variable in the model **along with the original variable**. For example, let's estimate a regression model explaining `mpg` as a function of `displ`, `wt`, and `cyl`:
 
 ```{r mtcars}
 mtcars1 <- lm(mpg ~ disp + wt + cyl, data = mtcars)
 summary(mtcars1)
 ```
 
-Now let's say we want to recode `displ` so it is centered around it's mean and re-estimate the model:
+## Perfect collinearity
 
 ```{r mtcars-recenter}
 mtcars <- mtcars %>%
@@ -847,18 +839,14 @@ mtcars2 <- lm(mpg ~ disp + wt + cyl + disp_mean, data = mtcars)
 summary(mtcars2)
 ```
 
-Oops. What's the problem? `disp` and `disp_mean` are perfectly correlated with each other:
+## Perfect collinearity
 
 ```{r mtcars-cor}
 ggplot(mtcars, aes(disp, disp_mean)) +
   geom_point()
 ```
 
-Because they perfectly explain each other, we cannot estimate a linear regression model that contains both variables.^[Basically we cannot invert the variance-covariance matrix of $\mathbf{X}$ because the collinear columns in $\mathbf{X}$ are perfectly linearly dependent on each other. Because of this, we cannot get parameter estimates or standard errors for the model.] Fortunately R automatically drops the second variable so it can estimate the model. Because of this, perfect multicollinearity is rarely problematic in social science.
-
 ## Less-than-perfect collinearity
-
-Instead consider the credit dataset:
 
 ```{r credit}
 credit <- read_csv("../data/Credit.csv") %>%
@@ -869,14 +857,14 @@ ggplot(credit, aes(limit, age)) +
   geom_point()
 ```
 
-Age and limit are not strongly correlated with one another, so estimating a linear regression model to predict an individual's balance as a function of age and limit is not a problem:
+## Less-than-perfect collinearity
 
 ```{r credit-lm}
 age_limit <- lm(balance ~ age + limit, data = credit)
 tidy(age_limit)
 ```
 
-But what about using an individual's credit card rating instead of age? It is likely a good predictor of balance as well:
+## Less-than-perfect collinearity {.scrollable}
 
 ```{r add-rating}
 ggplot(credit, aes(rating, balance)) +
@@ -889,7 +877,7 @@ tidy(limit_rate)
 coefplot::multiplot(age_limit, limit_rate)
 ```
 
-By replacing age with rating, we developed a problem in our model. The problem is that limit and rating are strongly correlated with one another:
+## Less-than-perfect collinearity {.scrollable}
 
 ```{r limit-rate}
 ggplot(credit, aes(limit, rating)) +
@@ -899,26 +887,26 @@ ggplot(credit, aes(limit, rating)) +
 coefplot::multiplot(age_limit, limit_rate, predictors = "limit")
 ```
 
-In the regression model, it is difficult to parse out the independent effects of limit and rating on balance, because limit and rating tend to increase and decrease in association with one another. Because the accuracy of our estimates of the parameters is reduced, the standard errors increase. This is why you can see above that the standard error for limit is much larger in the second model compared to the first model.
-
-### Detecting collinearity
-
-#### Scatterplot matrix
-
-A correlation or scatterplot matrix would help to reveal any strongly correlated variables:
+## Correlation matrix
 
 ```{r credit-cor-mat}
 library(GGally)
 
 ggcorr(select_if(credit, is.numeric))
+```
+
+## Scatterplot matrix
+
+```{r credit-scatter-mat}
 ggpairs(select_if(credit, is.numeric))
 ```
 
-Here it is very clear that limit and rating are strongly correlated with one another.
+## Variance inflation factor (VIF)
 
-#### Variance inflation factor (VIF)
+* Ratio of the variance of $\hat{\beta}_{1j}$ when fitting the full model divided by the variance of $\hat{\beta}_{1j}$ if fit on its own model
+* Rule of thumb - greater than 10
 
-Unfortunately correlation matrices may not be sufficient to detect collinearity if the correlation exists between three or more variables (aka **multicollinearity**) *while not existing between any two pairs of these variables*. Instead, we can calculate the variance inflation factor (VIF) which is the ratio of the variance of $\hat{\beta}_{1j}$ when fitting the full model divided by the variance of $\hat{\beta}_{1j}$ if fit on its own model. We can use the `car::vif()` function in R to calculate this statistic for each coefficient. A good rule of thumb is that a VIF statistic greater than 10 indicates potential multicollinearity in the model. Applied to the `credit` regression models above:
+## Variance inflation factor (VIF)
 
 ```{r vif}
 vif(age_limit)
@@ -927,23 +915,7 @@ vif(limit_rate)
 
 ## Fixing multicollinearity
 
-### What not to do
-
-> Drop one or more of the collinear variables from the model
-
-This is not a good idea, even if it makes your results "significant". By omitting the variable, you are completely re-specifying your model **in direct contradiction to your theory**. If your theory suggests that a variable can be dropped, go ahead. But if not, then don't do it.
-
-### What you could do instead
-
-#### Add data
-
-The more observations, the better. It could at least decrease your standard errors and give you more precise estimates. And if you add "odd" or unusual observations, it could also reduce the degree of multicollinearity.
-
-#### Transform the covariates
-
-If the variables are indicators of the same underlying concept, you can combine them into an index variable. This could be an **additive index** where you sum up comparable covariates or binary indicators. Alternatively, you could create an index via **principal components analysis**.
-
-#### Shrinkage methods
-
-**Shrinkage methods** involve fitting a model involving all $p$ predictors and shrinking the estimated coefficients towards zero. This shrinkage reduces variance in the model. When multicollinearity is high, the variance of the estimator $\hat{\beta}_1$ is also high. By shrinking the estimated coefficient towards zero, we may increase **bias** in exchange for smaller variance in our estimates.
-
+* Drop one or more of the collinear variables from the model - NO!
+* Add more data
+* Transform the variables
+* Shrinkage methods
