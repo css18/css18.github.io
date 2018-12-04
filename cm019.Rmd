@@ -1,0 +1,32 @@
+---
+title: "Ordinary least squares - interpretation/hypothesis testing"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm019 - December 4, 2018
+
+## Overview
+
+* Define bivariate regression and interpret model results
+* Define multivariable regression and interpret model results
+* Demonstrate how to estimate regression models in R and extract relevant statistics
+* Implement hypothesis tests for single and multiple variables
+
+## Before class
+
+## Slides and class materials
+
+* [Slides](extras/cm019_slides.html)
+* [OLS - interpretation and hypothesis testing](ols-interpret.html)
+
+## Additional resources
+
+* [Chapter 13 (Linear and logistic regression) in *All of Statistics*](https://link-springer-com.proxy.uchicago.edu/book/10.1007%2F978-0-387-21736-9) (UChicago authentication required)
+* [Chapters 7 (Introduction to linear regression) and 8 (Multiple and logistic regression) in *OpenIntro Statistics](https://www.openintro.org/stat/textbook.php?stat_book=os)
+
+## What you need to do
+
