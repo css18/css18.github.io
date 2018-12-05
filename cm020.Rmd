@@ -1,0 +1,33 @@
+---
+title: "Ordinary least squares - interaction terms"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+# cm020 - December 6, 2018
+
+## Overview
+
+* Define multiplicative interaction models and conditional effects
+* Review mathematics required to calculate standard errors and conduct inference
+* Identify major types of conceptual interactions
+* Demonstrate how to estimate multiplicative interaction models in R
+* Implement hypothesis testing and marginal effects plots
+* Extend discussion to generalized linear models
+
+## Before class
+
+## Slides and class materials
+
+* [Slides](extras/cm020_slides.html)
+* [OLS: Interaction terms](ols-interaction.html)
+
+## Additional resources
+
+* [Brambor, T., Clark, W. R., & Golder, M. (2006). Understanding interaction models: Improving empirical analyses. *Political analysis*, 63-82.](http://www.jstor.org.proxy.uchicago.edu/stable/25791835)
+
+## What you need to do
+
