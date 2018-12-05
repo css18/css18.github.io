@@ -1,0 +1,681 @@
+---
+title: "OLS: Interaction terms"
+author: |
+  | MACS 33001
+  | University of Chicago
+output: rcfss::cfss_slides
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(cache = TRUE,
+                      message = FALSE,
+                      warning = FALSE,
+                      echo = FALSE)
+
+library(tidyverse)
+library(forcats)
+library(broom)
+library(modelr)
+library(stringr)
+library(titanic)
+library(rcfss)
+library(car)
+library(plotly)
+library(haven)
+library(coefplot)
+library(patchwork)
+
+options(digits = 3)
+set.seed(1234)
+theme_set(theme_minimal(base_size = 22))
+```
+
+## Additive model
+
+$$Y = \beta_0 + \beta_1 X + \beta_2 Z + e_i$$
+
+## Additive model
+
+```{r sim-linear}
+n_sim <- 100
+
+additive <- data_frame(x = runif(n_sim),
+                       z = runif(n_sim)) %>%
+  mutate(z = ifelse(z > .5, 1, 0),
+         y = x + z + rnorm(n_sim))
+
+additive %>%
+  add_predictions(lm(y ~ x + z, data = .)) %>%
+  ggplot(aes(x, y, color = factor(z))) +
+  geom_point() +
+  geom_line(aes(y = pred)) +
+  theme(legend.position = "none")
+```
+
+## Additive model
+
+$$E(Y) = \beta_0 + \beta_1 X + \beta_2 Z$$
+
+$$\frac{\delta E(Y)}{\delta X} = \beta_1$$
+
+$$\frac{\delta E(Y)}{\delta Z} = \beta_2$$
+
+## Multiplicative interaction model
+
+$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + e_i$$
+
+* Direct effects
+* Constitutive terms
+* Interaction term
+
+## Multiplicative interaction model
+
+$$
+\begin{align}
+E(Y) & = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
+     & = \beta_0 + \beta_2 Z + (\beta_1 + \beta_3 Z) X
+\end{align}
+$$
+
+$$\frac{\delta E(Y)}{\delta X} = \beta_1 + \beta_3 Z$$
+
+$$E(Y) = \beta_0 + \beta_2 Z + \psi_1 X$$
+
+$$
+\begin{align}
+E(Y) & = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
+     & = \beta_0 + \beta_1 X + \psi_2 Z
+\end{align}
+$$
+
+## Multiplicative interaction model
+
+* Conditional impact
+* If $Z = 0$, then:
+    
+    $$
+    \begin{align}
+    E(Y) & = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
+         & = \beta_0 + \beta_1 X
+    \end{align}
+    $$
+        
+* If $X = 0$, then:
+    
+    $$
+    \begin{align}
+    E(Y) & = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
+         & = \beta_0 + \beta_2 Z
+    \end{align}
+    $$
+* $\psi_1 = \beta_1$ and $\psi_2 = \beta_2$
+* $+\beta_3$ and $-\beta_3$
+* $\psi_1$ and $\psi_2$
+
+## Conducting inference
+
+* Obtaining estimates of parameters
+
+    $$\hat{\psi}_1 = \hat{\beta}_1 + \hat{\beta}_3 Z$$
+    $$\hat{\psi}_2 = \hat{\beta}_2 + \hat{\beta}_3 X$$
+    
+* Obtaining estimates of standard errors
+
+## Conducting inference
+
+1. $\text{Var}(aX) = a^2 \text{Var}(X)$
+1. $\text{Var}(X+Y) = \text{Var}(X) + \text{Var}(Y) + 2 \text{Cov}(X,Y)$
+1. $\text{Cov}(X, aY) = a \text{Cov}(X,Y)$
+
+## Conducting inference
+
+$$\widehat{\text{Var}(\hat{\psi}_1}) = \widehat{\text{Var} (\hat{\beta}_1)} +Z^2  \widehat{\text{Var} (\hat{\beta}_3)} + 2 Z \widehat{\text{Cov} (\hat{\beta}_1, \hat{\beta}_3)}$$
+
+$$\widehat{\text{Var}(\hat{\psi}_2}) = \widehat{\text{Var} (\hat{\beta}_2)} + X^2  \widehat{\text{Var} (\hat{\beta}_3)} + 2 X \widehat{\text{Cov} (\hat{\beta}_2, \hat{\beta}_3)}$$
+
+* Depend on $\beta_1$, $\beta_2$, and/or $\beta_3$
+* Both also depend on the level/value of the interacted variable
+
+## Two dichtomous covariates
+
+$$Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + e_i$$
+
+$$
+\begin{align}
+E(Y | D_1 = 0, D_2 = 0) & = \beta_0 \\
+E(Y | D_1 = 1, D_2 = 0) & = \beta_0 + \beta_1 \\
+E(Y | D_1 = 0, D_2 = 1) & = \beta_0 + \beta_2 \\
+E(Y | D_1 = 1, D_2 = 1) & = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
+\end{align}
+$$
+
+## Two dichtomous covariates
+
+```{r sim-two-dich}
+two_dich <- data_frame(x = runif(n_sim),
+                       z = runif(n_sim)) %>%
+  mutate_at(vars(x, z), funs(ifelse(. > .5, 1, 0))) %>%
+  mutate(y = 10 + 20 * x - 20 * z + 40 * (x * z) + rnorm(n_sim, 0, 5))
+```
+
+```{r sim-two-dich-hist}
+ggplot(two_dich, aes(y, color = interaction(x, z))) +
+  geom_density() +
+  scale_color_discrete(labels = c("D1 = D2 = 0",
+                                  "D1 = 1, D2 = 0",
+                                  "D1 = 0, D2 = 1",
+                                  "D1 = D2 = 1"),
+                       guide = guide_legend(nrow = 2)) +
+  labs(title = expression(paste("Values of ", Y, " for various combinations of values of ", D[1], ",", D[2])),
+       x = "Value of Y",
+       color = NULL) +
+  theme(legend.position = "bottom")
+```
+
+## Two dichtomous covariates
+
+```{r sim-two-dich-box}
+ggplot(two_dich, aes(interaction(z, x), y)) +
+  geom_boxplot() +
+  scale_x_discrete(labels = c(expression("D1 = D2 = 0"),
+                                  expression("D1 = 0, D2 = 1"),
+                                  expression("D1 = 1, D2 = 0"),
+                                  expression("D1 = D2 = 1"))) +
+  labs(title = expression(paste("Values of ", Y, " for various combinations of values of ", D[1], ",", D[2])),
+       x = NULL,
+       y = "Values of Y")
+```
+
+## One dichotomous and one continuous covariate
+
+$$Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + e_i$$
+
+$$
+\begin{align}
+E(Y | X, D = 0) & = \beta_0 + \beta_1 X \\
+E(Y | X, D = 1) & = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
+\end{align}
+$$
+
+----
+
+```{r sim-cont-dich-00}
+data_frame(x = runif(n_sim, -2, 2),
+           z = runif(n_sim, -2, 2)) %>%
+  mutate_at(vars(z), funs(ifelse(. > .5, 1, 0))) %>%
+  mutate(y = 0 + 20 * x + 0 * z + 0 * (x * z) + rnorm(n_sim, 0, 5)) %>%
+  ggplot(aes(x, y, color = factor(z), shape = factor(z))) +
+  geom_vline(xintercept = 0, alpha = .3) +
+  geom_hline(yintercept = 0, alpha = .3) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 20) +
+  labs(title = expression({beta[2] == beta[3]} == 0),
+       color = "Z",
+       shape = "Z") +
+  theme(legend.position = "bottom")
+```
+    
+----
+
+```{r sim-cont-dich-01}
+data_frame(x = runif(n_sim, -2, 2),
+           z = runif(n_sim, -2, 2)) %>%
+  mutate_at(vars(z), funs(ifelse(. > .5, 1, 0))) %>%
+  mutate(y = 0 + 20 * x + 10 * z + 0 * (x * z) + rnorm(n_sim, 0, 5)) %>%
+  ggplot(aes(x, y, color = factor(z), shape = factor(z))) +
+  geom_vline(xintercept = 0, alpha = .3) +
+  geom_hline(yintercept = 0, alpha = .3) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 20) +
+  geom_abline(intercept = 10, slope = 20, linetype = 2) +
+  labs(title = expression(paste({beta[2] != 0}, ",", beta[3] == 0)),
+       color = "Z",
+       shape = "Z") +
+  theme(legend.position = "bottom")
+```
+
+----
+
+```{r sim-cont-dich-10}
+data_frame(x = runif(n_sim, -2, 2),
+           z = runif(n_sim, -2, 2)) %>%
+  mutate_at(vars(z), funs(ifelse(. > .5, 1, 0))) %>%
+  mutate(y = 0 + 20 * x + 0 * z + -40 * (x * z) + rnorm(n_sim, 0, 5)) %>%
+  ggplot(aes(x, y, color = factor(z), shape = factor(z))) +
+  geom_vline(xintercept = 0, alpha = .3) +
+  geom_hline(yintercept = 0, alpha = .3) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 20) +
+  geom_abline(intercept = 0, slope = -20, linetype = 2) +
+  labs(title = expression(paste({beta[2] == 0}, ",", beta[3] != 0)),
+       color = "Z",
+       shape = "Z") +
+  theme(legend.position = "bottom")
+```
+    
+----
+
+```{r sim-cont-dich-11}
+data_frame(x = runif(n_sim, -2, 2),
+           z = runif(n_sim, -2, 2)) %>%
+  mutate_at(vars(z), funs(ifelse(. > .5, 1, 0))) %>%
+  mutate(y = 0 + 20 * x + 20 * z + -40 * (x * z) + rnorm(n_sim, 0, 5)) %>%
+  ggplot(aes(x, y, color = factor(z), shape = factor(z))) +
+  geom_vline(xintercept = 0, alpha = .3) +
+  geom_hline(yintercept = 0, alpha = .3) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 20) +
+  geom_abline(intercept = 20, slope = -20, linetype = 2) +
+  labs(title = expression(paste({beta[2] == 0}, ",", beta[3] != 0)),
+       color = "Z",
+       shape = "Z") +
+  theme(legend.position = "bottom")
+```
+
+## Two continuous covariates
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + e_i$$
+
+```{r two-cont}
+# no interactive effects
+data_frame(x = runif(n_sim, 0, 10),
+           z = runif(n_sim, 0, 10),
+           y = 10 + 10 * x - 10 * z + 0 * x * z) %>%
+  plot_ly(x = ~x, y = ~ z, z = ~ y, type = "mesh3d") %>%
+  layout(title = "No interactive effects")
+```
+
+## Two continuous covariates
+
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + e_i$$
+
+```{r two-cont-x}
+# inteactive effects
+data_frame(x = runif(n_sim, 0, 10),
+           z = runif(n_sim, 0, 10),
+           y = 10 + 10 * x - 10 * z + 10 * x * z) %>%
+  plot_ly(x = ~x, y = ~ z, z = ~ y, type = "mesh3d") %>%
+  layout(title = "Interactive effects")
+```
+
+## Quadratic, cubic, and other polynomial effects
+
+$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + e$$
+
+$$\frac{\delta E(Y)}{\delta X} = \beta_1 + 2 \beta_2 X$$
+
+## Quadratic, cubic, and other polynomial effects
+
+```{r poly-interact, fig.asp = 0.8}
+{
+  data_frame(x = runif(n_sim, -2, 2)) %>%
+    mutate(y = 10 + 10 * x - (50 * x^2) + rnorm(n_sim, 0, 5)) %>%
+    add_predictions(lm(y ~ poly(x, 2, raw = TRUE), data = .)) %>%
+    ggplot(aes(x, y)) +
+    geom_point() +
+    geom_line(aes(y = pred)) +
+    labs(title = "Quadratic") +
+    theme(axis.title = element_blank(),
+          axis.text = element_blank())
+} +
+{
+  data_frame(x = runif(n_sim, -2, 2)) %>%
+    mutate(y = -500 - 20 * x + 300 * x^2 + rnorm(n_sim, 0, 50)) %>%
+    add_predictions(lm(y ~ poly(x, 2, raw = TRUE), data = .)) %>%
+    ggplot(aes(x, y)) +
+    geom_point() +
+    geom_line(aes(y = pred)) +
+    labs(title = "Quadratic") +
+    theme(axis.title = element_blank(),
+          axis.text = element_blank())
+} +
+{
+  data_frame(x = runif(n_sim, -2, 2)) %>%
+    mutate(y = 10 + 10 * x - 50 * x^2 + 300 * x^3 + rnorm(n_sim, 0, 300)) %>%
+    add_predictions(lm(y ~ poly(x, 3, raw = TRUE), data = .)) %>%
+    ggplot(aes(x, y)) +
+    geom_point() +
+    geom_line(aes(y = pred)) +
+    labs(title = "Cubic") +
+    theme(axis.title = element_blank(),
+          axis.text = element_blank())
+}
+```
+
+## Higher-order interaction terms
+
+$$
+\begin{align}
+Y = \beta_0 &+ \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_1 X_2 \\
+& + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + e
+\end{align}
+$$
+
+## Higher-order interaction terms
+
+$$
+\begin{align}
+Y = \beta_0 &+ \beta_1 X + \beta_2 D_1 + \beta_3 D_2 + \beta_4 X D_1 \\
+& + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + e
+\end{align}
+$$
+
+## Higher-order interaction terms
+
+```{r three-way}
+data_frame(x = runif(n_sim, -2, 2),
+           d1 = runif(n_sim),
+           d2 = runif(n_sim)) %>%
+  mutate_at(vars(d1, d2), funs(ifelse(. > .5, 1, 0))) %>%
+  mutate(y = 10 + 10 * x + 10 * d1 - 20 * d2 - 20 * x * d1 + 20 * x *d2 - 50 * x * d1 * d2 + rnorm(n_sim, 0, 10)) %>%
+  add_predictions(lm(y ~ x * d1 * d2, data = .)) %>%
+  ggplot(aes(x, y)) +
+  facet_grid(d1 ~ d2, labeller = label_both) +
+  geom_point() +
+  geom_line(aes(y = pred))
+```
+
+## Key rules
+
+* Don't omit the "direct effects"
+* Zero should be meaningful
+* Rescaling the variables doesn't guarantee statistical significance
+* Flexible alternatives
+* Interpreting three(+)-way interactions
+
+## Estimating models with multiplicative interactions
+
+````{r nes-data}
+# get nes data
+nes <- read_dta("../data/nes2008.dta") %>%
+  select(obama_therm_post, partyid3, libcon7, libcon7_obama) %>%
+  mutate_each(funs(ifelse(is.nan(.), NA, .))) %>%
+  rename(ObamaTherm = obama_therm_post,
+         RConserv = libcon7,
+         ObamaConserv = libcon7_obama) %>%
+  mutate(GOP = ifelse(partyid3 == 3, 1, 0)) %>%
+  select(-partyid3) %>%
+  na.omit
+```
+
+* Obama feeling thermometer (`ObamaTherm`)
+* `RConserv`
+* `ObamaConserv`
+* `GOP`
+
+## Obama data
+
+```{r nes-sum}
+summary(nes)
+```
+
+## Basic linear model
+
+```{r obama-linear}
+obama_base <- lm(ObamaTherm ~ RConserv + GOP, data = nes)
+tidy(obama_base)
+glance(obama_base)
+```
+
+## Dichotomous interaction
+
+$$
+\begin{align}
+\text{Obama} = \beta_0 &+ \beta_1 (\text{RConserv}) \\
+& + \beta_2 (\text{GOP})\\
+& + \beta_3 (\text{RConserv}) (\text{GOP}) \\
+& + e
+\end{align}
+$$
+
+## Dichotomous interaction
+
+```{r obama-ideo-x-gop}
+obama_ideo_gop <- lm(ObamaTherm ~ RConserv * GOP, data = nes)
+tidy(obama_ideo_gop)
+glance(obama_ideo_gop)
+```
+
+## Dichotomous interaction
+
+* `GOP = 0`
+
+    $$
+\begin{align}
+E(\text{Obama}) = `r coef(obama_ideo_gop)[["(Intercept)"]]` & `r coef(obama_ideo_gop)[["RConserv"]]` (\text{RConserv})  `r coef(obama_ideo_gop)[["GOP"]]` (0)\\
+&  `r coef(obama_ideo_gop)[["RConserv:GOP"]]` (\text{RConserv} \times 0) \\
+= `r coef(obama_ideo_gop)[["(Intercept)"]]` & `r coef(obama_ideo_gop)[["RConserv"]]` (\text{RConserv})
+\end{align}
+    $$
+
+* `GOP = 1`
+
+    $$
+\begin{align}
+E(\text{Obama}) & = (`r coef(obama_ideo_gop)[["(Intercept)"]]` `r coef(obama_ideo_gop)[["GOP"]]` (1)) + (`r coef(obama_ideo_gop)[["RConserv"]]` `r coef(obama_ideo_gop)[["RConserv:GOP"]]` (\text{RConserv} \times 1)) \\
+& = `r coef(obama_ideo_gop)[["(Intercept)"]] + coef(obama_ideo_gop)[["GOP"]]` `r coef(obama_ideo_gop)[["RConserv"]] + coef(obama_ideo_gop)[["RConserv:GOP"]]` (\text{RConserv})
+\end{align}
+    $$
+
+## Dichotomous interaction
+
+```{r obama-ideo-x-gop-plot}
+nes %>%
+  add_predictions(obama_ideo_gop) %>%
+  ggplot(aes(RConserv, ObamaTherm, color = factor(GOP))) +
+  geom_jitter(alpha = .5) +
+  geom_line(aes(y = pred)) +
+  scale_color_manual(values = c("blue", "red")) +
+  labs(x = "Respondent conservatism",
+       y = "Obama thermometer score") +
+  theme(legend.position = "none")
+```
+
+## Separate models
+
+```{r obama-split}
+tidy(lm(ObamaTherm ~ RConserv, data = filter(nes, GOP == 0)))
+tidy(lm(ObamaTherm ~ RConserv, data = filter(nes, GOP == 1)))
+```
+
+## Causal direction
+
+```{r obama-other-direction}
+nes %>%
+  data_grid(RConserv, GOP) %>%
+  add_predictions(obama_ideo_gop) %>%
+  spread(GOP, pred) %>%
+  mutate(diff = `1` - `0`) %>%
+  ggplot(aes(RConserv, diff)) +
+  geom_point() +
+  labs(title = "Expected Obama thermometer score",
+       x = "Respondent conservatism",
+       y = "First difference between Republicans\nand non-Republicans")
+```
+
+## Calculating standard errors
+
+$$
+\begin{align}
+\text{Obama} = \beta_0 &+ (\beta_1 + \beta_3 \text{GOP}) (\text{RConserv}) \\
+& + \beta_2 (\text{GOP}) + e \\
+ = &\beta_0 + \psi_1 (\text{RConserv}) + \beta_2 (\text{GOP}) + e
+\end{align}
+$$
+
+* Point estimate
+
+    ```{r point}
+coef(obama_ideo_gop)[["GOP"]] + coef(obama_ideo_gop)[["RConserv:GOP"]]
+    ```
+
+* Standard error
+
+    $$\hat{\sigma}_{\hat{\psi}_1} = \sqrt{\widehat{\text{Var}(\hat{\beta}_1)} + (\text{GOP})^2 \widehat{\text{Var}(\hat{\beta_3})} + 2 (\text{GOP}) \widehat{\text{Cov}(\hat{\beta}_1 \hat{\beta}_3)}}$$
+
+    ```{r std-err}
+vcov(obama_ideo_gop)
+
+sqrt(vcov(obama_ideo_gop)["RConserv", "RConserv"] +
+       (1)^2 * vcov(obama_ideo_gop)["RConserv:GOP", "RConserv:GOP"] +
+       2 * 1 * vcov(obama_ideo_gop)["RConserv", "RConserv:GOP"])
+    ```
+
+## Conducting inference {.scrollable}
+
+```{r obama-other-dir-std-err}
+# function to get point estimates and standard errors
+# model - lm object
+# mod_var - name of moderating variable in the interaction
+instant_effect <- function(model, mod_var){
+  # get interaction term name
+  int.name <- names(model$coefficients)[[which(str_detect(names(model$coefficients), ":"))]]
+  
+  marg_var <- str_split(int.name, ":")[[1]][[which(str_split(int.name, ":")[[1]] != mod_var)]]
+  
+  # store coefficients and covariance matrix
+  beta.hat <- coef(model)
+  cov <- vcov(model)
+  
+  # possible set of values for mod_var
+  if(class(model)[[1]] == "lm"){
+    z <- seq(min(model$model[[mod_var]]), max(model$model[[mod_var]]))
+  } else {
+    z <- seq(min(model$data[[mod_var]]), max(model$data[[mod_var]]))
+  }
+  
+  # calculate instantaneous effect
+  dy.dx <- beta.hat[[marg_var]] + beta.hat[[int.name]] * z
+  
+  # calculate standard errors for instantaeous effect
+  se.dy.dx <- sqrt(cov[marg_var, marg_var] +
+                     z^2 * cov[int.name, int.name] +
+                     2 * z * cov[marg_var, int.name])
+  
+  # combine into data frame
+  data_frame(z = z,
+             dy.dx = dy.dx,
+             se = se.dy.dx)
+}
+
+# point range plot
+instant_effect(obama_ideo_gop, "RConserv") %>%
+  ggplot(aes(z, dy.dx,
+             ymin = dy.dx - 1.96 * se,
+             ymax = dy.dx + 1.96 * se)) +
+  geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+  labs(title = "Marginal effect of GOP",
+       subtitle = "By respondent conservatism",
+       x = "Respondent conservatism",
+       y = "Estimated marginal effect")
+
+# line plot
+instant_effect(obama_ideo_gop, "RConserv") %>%
+  ggplot(aes(z, dy.dx)) +
+  geom_line() +
+  geom_line(aes(y = dy.dx - 1.96 * se), linetype = 2) +
+  geom_line(aes(y = dy.dx + 1.96 * se), linetype = 2) +
+  geom_hline(yintercept = 0) +
+  labs(title = "Marginal effect of GOP",
+       subtitle = "By respondent conservatism",
+       x = "Respondent conservatism",
+       y = "Estimated marginal effect")
+```
+
+## Hypothesis testing {.scrollable}
+
+```{r hypo-test, echo = TRUE}
+linearHypothesis(obama_ideo_gop, "RConserv + RConserv:GOP")
+```
+
+```{r hypo-test-rconserv7, echo = TRUE}
+linearHypothesis(obama_ideo_gop, "GOP + 7 * RConserv:GOP")
+```
+
+## Continuous interaction
+
+$$
+\begin{align}
+\text{Obama} = \beta_0 &+ \beta_1 (\text{RConserv}) \\
+& + \beta_2 (\text{ObamaConserv})\\
+& + \beta_3 (\text{RConserv}) (\text{ObamaConserv}) \\
+& + e
+\end{align}
+$$
+
+## Continuous interaction
+
+```{r obama-two-cont}
+obama_ideo2 <- lm(ObamaTherm ~ RConserv * ObamaConserv, data = nes)
+tidy(obama_ideo2)
+glance(obama_ideo2)
+```
+
+## Continuous interaction {.scrollable}
+
+```{r obama-two-marg-effect}
+instant_effect(obama_ideo2, "RConserv") %>%
+  ggplot(aes(z, dy.dx,
+             ymin = dy.dx - 1.96 * se,
+             ymax = dy.dx + 1.96 * se)) +
+  geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+  labs(title = "Marginal effect of Obama's conservatism",
+       subtitle = "By respondent conservatism",
+       x = "Respondent conservatism",
+       y = "Estimated marginal effect")
+
+instant_effect(obama_ideo2, "ObamaConserv") %>%
+  ggplot(aes(z, dy.dx,
+             ymin = dy.dx - 1.96 * se,
+             ymax = dy.dx + 1.96 * se)) +
+  geom_pointrange() +
+  geom_hline(yintercept = 0, linetype = 2) +
+  labs(title = "Marginal effect of respondent's conservatism",
+       subtitle = "By Obama conservatism",
+       x = "Obama conservatism",
+       y = "Estimated marginal effect")
+```
+
+## Predicted values plots
+
+```{r obama-heatmap}
+nes %>%
+  data_grid(RConserv, ObamaConserv) %>%
+  add_predictions(obama_ideo2) %>%
+  ggplot(aes(RConserv, ObamaConserv, z = pred, fill = pred)) +
+  geom_raster(interpolate = TRUE) +
+  scale_fill_gradient2(midpoint = 50) +
+  geom_contour() +
+  labs(title = "Expected Obama thermometer score",
+       x = "Respondent conservatism",
+       y = "Obama conservatism",
+       fill = "Prediction")
+```
+
+## Predicted values plots
+
+```{r obama-3d}
+nes %>%
+  data_grid(RConserv, ObamaConserv) %>%
+  add_predictions(obama_ideo2)  %>%
+  spread(ObamaConserv, pred) %>%
+  select(-RConserv) %>%
+  as.matrix %>%
+  plot_ly(x = ~ 1:7, y = ~ 1:7, z = .) %>%
+  add_surface() %>%
+  layout(title = "Predicted values for Obama feeling thermometer",
+         scene = list(
+           xaxis = list(
+             title = "Respondent conservatism"
+           ),
+           yaxis = list(
+             title = "Obama conservatism"
+           ),
+           zaxis = list(
+             title = "Predictions"
+           )
+         )
+  )
+```
