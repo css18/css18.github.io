@@ -1,0 +1,102 @@
+---
+title: "Homework 08: Diagnosing and interpreting OLS models"
+output: html_document
+---
+
+# Overview
+
+Due by 2pm on December 11, 2018.
+
+# Fork the `hw08` repository
+
+Go [here](https://github.com/css18/hw08) to fork the repo for homework 08.
+
+# Exercises (10 points)
+
+![](https://s3.amazonaws.com/media.thecrimson.com/photos/2014/10/02/103651_1299339.jpg)
+
+[Joe Biden](https://en.wikipedia.org/wiki/Joe_Biden) was the 47th Vice President of the United States. He was the subject of [many memes](http://distractify.com/trending/2016/11/16/best-of-joe-and-obama-memes), [attracted the attention of Leslie Knope](https://www.youtube.com/watch?v=NvbMB_GGR6s), and [experienced a brief surge in attention due to photos from his youth](http://www.huffingtonpost.com/entry/joe-young-hot_us_58262f53e4b0c4b63b0c9e11).
+
+`biden.csv` contains a selection of variables from the [2008 American National Election Studies survey](http://www.electionstudies.org/) that allow you to test competing factors that may influence attitudes towards Joe Biden. The variables are coded as follows:
+
+* `biden` - feeling thermometer ranging from 0-100^[Feeling thermometers are a common metric in survey research used to gauge attitudes or feelings of warmth towards individuals and institutions. They range from 0-100, with 0 indicating extreme coldness and 100 indicating extreme warmth.]
+* `female` - 1 if respondent is female, 0 if respondent is male
+* `age` - age of respondent in years
+* `dem` - 1 if respondent is a Democrat, 0 otherwise
+* `rep` - 1 if respondent is a Republican, 0 otherwise
+* `educ` - number of years of formal education completed by respondent
+    * `17` - 17+ years (aka first year of graduate school and up)
+  
+## Simple linear regression
+
+Estimate the following linear regression:
+
+$$Y = \beta_0 + \beta_{1}X_1$$
+
+where $Y$ is the Joe Biden feeling thermometer and $X_1$ is age. Report the parameters and standard errors.
+
+1. Is there a relationship between the predictor and the response?
+1. How strong is the relationship between the predictor and the response?
+1. Is the relationship between the predictor and the response positive or negative?
+1. Report the $R^2$ of the model. What percentage of the variation in `biden` does `age` alone explain? Is this a good or bad model?
+1. What is the predicted `biden` associated with an `age` of 45? What are the associated 95% confidence intervals?
+1. Plot the response and predictor. Draw the least squares regression line.
+
+## Multiple linear regression
+
+It is unlikely `age` alone shapes attitudes towards Joe Biden. Estimate the following linear regression:
+
+$$Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_3$$
+
+where $Y$ is the Joe Biden feeling thermometer, $X_1$ is age, $X_2$ is gender, and $X_3$ is education. Report the parameters and standard errors.
+
+1. Is there a statistically significant relationship between the predictors and response?
+1. What does the parameter for `female` suggest?
+1. Report the $R^2$ of the model. What percentage of the variation in `biden` does age, gender, and education explain? Is this a better or worse model than the age-only model?
+1. Generate a plot comparing the predicted values and residuals, drawing separate smooth fit lines for each party ID type. Is there a problem with this model? If so, what?
+
+## Multiple linear regression model (with even more variables!)
+
+Estimate the following linear regression:
+
+$$Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_3 + \beta_{4}X_4 + \beta_{5}X_5$$
+
+where $Y$ is the Joe Biden feeling thermometer, $X_1$ is age, $X_2$ is gender, $X_3$ is education, $X_4$ is Democrat, and $X_5$ is Republican.^[Independents must be left out to serve as the baseline category, otherwise we would encounter perfect multicollinearity.] Report the parameters and standard errors.
+
+1. Did the relationship between gender and Biden warmth change?
+1. Report the $R^2$ of the model. What percentage of the variation in `biden` does age, gender, education, and party identification explain? Is this a better or worse model than the age + gender + education model?
+1. Generate a plot comparing the predicted values and residuals, drawing separate smooth fit lines for each party ID type. By adding variables for party ID to the regression model, did we fix the previous problem?
+
+## Regression diagnostics
+
+Estimate the following linear regression model of attitudes towards Joseph Biden:
+
+$$Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_3$$
+
+where $Y$ is the Joe Biden feeling thermometer, $X_1$ is age, $X_2$ is gender, and $X_3$ is education. Report the parameters and standard errors.
+
+> For this section, be sure to `na.omit()` the data frame (listwise deletion) before estimating the regression model. Otherwise you will get a plethora of errors for the diagnostic tests.
+
+1. Test the model to identify any unusual and/or influential observations. Identify how you would treat these observations moving forward with this research. Note you do not actually have to estimate a new model, just explain what you would do. This could include things like dropping observations, respecifying the model, or collecting additional variables to control for this influential effect.
+1. Test for non-normally distributed errors. If they are not normally distributed, propose how to correct for them.
+1. Test for heteroscedasticity in the model. If present, explain what impact this could have on inference.
+1. Test for multicollinearity. If present, propose if/how to solve the problem.
+
+## Interaction terms
+
+Estimate the following linear regression model:
+
+$$Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_1 X_2$$
+
+where $Y$ is the Joe Biden feeling thermometer, $X_1$ is age, and $X_2$ is education. Report the parameters and standard errors.
+
+> Again, employ listwise deletion in this section prior to estimating the regression model.
+
+1. Evaluate the marginal effect of age on Joe Biden thermometer rating, conditional on education. Consider the magnitude and direction of the marginal effect, as well as its statistical significance.
+1. Evaluate the marginal effect of education on Joe Biden thermometer rating, conditional on age. Consider the magnitude and direction of the marginal effect, as well as its statistical significance.
+
+# Submit the assignment
+
+Your assignment should be submitted as an R Markdown document rendered as an HTML/PDF document. **Don't know what an R Markdown document is? [Read this!](http://rmarkdown.rstudio.com/lesson-1.html) Or [this!](http://r4ds.had.co.nz/r-markdown.html)** I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.
+
+Follow instructions on [homework workflow](https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow). As part of the pull request, you're encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.

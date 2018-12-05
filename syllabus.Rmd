@@ -50,3 +50,4 @@ cdat %>%
 * [Homework 05: Continuous random variables and optimization](hw05-rv-continuous-optimize.html)
 * [Homework 06: Statistical inference, parametric models, and hypothesis testing](hw06-stat-inference.html)
 * [Homework 07: Bayesian inference and OLS estimator](hw07-bayesian-ols.html)
+* [Homework 08: Diagnosing and interpreting OLS models](hw08-ols-interpret.html)

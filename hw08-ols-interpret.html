@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>Homework 08: Diagnosing and interpreting OLS models</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-45631879-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-45631879-4');
+</script>
+
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MS-CSS</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="faq.html">FAQ</a>
+</li>
+<li>
+  <a href="syllabus.html">Syllabus</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Homework 08: Diagnosing and interpreting OLS models</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>Due by 2pm on December 11, 2018.</p>
+</div>
+<div id="fork-the-hw08-repository" class="section level1">
+<h1>Fork the <code>hw08</code> repository</h1>
+<p>Go <a href="https://github.com/css18/hw08">here</a> to fork the repo for homework 08.</p>
+</div>
+<div id="exercises-10-points" class="section level1">
+<h1>Exercises (10 points)</h1>
+<div class="figure">
+<img src="https://s3.amazonaws.com/media.thecrimson.com/photos/2014/10/02/103651_1299339.jpg" />
+
+</div>
+<p><a href="https://en.wikipedia.org/wiki/Joe_Biden">Joe Biden</a> was the 47th Vice President of the United States. He was the subject of <a href="http://distractify.com/trending/2016/11/16/best-of-joe-and-obama-memes">many memes</a>, <a href="https://www.youtube.com/watch?v=NvbMB_GGR6s">attracted the attention of Leslie Knope</a>, and <a href="http://www.huffingtonpost.com/entry/joe-young-hot_us_58262f53e4b0c4b63b0c9e11">experienced a brief surge in attention due to photos from his youth</a>.</p>
+<p><code>biden.csv</code> contains a selection of variables from the <a href="http://www.electionstudies.org/">2008 American National Election Studies survey</a> that allow you to test competing factors that may influence attitudes towards Joe Biden. The variables are coded as follows:</p>
+<ul>
+<li><code>biden</code> - feeling thermometer ranging from 0-100<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></li>
+<li><code>female</code> - 1 if respondent is female, 0 if respondent is male</li>
+<li><code>age</code> - age of respondent in years</li>
+<li><code>dem</code> - 1 if respondent is a Democrat, 0 otherwise</li>
+<li><code>rep</code> - 1 if respondent is a Republican, 0 otherwise</li>
+<li><code>educ</code> - number of years of formal education completed by respondent
+<ul>
+<li><code>17</code> - 17+ years (aka first year of graduate school and up)</li>
+</ul></li>
+</ul>
+<div id="simple-linear-regression" class="section level2">
+<h2>Simple linear regression</h2>
+<p>Estimate the following linear regression:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_{1}X_1\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the Joe Biden feeling thermometer and <span class="math inline">\(X_1\)</span> is age. Report the parameters and standard errors.</p>
+<ol style="list-style-type: decimal">
+<li>Is there a relationship between the predictor and the response?</li>
+<li>How strong is the relationship between the predictor and the response?</li>
+<li>Is the relationship between the predictor and the response positive or negative?</li>
+<li>Report the <span class="math inline">\(R^2\)</span> of the model. What percentage of the variation in <code>biden</code> does <code>age</code> alone explain? Is this a good or bad model?</li>
+<li>What is the predicted <code>biden</code> associated with an <code>age</code> of 45? What are the associated 95% confidence intervals?</li>
+<li>Plot the response and predictor. Draw the least squares regression line.</li>
+</ol>
+</div>
+<div id="multiple-linear-regression" class="section level2">
+<h2>Multiple linear regression</h2>
+<p>It is unlikely <code>age</code> alone shapes attitudes towards Joe Biden. Estimate the following linear regression:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_3\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the Joe Biden feeling thermometer, <span class="math inline">\(X_1\)</span> is age, <span class="math inline">\(X_2\)</span> is gender, and <span class="math inline">\(X_3\)</span> is education. Report the parameters and standard errors.</p>
+<ol style="list-style-type: decimal">
+<li>Is there a statistically significant relationship between the predictors and response?</li>
+<li>What does the parameter for <code>female</code> suggest?</li>
+<li>Report the <span class="math inline">\(R^2\)</span> of the model. What percentage of the variation in <code>biden</code> does age, gender, and education explain? Is this a better or worse model than the age-only model?</li>
+<li>Generate a plot comparing the predicted values and residuals, drawing separate smooth fit lines for each party ID type. Is there a problem with this model? If so, what?</li>
+</ol>
+</div>
+<div id="multiple-linear-regression-model-with-even-more-variables" class="section level2">
+<h2>Multiple linear regression model (with even more variables!)</h2>
+<p>Estimate the following linear regression:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_3 + \beta_{4}X_4 + \beta_{5}X_5\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the Joe Biden feeling thermometer, <span class="math inline">\(X_1\)</span> is age, <span class="math inline">\(X_2\)</span> is gender, <span class="math inline">\(X_3\)</span> is education, <span class="math inline">\(X_4\)</span> is Democrat, and <span class="math inline">\(X_5\)</span> is Republican.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> Report the parameters and standard errors.</p>
+<ol style="list-style-type: decimal">
+<li>Did the relationship between gender and Biden warmth change?</li>
+<li>Report the <span class="math inline">\(R^2\)</span> of the model. What percentage of the variation in <code>biden</code> does age, gender, education, and party identification explain? Is this a better or worse model than the age + gender + education model?</li>
+<li>Generate a plot comparing the predicted values and residuals, drawing separate smooth fit lines for each party ID type. By adding variables for party ID to the regression model, did we fix the previous problem?</li>
+</ol>
+</div>
+<div id="regression-diagnostics" class="section level2">
+<h2>Regression diagnostics</h2>
+<p>Estimate the following linear regression model of attitudes towards Joseph Biden:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_3\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the Joe Biden feeling thermometer, <span class="math inline">\(X_1\)</span> is age, <span class="math inline">\(X_2\)</span> is gender, and <span class="math inline">\(X_3\)</span> is education. Report the parameters and standard errors.</p>
+<blockquote>
+<p>For this section, be sure to <code>na.omit()</code> the data frame (listwise deletion) before estimating the regression model. Otherwise you will get a plethora of errors for the diagnostic tests.</p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Test the model to identify any unusual and/or influential observations. Identify how you would treat these observations moving forward with this research. Note you do not actually have to estimate a new model, just explain what you would do. This could include things like dropping observations, respecifying the model, or collecting additional variables to control for this influential effect.</li>
+<li>Test for non-normally distributed errors. If they are not normally distributed, propose how to correct for them.</li>
+<li>Test for heteroscedasticity in the model. If present, explain what impact this could have on inference.</li>
+<li>Test for multicollinearity. If present, propose if/how to solve the problem.</li>
+</ol>
+</div>
+<div id="interaction-terms" class="section level2">
+<h2>Interaction terms</h2>
+<p>Estimate the following linear regression model:</p>
+<p><span class="math display">\[Y = \beta_0 + \beta_{1}X_1 + \beta_{2}X_2 + \beta_{3}X_1 X_2\]</span></p>
+<p>where <span class="math inline">\(Y\)</span> is the Joe Biden feeling thermometer, <span class="math inline">\(X_1\)</span> is age, and <span class="math inline">\(X_2\)</span> is education. Report the parameters and standard errors.</p>
+<blockquote>
+<p>Again, employ listwise deletion in this section prior to estimating the regression model.</p>
+</blockquote>
+<ol style="list-style-type: decimal">
+<li>Evaluate the marginal effect of age on Joe Biden thermometer rating, conditional on education. Consider the magnitude and direction of the marginal effect, as well as its statistical significance.</li>
+<li>Evaluate the marginal effect of education on Joe Biden thermometer rating, conditional on age. Consider the magnitude and direction of the marginal effect, as well as its statistical significance.</li>
+</ol>
+</div>
+</div>
+<div id="submit-the-assignment" class="section level1">
+<h1>Submit the assignment</h1>
+<p>Your assignment should be submitted as an R Markdown document rendered as an HTML/PDF document. <strong>Don’t know what an R Markdown document is? <a href="http://rmarkdown.rstudio.com/lesson-1.html">Read this!</a> Or <a href="http://r4ds.had.co.nz/r-markdown.html">this!</a></strong> I have included starter files for you to modify to complete the assignment, so you are not beginning completely from scratch.</p>
+<p>Follow instructions on <a href="https://cfss.uchicago.edu/hw00_homework_guidelines.html#homework_workflow">homework workflow</a>. As part of the pull request, you’re encouraged to reflect on what was hard/easy, problems you solved, helpful tutorials you read, etc.</p>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Feeling thermometers are a common metric in survey research used to gauge attitudes or feelings of warmth towards individuals and institutions. They range from 0-100, with 0 indicating extreme coldness and 100 indicating extreme warmth.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>Independents must be left out to serve as the baseline category, otherwise we would encounter perfect multicollinearity.<a href="#fnref2">↩</a></p></li>
+</ol>
+</div>
+
+<p>This work is licensed under the  <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0 Creative Commons License</a>.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
