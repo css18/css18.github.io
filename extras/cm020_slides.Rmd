@@ -268,7 +268,7 @@ data_frame(x = runif(n_sim, -2, 2),
   geom_point() +
   geom_abline(intercept = 0, slope = 20) +
   geom_abline(intercept = 20, slope = -20, linetype = 2) +
-  labs(title = expression(paste({beta[2] == 0}, ",", beta[3] != 0)),
+      labs(title = expression(paste(beta[2] != 0, ",", beta[3] != 0)),
        color = "Z",
        shape = "Z") +
   theme(legend.position = "bottom")

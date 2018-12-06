@@ -593,7 +593,7 @@ additive <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">intercept =</span> <span class="dv">0</span>, <span class="dt">slope =</span> <span class="dv">20</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_abline</span>(<span class="dt">intercept =</span> <span class="dv">20</span>, <span class="dt">slope =</span> <span class="op">-</span><span class="dv">20</span>, <span class="dt">linetype =</span> <span class="dv">2</span>) <span class="op">+</span>
-<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(<span class="kw">paste</span>({beta[<span class="dv">2</span>] <span class="op">==</span><span class="st"> </span><span class="dv">0</span>}, <span class="st">&quot;,&quot;</span>, beta[<span class="dv">3</span>] <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>)),
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="kw">expression</span>(<span class="kw">paste</span>(beta[<span class="dv">2</span>] <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>, <span class="st">&quot;,&quot;</span>, beta[<span class="dv">3</span>] <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>)),
        <span class="dt">color =</span> <span class="st">&quot;Z&quot;</span>,
        <span class="dt">shape =</span> <span class="st">&quot;Z&quot;</span>) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</code></pre></div>
@@ -1079,13 +1079,12 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 ##  backports     1.1.2   2017-12-13 CRAN (R 3.5.0)
 ##  base        * 3.5.1   2018-07-05 local         
 ##  bindr         0.1.1   2018-03-13 CRAN (R 3.5.0)
-##  bindrcpp    * 0.2.2   2018-03-29 CRAN (R 3.5.0)
+##  bindrcpp      0.2.2   2018-03-29 CRAN (R 3.5.0)
 ##  broom       * 0.5.0   2018-07-17 CRAN (R 3.5.0)
 ##  car         * 3.0-0   2018-04-02 CRAN (R 3.5.0)
 ##  carData     * 3.0-1   2018-03-28 CRAN (R 3.5.0)
 ##  cellranger    1.1.0   2016-07-27 CRAN (R 3.5.0)
 ##  cli           1.0.0   2017-11-05 CRAN (R 3.5.0)
-##  codetools     0.2-15  2016-10-05 CRAN (R 3.5.1)
 ##  coefplot    * 1.2.6   2018-02-07 CRAN (R 3.5.0)
 ##  colorspace    1.3-2   2016-12-14 CRAN (R 3.5.0)
 ##  compiler      3.5.1   2018-07-05 local         
@@ -1116,13 +1115,11 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 ##  lazyeval      0.2.1   2017-10-29 CRAN (R 3.5.0)
 ##  lubridate     1.7.4   2018-04-11 CRAN (R 3.5.0)
 ##  magrittr      1.5     2014-11-22 CRAN (R 3.5.0)
-##  Matrix        1.2-14  2018-04-13 CRAN (R 3.5.1)
 ##  memoise       1.1.0   2017-04-21 CRAN (R 3.5.0)
 ##  methods     * 3.5.1   2018-07-05 local         
-##  mgcv        * 1.8-24  2018-06-23 CRAN (R 3.5.1)
 ##  modelr      * 0.1.2   2018-05-11 CRAN (R 3.5.0)
 ##  munsell       0.5.0   2018-06-12 CRAN (R 3.5.0)
-##  nlme        * 3.1-137 2018-04-07 CRAN (R 3.5.1)
+##  nlme          3.1-137 2018-04-07 CRAN (R 3.5.1)
 ##  openxlsx      4.1.0   2018-05-26 CRAN (R 3.5.0)
 ##  pillar        1.3.0   2018-07-14 CRAN (R 3.5.0)
 ##  pkgconfig     2.0.2   2018-08-16 CRAN (R 3.5.1)
@@ -1149,7 +1146,6 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 ##  tidyr       * 0.8.1   2018-05-18 CRAN (R 3.5.0)
 ##  tidyselect    0.2.5   2018-10-11 cran (@0.2.5) 
 ##  tidyverse   * 1.2.1   2017-11-14 CRAN (R 3.5.0)
-##  titanic     * 0.1.0   2015-08-31 CRAN (R 3.5.0)
 ##  tools         3.5.1   2018-07-05 local         
 ##  useful        1.2.5   2018-06-09 CRAN (R 3.5.0)
 ##  utils       * 3.5.1   2018-07-05 local         
