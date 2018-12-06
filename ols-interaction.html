@@ -351,7 +351,6 @@ div.tocify {
 <span class="kw">library</span>(broom)
 <span class="kw">library</span>(modelr)
 <span class="kw">library</span>(stringr)
-<span class="kw">library</span>(titanic)
 <span class="kw">library</span>(rcfss)
 <span class="kw">library</span>(car)
 <span class="kw">library</span>(plotly)
@@ -361,12 +360,13 @@ div.tocify {
 <span class="kw">options</span>(<span class="dt">digits =</span> <span class="dv">3</span>)
 <span class="kw">set.seed</span>(<span class="dv">1234</span>)
 <span class="kw">theme_set</span>(<span class="kw">theme_minimal</span>())</code></pre></div>
+<p><span class="math display">\[\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}\]</span></p>
 <div id="multiplicative-interaction-models" class="section level1">
 <h1>Multiplicative interaction models</h1>
 <div id="additive-model" class="section level2">
 <h2>Additive model</h2>
 <p>Consider a linear additive model of the form:</p>
-<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 Z + e_i\]</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 Z + \epsilon_i\]</span></p>
 <p>By definition, we expect <span class="math inline">\(\beta_1\)</span> to estimate the direct effect (or relationship) of <span class="math inline">\(X_1\)</span> on <span class="math inline">\(Y\)</span> independent of <span class="math inline">\(Z\)</span>.<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> A data generating process with a continuous value for <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and a dichotomous value for <span class="math inline">\(Z\)</span> following this functional form would look like:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">n_sim &lt;-<span class="st"> </span><span class="dv">100</span>
 
@@ -380,36 +380,38 @@ additive <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(x, y, <span class="dt">color =</span> <span class="kw">factor</span>(z))) <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span>
 <span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">y =</span> pred)) <span class="op">+</span>
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="kw">expression</span>(X),
+       <span class="dt">y =</span> <span class="kw">expression</span>(Y)) <span class="op">+</span>
 <span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre></div>
 <p><img src="ols-interaction_files/figure-html/sim-linear-1.png" width="672" /></p>
 <p>Consider the net impact of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>:</p>
-<p><span class="math display">\[E(Y) = \beta_0 + \beta_1 X + \beta_2 Z\]</span></p>
+<p><span class="math display">\[\E[Y] = \beta_0 + \beta_1 X + \beta_2 Z\]</span></p>
 <p>If we take the first derivative of this with respect to <span class="math inline">\(X\)</span>, we get:</p>
-<p><span class="math display">\[\frac{\delta E(Y)}{\delta X} = \beta_1\]</span></p>
+<p><span class="math display">\[\frac{\delta \E[Y]}{\delta X} = \beta_1\]</span></p>
 <p>In other words, the marginal impact of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is constant and completely independent of <span class="math inline">\(Z\)</span>. Likewise, the marginal impact of <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span> is:</p>
-<p><span class="math display">\[\frac{\delta E(Y)}{\delta Z} = \beta_2\]</span></p>
+<p><span class="math display">\[\frac{\delta \E[Y]}{\delta Z} = \beta_2\]</span></p>
 <p>Interpreting the estimated parameters and standard errors is relatively straightforward in this setup.</p>
 </div>
 <div id="multiplicative-interaction-model" class="section level2">
 <h2>Multiplicative interaction model</h2>
 <p>But the additive functional form only makes sense if you theoretically believe the effects of <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> are independent. Consider instead a simple interactive model with three variables:</p>
-<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + e_i\]</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + \epsilon_i\]</span></p>
 <p>Here <span class="math inline">\(XZ\)</span> is just that: <span class="math inline">\(X\)</span> multiplied by <span class="math inline">\(Z\)</span>. <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> are commonly (and erroneously) referred to as the <strong>direct effects</strong> of <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> on <span class="math inline">\(Y\)</span>,<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> and <span class="math inline">\(\beta_3\)</span> as the coefficient for the <strong>interaction term</strong>.</p>
 <p>With the variables multiplied together, the net impact of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is now defined by:</p>
 <p><span class="math display">\[
 \begin{split}
-E(Y) &amp; = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
+\E[Y] &amp; = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
      &amp; = \beta_0 + \beta_2 Z + (\beta_1 + \beta_3 Z) X
 \end{split}
 \]</span></p>
 <p>And the first derivative of this with respect to <span class="math inline">\(X\)</span> is:</p>
-<p><span class="math display">\[\frac{\delta E(Y)}{\delta X} = \beta_1 + \beta_3 Z\]</span></p>
+<p><span class="math display">\[\frac{\delta \E[Y]}{\delta X} = \beta_1 + \beta_3 Z\]</span></p>
 <p>In other words, the marginal impact of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> now explicitly depends on the value of <span class="math inline">\(Z\)</span>. Another way of phrasing the expected value function above is:</p>
-<p><span class="math display">\[E(Y) = \beta_0 + \beta_2 Z + \psi_1 X\]</span></p>
+<p><span class="math display">\[\E[Y] = \beta_0 + \beta_2 Z + \psi_1 X\]</span></p>
 <p>where <span class="math inline">\(\psi_1 = \beta_1 + \beta_3 Z\)</span> is a “quasi-coefficient” for the marginal impact of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. Likewise with respect to <span class="math inline">\(Z\)</span>:</p>
 <p><span class="math display">\[
 \begin{split}
-E(Y) &amp; = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
+\E[Y] &amp; = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
      &amp; = \beta_0 + \beta_1 X + \psi_2 Z
 \end{split}
 \]</span></p>
@@ -420,14 +422,14 @@ E(Y) &amp; = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
 <li><p>If <span class="math inline">\(Z = 0\)</span>, then:</p>
 <p><span class="math display">\[
 \begin{split}
-E(Y) &amp; = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
+\E[Y] &amp; = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
      &amp; = \beta_0 + \beta_1 X
 \end{split}
 \]</span></p></li>
 <li><p>If <span class="math inline">\(X = 0\)</span>, then:</p>
 <p><span class="math display">\[
 \begin{split}
-E(Y) &amp; = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
+\E[Y] &amp; = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
      &amp; = \beta_0 + \beta_2 Z
 \end{split}
 \]</span></p></li>
@@ -449,7 +451,7 @@ E(Y) &amp; = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
 <p>That said, a multiplicative interaction model is still a standard linear regression model, so the same principles of OLS apply. That means we can obtain estimates of the <span class="math inline">\(\beta\)</span>s in the standard way, and we can estimate standard errors for those coefficient estimates in the usual way (as the square roots of the diagonal elements of the variance-covariance matrix <span class="math inline">\(\hat{\sigma}^2 (\mathbf{X}&#39; \mathbf{X})^{-1}\)</span>).</p>
 <p>The problem is that we don’t care about these quantities - we care about the marginal effects, that is <span class="math inline">\(\psi_1\)</span> and <span class="math inline">\(\psi_2\)</span>. Calculating point estimates for these is trivial:</p>
 <p><span class="math display">\[\hat{\psi}_1 = \hat{\beta}_1 + \hat{\beta}_3 Z\]</span> <span class="math display">\[\hat{\psi}_2 = \hat{\beta}_2 + \hat{\beta}_3 X\]</span></p>
-<p>But in order to conduct inference, we need to know if these values are statistically distinguishable from zero. For that, we need estimate the <strong>variance</strong> for these parameters. Three key rules help us define the equation for their variance. Where <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables and <span class="math inline">\(a\)</span> is a constant:</p>
+<p>But in order to conduct inference, we need to know if these values are statistically distinguishable from zero. For that, we need to estimate the <strong>variance</strong> for these parameters. Three key rules help us define the equation for their variance. Where <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are random variables and <span class="math inline">\(a\)</span> is a constant:</p>
 <ol style="list-style-type: decimal">
 <li><span class="math inline">\(\text{Var}(aX) = a^2 \text{Var}(X)\)</span></li>
 <li><span class="math inline">\(\text{Var}(X+Y) = \text{Var}(X) + \text{Var}(Y) + 2 \text{Cov}(X,Y)\)</span></li>
@@ -471,18 +473,18 @@ E(Y) &amp; = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
 <p>There are several major types of interaction terms that can occur within regression models. Here I present examples of these major types using simulated data.</p>
 <div id="two-dichtomous-covariates" class="section level2">
 <h2>Two dichtomous covariates</h2>
-<p><span class="math display">\[Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + e_i\]</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + \epsilon_i\]</span></p>
 <p>In this model, the expected value for <span class="math inline">\(Y\)</span> can take on four possible values:</p>
 <p><span class="math display">\[
 \begin{split}
-E(Y | D_1 = 0, D_2 = 0) &amp; = \beta_0 \\
-E(Y | D_1 = 1, D_2 = 0) &amp; = \beta_0 + \beta_1 \\
-E(Y | D_1 = 0, D_2 = 1) &amp; = \beta_0 + \beta_2 \\
-E(Y | D_1 = 1, D_2 = 1) &amp; = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
+\E[Y | D_1 = 0, D_2 = 0] &amp; = \beta_0 \\
+\E[Y | D_1 = 1, D_2 = 0] &amp; = \beta_0 + \beta_1 \\
+\E[Y | D_1 = 0, D_2 = 1] &amp; = \beta_0 + \beta_2 \\
+\E[Y | D_1 = 1, D_2 = 1] &amp; = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
 \end{split}
 \]</span></p>
 <p>Consider data generated from the following model:</p>
-<p><span class="math display">\[Y = 10 + 20 D_1 - 20 D_2 + 40 D_1 D_2 + e, \text{ where } e \sim N(0, 5)\]</span></p>
+<p><span class="math display">\[Y = 10 + 20 D_1 - 20 D_2 + 40 D_1 D_2 + \epsilon, \text{ where } \epsilon \sim N(0, 5)\]</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">two_dich &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">runif</span>(n_sim),
                        <span class="dt">z =</span> <span class="kw">runif</span>(n_sim)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(x, z), <span class="kw">funs</span>(<span class="kw">ifelse</span>(. <span class="op">&gt;</span><span class="st"> </span>.<span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">0</span>))) <span class="op">%&gt;%</span>
@@ -524,11 +526,11 @@ E(Y | D_1 = 1, D_2 = 1) &amp; = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
 <div id="one-dichotomous-and-one-continuous-covariate" class="section level2">
 <h2>One dichotomous and one continuous covariate</h2>
 <p>More commonly, we have a situation where one variable in the interaction is continous and the other is dichotomous:</p>
-<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + e_i\]</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + \epsilon_i\]</span></p>
 <p><span class="math display">\[
 \begin{split}
-E(Y | X, D = 0) &amp; = \beta_0 + \beta_1 X \\
-E(Y | X, D = 1) &amp; = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
+\E[Y | X, D = 0] &amp; = \beta_0 + \beta_1 X \\
+\E[Y | X, D = 1] &amp; = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
 \end{split}
 \]</span></p>
 <p>This suggests four possibilities:</p>
@@ -601,7 +603,7 @@ E(Y | X, D = 1) &amp; = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
 <div id="two-continuous-covariates" class="section level2">
 <h2>Two continuous covariates</h2>
 <p>It is also common to have a model in which both interacted covariates are continuous:</p>
-<p><span class="math display">\[Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + e_i\]</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + \epsilon_i\]</span></p>
 <p>The interpretation here is that each covariate’s effect on <span class="math inline">\(Y\)</span> changes <strong>smoothly</strong> and <strong>monotonically</strong> as a function of the other covariate.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># no interactive effects</span>
 <span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">runif</span>(n_sim, <span class="dv">0</span>, <span class="dv">10</span>),
@@ -624,9 +626,9 @@ E(Y | X, D = 1) &amp; = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
 <div id="quadratic-cubic-and-other-polynomial-effects" class="section level2">
 <h2>Quadratic, cubic, and other polynomial effects</h2>
 <p>Curvilinear or quadratic relationships for a single variable are also a type of interactive model. For example, consider a second-order polynomial regression:</p>
-<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 X^2 + e\]</span></p>
+<p><span class="math display">\[Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \epsilon\]</span></p>
 <p>The marginal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is:</p>
-<p><span class="math display">\[\frac{\delta E(Y)}{\delta X} = \beta_1 + 2 \beta_2 X\]</span></p>
+<p><span class="math display">\[\frac{\delta \E[Y]}{\delta X} = \beta_1 + 2 \beta_2 X\]</span></p>
 <p>This tells us that the marginal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> depends linearly on the value of <span class="math inline">\(X\)</span> itself.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">runif</span>(n_sim, <span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="dv">10</span> <span class="op">+</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span>x <span class="op">-</span><span class="st"> </span>(<span class="dv">50</span> <span class="op">*</span><span class="st"> </span>x<span class="op">^</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n_sim, <span class="dv">0</span>, <span class="dv">5</span>)) <span class="op">%&gt;%</span>
@@ -659,14 +661,14 @@ E(Y | X, D = 1) &amp; = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
 <p><span class="math display">\[
 \begin{align}
 Y = \beta_0 &amp;+ \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_1 X_2 \\
-&amp; + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + e
+&amp; + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + \epsilon
 \end{align}
 \]</span></p>
 <p>The various <span class="math inline">\(X\)</span>s could be continuous or dichotomous, with corresponding interpretations. In this model, each of the three <span class="math inline">\(X\)</span>s conditions the influence of the other. This can be become very complex and confusing. In the simplest case with two dichotmous variables and one continuous <span class="math inline">\(X\)</span>:</p>
 <p><span class="math display">\[
 \begin{align}
 Y = \beta_0 &amp;+ \beta_1 X + \beta_2 D_1 + \beta_3 D_2 + \beta_4 X D_1 \\
-&amp; + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + e
+&amp; + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + \epsilon
 \end{align}
 \]</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data_frame</span>(<span class="dt">x =</span> <span class="kw">runif</span>(n_sim, <span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>),
@@ -701,16 +703,13 @@ Y = \beta_0 &amp;+ \beta_1 X + \beta_2 D_1 + \beta_3 D_2 + \beta_4 X D_1 \\
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get nes data</span>
 nes &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="st">&quot;data/nes2008.dta&quot;</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(obama_therm_post, partyid3, libcon7, libcon7_obama) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">mutate_each</span>(<span class="kw">funs</span>(<span class="kw">ifelse</span>(<span class="kw">is.nan</span>(.), <span class="ot">NA</span>, .))) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">mutate_all</span>(<span class="kw">funs</span>(<span class="kw">ifelse</span>(<span class="kw">is.nan</span>(.), <span class="ot">NA</span>, .))) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">rename</span>(<span class="dt">ObamaTherm =</span> obama_therm_post,
          <span class="dt">RConserv =</span> libcon7,
          <span class="dt">ObamaConserv =</span> libcon7_obama) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">mutate</span>(<span class="dt">GOP =</span> <span class="kw">ifelse</span>(partyid3 <span class="op">==</span><span class="st"> </span><span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>partyid3) <span class="op">%&gt;%</span>
-<span class="st">  </span>na.omit</code></pre></div>
-<pre><code>## `mutate_each()` is deprecated.
-## Use `mutate_all()`, `mutate_at()` or `mutate_if()` instead.
-## To map `funs` over all variables, use `mutate_all()`</code></pre>
+<span class="st">  </span><span class="kw">na.omit</span>()</code></pre></div>
 <p>Let’s look at data from the 2008 American national election study. The outcome of interest is the <strong>Obama feeling thermometer</strong> (<code>ObamaTherm</code>). Our covariates are:</p>
 <ul>
 <li><code>RConserv</code> - the respondent’s self-placement on a liberal/conservative scale, ranging in value from 1 (extremely liberal) to 7 (extremely conservative)</li>
@@ -747,7 +746,7 @@ nes &lt;-<span class="st"> </span><span class="kw">read_dta</span>(<span class="
 <p><span class="math display">\[
 \begin{align}
 \text{Obama thermometer} = \beta_0 &amp;+ \beta_1 (\text{Respondent conservatism}) + \beta_2 (\text{GOP respondent})\\
-&amp; + \beta_3 (\text{Respondent conservatism}) (\text{GOP respondent}) + e
+&amp; + \beta_3 (\text{Respondent conservatism}) (\text{GOP respondent}) + \epsilon
 \end{align}
 \]</span></p>
 <p>So we expect <span class="math inline">\(\beta_1 &lt; 0\)</span> (conservatives will be more negative towards Obama), <span class="math inline">\(\beta_2 &lt; 0\)</span> (Republicans will be more negative towards Clinton), and <span class="math inline">\(\beta_3 &lt; 0\)</span> (the responsiveness of Obama’s thermometer score to the respondent’s ideology will be even greater - that is, more negative - among Republicans).</p>
@@ -852,7 +851,7 @@ E(\text{Obama thermometer}) &amp; = (92.255 -11.069 (1)) + (-3.805 -2.856 (\text
 \begin{align}
 \text{Obama thermometer} = &amp;\beta_0 + (\beta_1 + \beta_3 \text{GOP}) (\text{Respondent conservatism}) + \\
 &amp; \beta_2 (\text{GOP respondent}) + e \\
- = &amp;\beta_0 + \psi_1 (\text{Respondent conservatism}) + \beta_2 (\text{GOP respondent}) + e
+ = &amp;\beta_0 + \psi_1 (\text{Respondent conservatism}) + \beta_2 (\text{GOP respondent}) + \epsilon
 \end{align}
 \]</span></p>
 <p>Calculating the point estimates <span class="math inline">\(\hat{\psi}\)</span> is straightforward:</p>
@@ -934,7 +933,7 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 </div>
 <div id="hypothesis-testing" class="section level2">
 <h2>Hypothesis testing</h2>
-<p>Calculating these values by hand is a pain in the @ss. Instead, we can conduct hypothesis testing on our estimates of the <span class="math inline">\(\psi\)</span>s using <code>linearHypothesis()</code> in the <code>car</code> package. The function conducts an <span class="math inline">\(F\)</span>-test on linear combinations of parameters in the model. So to test the hypothesis that <span class="math inline">\(\hat{\psi}_1 = 0\)</span> in the model above, we use:</p>
+<p>Calculating these values by hand is a pain in the ass. Instead, we can conduct hypothesis testing on our estimates of the <span class="math inline">\(\psi\)</span>s using <code>linearHypothesis()</code> in the <code>car</code> package. The function conducts an <span class="math inline">\(F\)</span>-test on linear combinations of parameters in the model. So to test the hypothesis that <span class="math inline">\(\hat{\psi}_1 = 0\)</span> in the model above, we use:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">linearHypothesis</span>(obama_ideo_gop, <span class="st">&quot;RConserv + RConserv:GOP&quot;</span>)</code></pre></div>
 <pre><code>## Linear hypothesis test
 ## 
@@ -1072,7 +1071,7 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       America/Chicago             
-##  date     2018-12-05</code></pre>
+##  date     2018-12-06</code></pre>
 <pre><code>## Packages -----------------------------------------------------------------</code></pre>
 <pre><code>##  package     * version date       source        
 ##  abind         1.4-5   2016-07-21 CRAN (R 3.5.0)
@@ -1080,12 +1079,13 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 ##  backports     1.1.2   2017-12-13 CRAN (R 3.5.0)
 ##  base        * 3.5.1   2018-07-05 local         
 ##  bindr         0.1.1   2018-03-13 CRAN (R 3.5.0)
-##  bindrcpp      0.2.2   2018-03-29 CRAN (R 3.5.0)
+##  bindrcpp    * 0.2.2   2018-03-29 CRAN (R 3.5.0)
 ##  broom       * 0.5.0   2018-07-17 CRAN (R 3.5.0)
 ##  car         * 3.0-0   2018-04-02 CRAN (R 3.5.0)
 ##  carData     * 3.0-1   2018-03-28 CRAN (R 3.5.0)
 ##  cellranger    1.1.0   2016-07-27 CRAN (R 3.5.0)
 ##  cli           1.0.0   2017-11-05 CRAN (R 3.5.0)
+##  codetools     0.2-15  2016-10-05 CRAN (R 3.5.1)
 ##  coefplot    * 1.2.6   2018-02-07 CRAN (R 3.5.0)
 ##  colorspace    1.3-2   2016-12-14 CRAN (R 3.5.0)
 ##  compiler      3.5.1   2018-07-05 local         
@@ -1116,11 +1116,13 @@ instant_effect &lt;-<span class="st"> </span><span class="cf">function</span>(mo
 ##  lazyeval      0.2.1   2017-10-29 CRAN (R 3.5.0)
 ##  lubridate     1.7.4   2018-04-11 CRAN (R 3.5.0)
 ##  magrittr      1.5     2014-11-22 CRAN (R 3.5.0)
+##  Matrix        1.2-14  2018-04-13 CRAN (R 3.5.1)
 ##  memoise       1.1.0   2017-04-21 CRAN (R 3.5.0)
 ##  methods     * 3.5.1   2018-07-05 local         
+##  mgcv        * 1.8-24  2018-06-23 CRAN (R 3.5.1)
 ##  modelr      * 0.1.2   2018-05-11 CRAN (R 3.5.0)
 ##  munsell       0.5.0   2018-06-12 CRAN (R 3.5.0)
-##  nlme          3.1-137 2018-04-07 CRAN (R 3.5.1)
+##  nlme        * 3.1-137 2018-04-07 CRAN (R 3.5.1)
 ##  openxlsx      4.1.0   2018-05-26 CRAN (R 3.5.0)
 ##  pillar        1.3.0   2018-07-14 CRAN (R 3.5.0)
 ##  pkgconfig     2.0.2   2018-08-16 CRAN (R 3.5.1)

@@ -16,7 +16,6 @@ library(forcats)
 library(broom)
 library(modelr)
 library(stringr)
-library(titanic)
 library(rcfss)
 library(car)
 library(plotly)
@@ -28,13 +27,15 @@ set.seed(1234)
 theme_set(theme_minimal())
 ```
 
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
 # Multiplicative interaction models
 
 ## Additive model
 
 Consider a linear additive model of the form:
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 Z + e_i$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \epsilon_i$$
 
 By definition, we expect $\beta_1$ to estimate the direct effect (or relationship) of $X_1$ on $Y$ independent of $Z$.^[Likewise for $\beta_2$.] A data generating process with a continuous value for $X$ and $Y$ and a dichotomous value for $Z$ following this functional form would look like:
 
@@ -51,20 +52,22 @@ additive %>%
   ggplot(aes(x, y, color = factor(z))) +
   geom_point() +
   geom_line(aes(y = pred)) +
+  labs(x = expression(X),
+       y = expression(Y)) +
   theme(legend.position = "none")
 ```
 
 Consider the net impact of $X$ on $Y$:
 
-$$E(Y) = \beta_0 + \beta_1 X + \beta_2 Z$$
+$$\E[Y] = \beta_0 + \beta_1 X + \beta_2 Z$$
 
 If we take the first derivative of this with respect to $X$, we get:
 
-$$\frac{\delta E(Y)}{\delta X} = \beta_1$$
+$$\frac{\delta \E[Y]}{\delta X} = \beta_1$$
 
 In other words, the marginal impact of $X$ on $Y$ is constant and completely independent of $Z$. Likewise, the marginal impact of $Z$ on $Y$ is:
 
-$$\frac{\delta E(Y)}{\delta Z} = \beta_2$$
+$$\frac{\delta \E[Y]}{\delta Z} = \beta_2$$
 
 Interpreting the estimated parameters and standard errors is relatively straightforward in this setup.
 
@@ -72,7 +75,7 @@ Interpreting the estimated parameters and standard errors is relatively straight
 
 But the additive functional form only makes sense if you theoretically believe the effects of $X$ and $Z$ are independent. Consider instead a simple interactive model with three variables:
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + e_i$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + \epsilon_i$$
 
 Here $XZ$ is just that: $X$ multiplied by $Z$. $\beta_1$ and $\beta_2$ are commonly (and erroneously) referred to as the **direct effects** of $X$ and $Z$ on $Y$,^[Brambor et. al. define $X$ and $Z$ as the **constitutive terms**] and $\beta_3$ as the coefficient for the **interaction term**.
 
@@ -80,24 +83,24 @@ With the variables multiplied together, the net impact of $X$ on $Y$ is now defi
 
 $$
 \begin{split}
-E(Y) & = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
+\E[Y] & = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
      & = \beta_0 + \beta_2 Z + (\beta_1 + \beta_3 Z) X
 \end{split}
 $$
 
 And the first derivative of this with respect to $X$ is:
 
-$$\frac{\delta E(Y)}{\delta X} = \beta_1 + \beta_3 Z$$
+$$\frac{\delta \E[Y]}{\delta X} = \beta_1 + \beta_3 Z$$
 
 In other words, the marginal impact of $X$ on $Y$ now explicitly depends on the value of $Z$. Another way of phrasing the expected value function above is:
 
-$$E(Y) = \beta_0 + \beta_2 Z + \psi_1 X$$
+$$\E[Y] = \beta_0 + \beta_2 Z + \psi_1 X$$
 
 where $\psi_1 = \beta_1 + \beta_3 Z$ is a "quasi-coefficient" for the marginal impact of $X$ on $Y$. Likewise with respect to $Z$:
 
 $$
 \begin{split}
-E(Y) & = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
+\E[Y] & = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
      & = \beta_0 + \beta_1 X + \psi_2 Z
 \end{split}
 $$
@@ -109,7 +112,7 @@ In this type of interactive model, each interacted covariate's influence on $Y$ 
     
         $$
         \begin{split}
-        E(Y) & = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
+        \E[Y] & = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
              & = \beta_0 + \beta_1 X
         \end{split}
         $$
@@ -118,7 +121,7 @@ In this type of interactive model, each interacted covariate's influence on $Y$ 
     
         $$
         \begin{split}
-        E(Y) & = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
+        \E[Y] & = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
              & = \beta_0 + \beta_2 Z
         \end{split}
         $$
@@ -141,7 +144,7 @@ The problem is that we don't care about these quantities - we care about the mar
 $$\hat{\psi}_1 = \hat{\beta}_1 + \hat{\beta}_3 Z$$
 $$\hat{\psi}_2 = \hat{\beta}_2 + \hat{\beta}_3 X$$
 
-But in order to conduct inference, we need to know if these values are statistically distinguishable from zero. For that, we need estimate the **variance** for these parameters. Three key rules help us define the equation for their variance. Where $X$ and $Y$ are random variables and $a$ is a constant:
+But in order to conduct inference, we need to know if these values are statistically distinguishable from zero. For that, we need to estimate the **variance** for these parameters. Three key rules help us define the equation for their variance. Where $X$ and $Y$ are random variables and $a$ is a constant:
 
 1. $\text{Var}(aX) = a^2 \text{Var}(X)$
 1. $\text{Var}(X+Y) = \text{Var}(X) + \text{Var}(Y) + 2 \text{Cov}(X,Y)$
@@ -164,22 +167,22 @@ There are several major types of interaction terms that can occur within regress
 
 ## Two dichtomous covariates
 
-$$Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + e_i$$
+$$Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + \epsilon_i$$
 
 In this model, the expected value for $Y$ can take on four possible values:
 
 $$
 \begin{split}
-E(Y | D_1 = 0, D_2 = 0) & = \beta_0 \\
-E(Y | D_1 = 1, D_2 = 0) & = \beta_0 + \beta_1 \\
-E(Y | D_1 = 0, D_2 = 1) & = \beta_0 + \beta_2 \\
-E(Y | D_1 = 1, D_2 = 1) & = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
+\E[Y | D_1 = 0, D_2 = 0] & = \beta_0 \\
+\E[Y | D_1 = 1, D_2 = 0] & = \beta_0 + \beta_1 \\
+\E[Y | D_1 = 0, D_2 = 1] & = \beta_0 + \beta_2 \\
+\E[Y | D_1 = 1, D_2 = 1] & = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
 \end{split}
 $$
 
 Consider data generated from the following model:
 
-$$Y = 10 + 20 D_1 - 20 D_2 + 40 D_1 D_2 + e, \text{ where } e \sim N(0, 5)$$
+$$Y = 10 + 20 D_1 - 20 D_2 + 40 D_1 D_2 + \epsilon, \text{ where } \epsilon \sim N(0, 5)$$
 
 ```{r sim-two-dich}
 two_dich <- data_frame(x = runif(n_sim),
@@ -229,12 +232,12 @@ This illustrates that:
 
 More commonly, we have a situation where one variable in the interaction is continous and the other is dichotomous:
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + e_i$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + \epsilon_i$$
 
 $$
 \begin{split}
-E(Y | X, D = 0) & = \beta_0 + \beta_1 X \\
-E(Y | X, D = 1) & = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
+\E[Y | X, D = 0] & = \beta_0 + \beta_1 X \\
+\E[Y | X, D = 1] & = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
 \end{split}
 $$
 
@@ -319,7 +322,7 @@ This suggests four possibilities:
 
 It is also common to have a model in which both interacted covariates are continuous:
 
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + e_i$$
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + \epsilon_i$$
 
 The interpretation here is that each covariate's effect on $Y$ changes **smoothly** and **monotonically** as a function of the other covariate.
 
@@ -345,11 +348,11 @@ Note that in the first figure, the marginal influence of a change in $X_1$ on $Y
 
 Curvilinear or quadratic relationships for a single variable are also a type of interactive model. For example, consider a second-order polynomial regression:
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + e$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \epsilon$$
 
 The marginal effect of $X$ on $Y$ is:
 
-$$\frac{\delta E(Y)}{\delta X} = \beta_1 + 2 \beta_2 X$$
+$$\frac{\delta \E[Y]}{\delta X} = \beta_1 + 2 \beta_2 X$$
 
 This tells us that the marginal effect of $X$ on $Y$ depends linearly on the value of $X$ itself.
 
@@ -379,7 +382,6 @@ data_frame(x = runif(n_sim, -2, 2)) %>%
   labs(title = "Example of a cubic relationship")
 ```
 
-
 ## Higher-order interaction terms
 
 We could expand on this process and adopt higher-order interaction models:
@@ -387,7 +389,7 @@ We could expand on this process and adopt higher-order interaction models:
 $$
 \begin{align}
 Y = \beta_0 &+ \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_1 X_2 \\
-& + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + e
+& + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + \epsilon
 \end{align}
 $$
 
@@ -396,7 +398,7 @@ The various $X$s could be continuous or dichotomous, with corresponding interpre
 $$
 \begin{align}
 Y = \beta_0 &+ \beta_1 X + \beta_2 D_1 + \beta_3 D_2 + \beta_4 X D_1 \\
-& + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + e
+& + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + \epsilon
 \end{align}
 $$
 
@@ -430,13 +432,13 @@ Here the slope of $Y$ on $X$ is positive when $D_1 = 0$ and negative when $D_1 =
 # get nes data
 nes <- read_dta("data/nes2008.dta") %>%
   select(obama_therm_post, partyid3, libcon7, libcon7_obama) %>%
-  mutate_each(funs(ifelse(is.nan(.), NA, .))) %>%
+  mutate_all(funs(ifelse(is.nan(.), NA, .))) %>%
   rename(ObamaTherm = obama_therm_post,
          RConserv = libcon7,
          ObamaConserv = libcon7_obama) %>%
   mutate(GOP = ifelse(partyid3 == 3, 1, 0)) %>%
   select(-partyid3) %>%
-  na.omit
+  na.omit()
 ```
 
 Let's look at data from the 2008 American national election study. The outcome of interest is the **Obama feeling thermometer** (`ObamaTherm`). Our covariates are:
@@ -466,7 +468,7 @@ Let's consider a couple of interactive models. First, while Obama became a polar
 $$
 \begin{align}
 \text{Obama thermometer} = \beta_0 &+ \beta_1 (\text{Respondent conservatism}) + \beta_2 (\text{GOP respondent})\\
-& + \beta_3 (\text{Respondent conservatism}) (\text{GOP respondent}) + e
+& + \beta_3 (\text{Respondent conservatism}) (\text{GOP respondent}) + \epsilon
 \end{align}
 $$
 
@@ -571,7 +573,7 @@ $$
 \begin{align}
 \text{Obama thermometer} = &\beta_0 + (\beta_1 + \beta_3 \text{GOP}) (\text{Respondent conservatism}) + \\
 & \beta_2 (\text{GOP respondent}) + e \\
- = &\beta_0 + \psi_1 (\text{Respondent conservatism}) + \beta_2 (\text{GOP respondent}) + e
+ = &\beta_0 + \psi_1 (\text{Respondent conservatism}) + \beta_2 (\text{GOP respondent}) + \epsilon
 \end{align}
 $$
 
@@ -661,7 +663,7 @@ instant_effect(obama_ideo_gop, "RConserv") %>%
 
 ## Hypothesis testing
 
-Calculating these values by hand is a pain in the \@ss. Instead, we can conduct hypothesis testing on our estimates of the $\psi$s using `linearHypothesis()` in the `car` package. The function conducts an $F$-test on linear combinations of parameters in the model. So to test the hypothesis that $\hat{\psi}_1 = 0$ in the model above, we use:
+Calculating these values by hand is a pain in the ass. Instead, we can conduct hypothesis testing on our estimates of the $\psi$s using `linearHypothesis()` in the `car` package. The function conducts an $F$-test on linear combinations of parameters in the model. So to test the hypothesis that $\hat{\psi}_1 = 0$ in the model above, we use:
 
 ```{r hypo-test}
 linearHypothesis(obama_ideo_gop, "RConserv + RConserv:GOP")

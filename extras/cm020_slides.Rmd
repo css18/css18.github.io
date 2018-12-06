@@ -30,9 +30,11 @@ set.seed(1234)
 theme_set(theme_minimal(base_size = 22))
 ```
 
+$$\newcommand{\E}{\mathrm{E}} \newcommand{\Var}{\mathrm{Var}} \newcommand{\Cov}{\mathrm{Cov}} \newcommand{\se}{\text{se}} \newcommand{\Lagr}{\mathcal{L}} \newcommand{\lagr}{\mathcal{l}}$$
+
 ## Additive model
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 Z + e_i$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \epsilon_i$$
 
 ## Additive model
 
@@ -54,15 +56,15 @@ additive %>%
 
 ## Additive model
 
-$$E(Y) = \beta_0 + \beta_1 X + \beta_2 Z$$
+$$\E[Y] = \beta_0 + \beta_1 X + \beta_2 Z$$
 
-$$\frac{\delta E(Y)}{\delta X} = \beta_1$$
+$$\frac{\delta \E[Y]}{\delta X} = \beta_1$$
 
-$$\frac{\delta E(Y)}{\delta Z} = \beta_2$$
+$$\frac{\delta \E[Y]}{\delta Z} = \beta_2$$
 
 ## Multiplicative interaction model
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + e_i$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + \epsilon_i$$
 
 * Direct effects
 * Constitutive terms
@@ -72,18 +74,18 @@ $$Y = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ + e_i$$
 
 $$
 \begin{align}
-E(Y) & = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
+\E[Y] & = \beta_0 + \beta_1 X + \beta_2 Z + \beta_3 XZ \\
      & = \beta_0 + \beta_2 Z + (\beta_1 + \beta_3 Z) X
 \end{align}
 $$
 
-$$\frac{\delta E(Y)}{\delta X} = \beta_1 + \beta_3 Z$$
+$$\frac{\delta \E[Y]}{\delta X} = \beta_1 + \beta_3 Z$$
 
-$$E(Y) = \beta_0 + \beta_2 Z + \psi_1 X$$
+$$\E[Y] = \beta_0 + \beta_2 Z + \psi_1 X$$
 
 $$
 \begin{align}
-E(Y) & = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
+\E[Y] & = \beta_0 + \beta_1 X + (\beta_2 + \beta_3 X) Z \\
      & = \beta_0 + \beta_1 X + \psi_2 Z
 \end{align}
 $$
@@ -95,7 +97,7 @@ $$
     
     $$
     \begin{align}
-    E(Y) & = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
+    \E[Y] & = \beta_0 + \beta_1 X + \beta_2 (0) + \beta_3 X (0) \\
          & = \beta_0 + \beta_1 X
     \end{align}
     $$
@@ -104,7 +106,7 @@ $$
     
     $$
     \begin{align}
-    E(Y) & = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
+    \E[Y] & = \beta_0 + \beta_1 (0) + \beta_2 Z + \beta_3 (0) Z \\
          & = \beta_0 + \beta_2 Z
     \end{align}
     $$
@@ -138,14 +140,14 @@ $$\widehat{\text{Var}(\hat{\psi}_2}) = \widehat{\text{Var} (\hat{\beta}_2)} + X^
 
 ## Two dichtomous covariates
 
-$$Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + e_i$$
+$$Y = \beta_0 + \beta_1 D_1 + \beta_2 D_2 + \beta_3 D_1 D_2 + \epsilon_i$$
 
 $$
 \begin{align}
-E(Y | D_1 = 0, D_2 = 0) & = \beta_0 \\
-E(Y | D_1 = 1, D_2 = 0) & = \beta_0 + \beta_1 \\
-E(Y | D_1 = 0, D_2 = 1) & = \beta_0 + \beta_2 \\
-E(Y | D_1 = 1, D_2 = 1) & = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
+\E[Y | D_1 = 0, D_2 = 0] & = \beta_0 \\
+\E[Y | D_1 = 1, D_2 = 0] & = \beta_0 + \beta_1 \\
+\E[Y | D_1 = 0, D_2 = 1] & = \beta_0 + \beta_2 \\
+\E[Y | D_1 = 1, D_2 = 1] & = \beta_0 + \beta_1 + \beta_2 + \beta_3 \\
 \end{align}
 $$
 
@@ -188,12 +190,12 @@ ggplot(two_dich, aes(interaction(z, x), y)) +
 
 ## One dichotomous and one continuous covariate
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + e_i$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 D + \beta_3 XD + \epsilon_i$$
 
 $$
 \begin{align}
-E(Y | X, D = 0) & = \beta_0 + \beta_1 X \\
-E(Y | X, D = 1) & = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
+\E[Y | X, D = 0] & = \beta_0 + \beta_1 X \\
+\E[Y | X, D = 1] & = (\beta_0 + \beta_2) + (\beta_1 + \beta_3) X
 \end{align}
 $$
 
@@ -274,7 +276,7 @@ data_frame(x = runif(n_sim, -2, 2),
 
 ## Two continuous covariates
 
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + e_i$$
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + \epsilon_i$$
 
 ```{r two-cont}
 # no interactive effects
@@ -287,7 +289,7 @@ data_frame(x = runif(n_sim, 0, 10),
 
 ## Two continuous covariates
 
-$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + e_i$$
+$$Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1 X_2 + \epsilon_i$$
 
 ```{r two-cont-x}
 # inteactive effects
@@ -300,9 +302,9 @@ data_frame(x = runif(n_sim, 0, 10),
 
 ## Quadratic, cubic, and other polynomial effects
 
-$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + e$$
+$$Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \epsilon$$
 
-$$\frac{\delta E(Y)}{\delta X} = \beta_1 + 2 \beta_2 X$$
+$$\frac{\delta \E[Y]}{\delta X} = \beta_1 + 2 \beta_2 X$$
 
 ## Quadratic, cubic, and other polynomial effects
 
@@ -347,7 +349,7 @@ $$\frac{\delta E(Y)}{\delta X} = \beta_1 + 2 \beta_2 X$$
 $$
 \begin{align}
 Y = \beta_0 &+ \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_3 + \beta_4 X_1 X_2 \\
-& + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + e
+& + \beta_5 X_1 X_3 + \beta_6 X_2 X_3 + \beta_7 X_1 X_2 X_3 + \epsilon
 \end{align}
 $$
 
@@ -356,7 +358,7 @@ $$
 $$
 \begin{align}
 Y = \beta_0 &+ \beta_1 X + \beta_2 D_1 + \beta_3 D_2 + \beta_4 X D_1 \\
-& + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + e
+& + \beta_5 X D_2 + \beta_6 D_1 D_2 + \beta_7 X D_1 D_2 + \epsilon
 \end{align}
 $$
 
@@ -424,7 +426,7 @@ $$
 \text{Obama} = \beta_0 &+ \beta_1 (\text{RConserv}) \\
 & + \beta_2 (\text{GOP})\\
 & + \beta_3 (\text{RConserv}) (\text{GOP}) \\
-& + e
+& + \epsilon
 \end{align}
 $$
 
@@ -498,8 +500,8 @@ nes %>%
 $$
 \begin{align}
 \text{Obama} = \beta_0 &+ (\beta_1 + \beta_3 \text{GOP}) (\text{RConserv}) \\
-& + \beta_2 (\text{GOP}) + e \\
- = &\beta_0 + \psi_1 (\text{RConserv}) + \beta_2 (\text{GOP}) + e
+& + \beta_2 (\text{GOP}) + \epsilon \\
+ = &\beta_0 + \psi_1 (\text{RConserv}) + \beta_2 (\text{GOP}) + \epsilon
 \end{align}
 $$
 
@@ -600,7 +602,7 @@ $$
 \text{Obama} = \beta_0 &+ \beta_1 (\text{RConserv}) \\
 & + \beta_2 (\text{ObamaConserv})\\
 & + \beta_3 (\text{RConserv}) (\text{ObamaConserv}) \\
-& + e
+& + \epsilon
 \end{align}
 $$
 
